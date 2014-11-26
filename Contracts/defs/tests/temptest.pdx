@@ -1,0 +1,2 @@
+deploy:
+	./defs/tests/temptest.lll => {{temptest}}

@@ -1,0 +1,74 @@
+;flagged list
+{
+	(include "./defs/stdll.def")
+	(include "./defs/single.def")
+	(include "./defs/stdkv.def")
+
+	(llInit "flaggedaddr")
+	(kvInit "flaggedvidn")
+	(singleInit "casenum" 1)
+
+	(def 'DAPPDOUG 0xdaffe)
+
+	(def 'cmd () (calldataload 0x0))
+	(def 'case () (calldataload 0x20))
+
+	(return 0 (lll{
+		
+		(when (= (cmd) "addflag")
+			{
+				[0x0]"checkperm"
+				[0x20]"useraccount"
+				[0x40](CALLER)
+				(CALL (gass) DAPPDOUG 0 0x0 0x60 0x60 0x20)
+
+				(unless (= @0x60 1) (STOP))
+
+				(llAddLink "flaggedaddr" (singleGet "casenum") (CALLER))
+				(kvSet "flaggedvidn" (singleGet "casenum") (vidnum))
+				(singleSet "casenum" (+ (singleGet "casenum") 1))
+			}
+		)
+
+		(when (= (cmd) "rmflag")
+			{
+				[0x0]"checkperm"
+				[0x20]"blacklist"
+				[0x40](ORIGIN)
+				(CALL (gass) DAPPDOUG 0 0x0 0x60 0x60 0x20)
+
+				(unless (= @0x60 1) (STOP))
+
+				[0x0]"rmflag"
+				[0x20](kvGet "flaggedvidn" (casenum))
+				(CALL (gass) (llGet "flaggedaddr" (casenum)) 0 0x0 0x40 0x80 0x20)
+
+				(llRmLink "flaggedaddr" (casenum))
+				(kvSet "flaggedvidn" (casenum) 0)
+
+			}
+		)
+
+		(when (= (cmd) "blacklist")
+			{
+				[0x0]"checkperm"
+				[0x20]"blacklist"
+				[0x40](ORIGIN)
+				(CALL (gass) DAPPDOUG 0 0x0 0x60 0x60 0x20)
+
+				(unless (= @0x60 1) (STOP))
+
+				[0x0]"blacklist"
+				[0x20](kvGet "flaggedvidn" (casenum))
+				(CALL (gass) (llGet "flaggedaddr" (casenum)) 0 0x0 0x40 0x80 0x20)
+
+				(llRmLink "flaggedaddr" (casenum))
+				(kvSet "flaggedvidn" (casenum) 0)
+
+			}
+		)
+
+		
+
+	} 0))
+}

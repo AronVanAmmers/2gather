@@ -1,0 +1,27 @@
+{
+	(include "../stdvarspace.def")
+	(include "../stdarray.def")
+
+	[[0x1]](vari "test1")
+	[[0x2]](arrayCTS "test1" 0xFEEDFACE1)
+	[[0x3]](vari "test2")
+	[[0x4]](arrayCTS "test2" 0xFEEDFACE2)
+	[[0x5]](vari "test3")
+	[[0x6]](arrayCTS "test3" 0xFEEDFACE3)
+	[[0x7]](arrayCTS "test3" 0xDEADFACE1)
+	[[0x8]](vari "test4")
+	[[0x9]](arrayCTS "test4" 0x0)
+	(arrayInit "test1" "a1" "r1" "m1" 1)
+	(arraySetE "test1" 0xFEEDFACE1 3 1)
+	(arrayInit "test2" "a2" "r2" "m2" 8)
+	(arraySetE "test2" 0xFEEDFACE2 35 0xFF)
+	(arrayInit "test3" "a3" "r3" "m3" 256)
+	(arraySetE "test3" 0xFEEDFACE3 2 0xFED)
+	[0x300]0xDEED
+	(arrayStoreE "test3" 0xDEADFACE1 10 0x300 1)
+	(arrayLoadE "test3" 0xDEADFACE1 10 0x320)
+	[[0x10]]@0x320
+	(arrayInit "test4" "a4" "r4" "m4" 32)
+	(arraySetE "test4" 0 0xAABBCCDD)
+	(arraySetE "test4" 0 0xDDCCBBAA)
+}
