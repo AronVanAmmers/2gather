@@ -1,0 +1,23 @@
+;Single Typer Tester
+{
+;	(include "../stdvarspace.def")
+	(include "../single.def")
+
+	[[0x1]](vari "test1")
+	[[0x2]](vari "test2")
+	[[0x3]](vari "test3")
+	(singleInit "test1" "add1" "rm1" "mod1" 0x1111)
+	(singleInit "test2" "add2" "rm2" "mod2" 0x1111)
+	[[0x10]]@@(singleVS "test2")
+	[[0x11]](singleValue "test2")
+	(singleSet "test2" 0x2222)
+	[[0x12]](singleGet "test2")
+	(singleLoad "test2" 0x0)
+	[[0x13]]@0x0
+	(singleInit "test3" "add3" "rm3" "mod3" 0x1111)
+	[0x20]0x3333
+	[[0x14]](singleGet "test3")
+	(singleStore "test3" 0x20 1)
+	[[0x15]](singleGet "test3")
+
+}

@@ -1,0 +1,154 @@
+#C3D Test
+#Canaries
+{{c3d}}; 0x1; 42
+{{c3d}}; 0x2; 42
+{{c3d}}; 0x3; 42
+{{c3d}}; 0x4; 42
+{{c3d}}; 0x5; 42
+{{c3d}}; 0x6; 42
+{{c3d}}; 0x7; 42
+{{c3d}}; 0x8; 42
+{{c3d}}; 0x9; 42
+{{c3d}}; 0xA; 42
+{{c3d}}; 0xB; 42
+{{c3d}}; 0xC; 42
+{{c3d}}; 0xD; 42
+{{c3d}}; 0xE; 42
+{{c3d}}; 0xF; 42
+
+#Top Slots
+{{c3d}}; 0x10; _; {{off}}
+{{c3d}}; 0x11; {{off}}+1; {{TopInd}}
+{{c3d}}; 0x12; {{off}}+2; {{TopDM}}
+{{c3d}}; 0x13; {{off}}+3; {{TopUI}}
+{{c3d}}; 0x14; {{off}}+4; {{TopCon}} 
+{{c3d}}; 0x15; {{off}}+5; {{TopPar}}
+{{c3d}}; 0x16; {{off}}+6; {{TopOwn}}
+{{c3d}}; 0x17; {{off}}+7; {{TopCre}}
+{{c3d}}; 0x18; {{off}}+8; {{TopTim}}
+{{c3d}}; 0x19; {{off}}+9; {{TopBeh}}
+{{c3d}}; 0x1A; {{off}}+10; {{TopTai}}
+{{c3d}}; 0x1B; {{off}}+11; {{TopHea}}
+{{c3d}}; 0x1C; {{off}}+12; {{TopLis}}
+
+{{c3d}}; 0x21; 0
+{{c3d}}; 0x22; 0
+{{c3d}}; 0x23; 0
+{{c3d}}; 0x24; 0
+{{c3d}}; 0x25; 0
+{{c3d}}; 0x26; 0
+{{c3d}}; 0x27; 0
+{{c3d}}; 0x28; 0
+{{c3d}}; 0x29; 0
+{{c3d}}; 0x2A; 0
+{{c3d}}; 0x2B; 0
+{{c3d}}; 0x2C; 0
+
+{{c3d}}; 0x31; "indicator"
+{{c3d}}; 0x32; "datamodel"
+{{c3d}}; 0x33; "ui"
+{{c3d}}; 0x34; "content"
+{{c3d}}; 0x35; "parent"
+{{c3d}}; 0x36; "owner"
+{{c3d}}; 0x37; "creator"
+{{c3d}}; 0x38; _; {{block}}
+{{c3d}}; 0x39; "behaviour"
+{{c3d}}; 0x3A; 0
+{{c3d}}; 0x3B; 0
+{{c3d}}; 0x3C; 0
+
+{{c3d}}; 0x40; _; {{link1}}
+{{c3d}}; 0x41; _; {{link2}}
+{{c3d}}; 0x42; _; {{link3}}
+
+{{c3d}}; 0x50; 0xAA11
+{{c3d}}; 0x51; 0
+{{c3d}}; 0x52; 0
+{{c3d}}; 0x53; 0xBB11
+{{c3d}}; 0x54; 0xCC11
+{{c3d}}; 0x55; 0xDD11
+{{c3d}}; 0x56; 0xEE11
+{{c3d}}; 0x57; 0xFF11
+{{c3d}}; 0x58; {{block}}
+
+{{c3d}}; 0x59; {{link1}}
+{{c3d}}; 0x5A; {{link1}}
+{{c3d}}; 0x5B; 1
+
+{{c3d}}; 0x60; 0xAA22 
+{{c3d}}; 0x61; {{link1}}
+{{c3d}}; 0x62; 0
+{{c3d}}; 0x63; 0xBB22
+{{c3d}}; 0x64; 0xCC22
+{{c3d}}; 0x65; 0xDD22
+{{c3d}}; 0x66; 0xEE22
+{{c3d}}; 0x67; 0xFF22
+{{c3d}}; 0x68; {{block}}
+
+{{c3d}}; 0x69; {{link2}}
+{{c3d}}; 0x6A; {{link1}}
+{{c3d}}; 0x6B; 2
+{{c3d}}; 0x6C; {{link2}}
+
+{{c3d}}; 0x70; 0xAA33 
+{{c3d}}; 0x71; {{link2}}
+{{c3d}}; 0x72; 0
+{{c3d}}; 0x73; 0xBB33
+{{c3d}}; 0x74; 0xCC33
+{{c3d}}; 0x75; 0xDD33
+{{c3d}}; 0x76; 0xEE33
+{{c3d}}; 0x77; 0xFF33
+{{c3d}}; 0x78; {{block}}
+
+{{c3d}}; 0x79; {{link3}}
+{{c3d}}; 0x7A; {{link1}}
+{{c3d}}; 0x7B; 3
+{{c3d}}; 0x7C; {{link3}}
+
+{{c3d}}; 0x80; 0
+{{c3d}}; 0x81; 0
+{{c3d}}; 0x82; 0
+{{c3d}}; 0x83; 0
+{{c3d}}; 0x84; 0
+{{c3d}}; 0x85; 0
+{{c3d}}; 0x86; 0
+{{c3d}}; 0x87; 0
+{{c3d}}; 0x88; 0
+
+{{c3d}}; 0x89; {{link3}}
+{{c3d}}; 0x8A; {{link1}}
+{{c3d}}; 0x8B; 2
+
+{{c3d}}; 0x8C;{{link3}}
+{{c3d}}; 0x8D;{{link1}}
+
+{{c3d}}; 0x90; 0
+{{c3d}}; 0x91; 0
+{{c3d}}; 0x92; 0
+{{c3d}}; 0x93; 0
+{{c3d}}; 0x94; 0
+{{c3d}}; 0x95; 0
+{{c3d}}; 0x96; 0
+{{c3d}}; 0x97; 0
+{{c3d}}; 0x98; 0
+
+{{c3d}}; 0x99; {{link1}}
+{{c3d}}; 0x9A; {{link1}}
+{{c3d}}; 0x9B; 1
+{{c3d}}; 0x9C; 0
+
+{{c3d}}; 0xA0; "indicator1"
+{{c3d}}; 0xA1; "datamodel1"
+{{c3d}}; 0xA2; "ui1"
+{{c3d}}; 0xA3; "parent1"
+{{c3d}}; 0xA4; "owner1"
+{{c3d}}; 0xA5; "timestamp1"
+{{c3d}}; 0xA6; "behaviour1"
+
+{{c3d}}; 0xB1; "address1"
+{{c3d}}; 0xB2; "type1"
+{{c3d}}; 0xB3; "behaviour1"
+{{c3d}}; 0xB4; "content1"
+{{c3d}}; 0xB5; "datamodel1"
+{{c3d}}; 0xB6; "ui1"
+{{c3d}}; 0xB7; "timestamp1"

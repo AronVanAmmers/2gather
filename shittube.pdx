@@ -1,0 +1,36 @@
+#THE SHITTUBE DEPLOYMENT FILE
+
+#File Deployment
+!{DOUG
+deploy:
+	"./Contracts/shittubeDOUG.lll" => {{DOUG}}
+!}DOUG
+
+!{AF
+modify-deploy:
+	"./Contracts/AccountFactory.lll" => {{AF}}
+	(def 'DAPPDOUG 0xdaffe) => (def 'DAPPDOUG {{DOUG}})
+!}AF
+
+!{flaglist
+modify-deploy:
+	"./Contracts/flagged.lll" => {{FLAG}}
+	(def 'DAPPDOUG 0xdaffe) => (def 'DAPPDOUG {{DOUG}})
+!}flaglist
+
+!{setup
+#Set Up Transactions
+transact:
+	{{DOUG}} => "setperm" "doug" {{AF}} 1
+
+transact:
+	{{DOUG}} => "setperm" "accountfactory" {{AF}} 1
+
+transact:
+	{{DOUG}} => "register" "flaggedlist" {{FLAG}}
+
+transact:
+	{{DOUG}} => "register" "accountfactory" {{AF}}
+!}setup
+
+#Thats all Folks.

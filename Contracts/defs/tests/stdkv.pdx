@@ -1,0 +1,4 @@
+!{test
+deploy:
+	stdkvtest.lll => {{kv}}
+!}test
