@@ -1,0 +1,4 @@
+!{diff1
+deploy:
+	mowtest.lll => {{test}}
+!}diff1

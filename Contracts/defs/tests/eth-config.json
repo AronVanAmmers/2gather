@@ -1,0 +1,23 @@
+{
+	"port": 30303,
+	"mining": false,
+	"max_peers": 10,
+	"config_file": "config",
+	"root_dir": "/home/dennis/Development/go/src/github.com/eris-ltd/eris-std-lib/defs/tests/.ethchain",
+	"name": "decerver-monkchain",
+	"log_file": "",
+	"data_dir": "",
+	"db_name": "database",
+	"lll_path": "NETCALL",
+	"contract_path": "/home/dennis/Development/go/src/github.com/eris-ltd/eris-std-lib",
+	"client": "Ethereum(deCerver)",
+	"version": "0.5.17",
+	"id": "",
+	"key_session": "generous",
+	"key_store": "file",
+	"key_cursor": 0,
+	"key_file": "/home/dennis/Development/go/src/github.com/eris-ltd/thelonious/monk/keys.txt",
+	"genesis_config": "/home/dennis/Development/go/src/github.com/eris-ltd/thelonious/monk/genesis-std.json",
+	"difficulty": 14,
+	"log_level": 0
+}

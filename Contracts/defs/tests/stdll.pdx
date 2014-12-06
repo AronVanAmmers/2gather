@@ -1,0 +1,4 @@
+deploy:
+	stdlltest.lll => {{link}}
+log:
+	link => {{link}}

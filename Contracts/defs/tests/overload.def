@@ -1,0 +1,15 @@
+{
+	(def 'args (first second third) 
+		{
+			[[0x1]]first
+			[[0x2]]second
+			[[0x3]]third
+		}
+	)
+	(def 'args (first second)
+		{
+			[[0x4]]first
+			[[0x5]]second
+		}
+	)
+}

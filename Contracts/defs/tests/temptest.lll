@@ -1,0 +1,4 @@
+{
+	(def 'test () 42)
+	[[0xDEADBEEF]](test)
+}

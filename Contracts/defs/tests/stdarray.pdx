@@ -1,0 +1,6 @@
+!{array
+deploy:
+	stdarraytest.lll => {{array}}
+log:
+	array => {{array}}
+!}array
