@@ -1,5 +1,0 @@
-=============== Nov 24, 2014 (EST) ===============
-23:01:12.568570 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock D·DeletedEntry L·Level Q·SeqNum T·TimeElapsed
-23:01:12.568949 db@open opening
-23:01:12.581197 db@janitor F·2 G·0
-23:01:12.581231 db@open done T·12.266308ms

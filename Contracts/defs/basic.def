@@ -1,5 +1,0 @@
-;Basic Definitions
-{
-	(def 'gass () (- (GAS) 100))
-	(def 'blankmem (c memstart memlen) (for [c]0 (> @c memlen) [c](+ @c 0x20) [@c]0))
-}

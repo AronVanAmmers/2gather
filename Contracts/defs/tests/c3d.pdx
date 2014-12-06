@@ -1,4 +1,0 @@
-deploy:
-	c3dtest.lll => {{c3d}}
-log:
-	c3d => {{c3d}}

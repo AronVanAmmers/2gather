@@ -1,4 +1,0 @@
-deploy:
-	doubletest.lll => {{double}}
-log:
-	double => {{double}}
