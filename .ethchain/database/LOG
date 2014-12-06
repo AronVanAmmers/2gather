@@ -1,8 +1,0 @@
-=============== Nov 26, 2014 (EST) ===============
-16:21:57.615069 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock D·DeletedEntry L·Level Q·SeqNum T·TimeElapsed
-16:21:57.615745 db@open opening
-16:21:57.615829 journal@recovery F·1
-16:21:57.616230 journal@recovery recovering @1
-16:21:57.633180 mem@flush created L0@2 N·726 S·102KiB "\x00..\xb1,v216":"\xff..F,v104"
-16:21:57.637213 db@janitor F·3 G·0
-16:21:57.637286 db@open done T·21.51754ms
