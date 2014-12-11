@@ -40,11 +40,11 @@
 				(unless (= @0x60 1) (STOP))
 
 				[0x0]"rmflag"
-				[0x20](kvGet "flaggedvidn" (casenum))
-				(CALL (gass) (llGet "flaggedaddr" (casenum)) 0 0x0 0x40 0x80 0x20)
+				[0x20](kvGet "flaggedvidn" (case))
+				(CALL (gass) (llGet "flaggedaddr" (case)) 0 0x0 0x40 0x80 0x20)
 
-				(llRmLink "flaggedaddr" (casenum))
-				(kvSet "flaggedvidn" (casenum) 0)
+				(llRmLink "flaggedaddr" (case))
+				(kvSet "flaggedvidn" (case) 0)
 
 			}
 		)
@@ -59,11 +59,11 @@
 				(unless (= @0x60 1) (STOP))
 
 				[0x0]"blacklist"
-				[0x20](kvGet "flaggedvidn" (casenum))
-				(CALL (gass) (llGet "flaggedaddr" (casenum)) 0 0x0 0x40 0x80 0x20)
+				[0x20](kvGet "flaggedvidn" (case))
+				(CALL (gass) (llGet "flaggedaddr" (case)) 0 0x0 0x40 0x80 0x20)
 
-				(llRmLink "flaggedaddr" (casenum))
-				(kvSet "flaggedvidn" (casenum) 0)
+				(llRmLink "flaggedaddr" (case))
+				(kvSet "flaggedvidn" (case) 0)
 
 			}
 		)

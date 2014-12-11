@@ -64,6 +64,10 @@
 	(def 'doubleValue2 (name) @@(IdoubleVS2 (vari name)))
 
 	(def 'doubleInit (name addperm rmperm modperm value value2) (IdoubleInit (vari name) name addperm rmperm modperm value value2))
+	(def 'doubleInit (name value value2) (IdoubleInit (vari name) name "none" "none" "none" value value2))
+	(def 'doubleInit (name addperm rmperm modperm) (IdoubleInit (vari name) name addperm rmperm modperm 0 0))
+	(def 'doubleInit (name) (IdoubleInit (vari name) name "none" "none" "none" 0 0))
+	
 	(def 'doubleLoad (name mem) (IdoubleLoad (vari name) mem))
 	(def 'doubleSet (name value value2) (IdoubleSet (vari name) value value2))
 	(def 'doubleStore (name mem boolmem) (IdoubleStore (vari name) mem boolmem))

@@ -70,6 +70,7 @@
 	(def 'arraySetE (name key elnum value) (IarraySetE (vari name) key elnum value))
 	(def 'arrayStoreE (name key elnum mem membool) (IarrayStoreE (vari name) key elnum mem membool))
 	(def 'arrayInit (name addperm rmperm modperm Esize) (IarrayInit (vari name) name addperm rmperm modperm Esize))
+	(def 'arrayInit (name Esize) (IarrayInit (vari name) name "none" "none" "none" Esize))
 
 ;	(def 'arrayInit (one two three four five) [[0xDEADBEEF]]0xFEEDFACE)
 

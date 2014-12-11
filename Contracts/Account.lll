@@ -10,19 +10,25 @@
 
 	(def 'cmd () (calldataload 0x0))
 
+	(def 'initusrname () (calldataload 0x20))
+
 	(def 'channel () (calldataload 0x20))
 
 	(def 'content () (calldataload 0x20))
+	(def 'vidname () (calldataload 0x40))
 
 	(def 'vidnum () (calldataload 0x20))
 
 	(llInit "subs")
 	(llInit "uploads")
+	(kvInit "vidnames")
+	(kvInit "uploaddate")
 
 	(kvInit "status")
 
+
 	(singleInit "username" 0)
-	(singleInit "created" (NUMBER))
+	(singleInit "created" (TIMESTAMP))
 	(singleInit "inited" 0)
 	(singleInit "owner" (ORIGIN))
 
@@ -33,29 +39,46 @@
 		(when (&& (= (cmd) "init") (= (singleGet "inited") 0))
 			{
 				(singleSet "inited" 1)
-				(singleSet "username" (username))
+				(singleSet "username" (initusrname))
+
+				[0x0]1
+				(return 0x0 0x20)
 			}
 		)
 		
 		(when (&& (= (cmd) "subscribe") (= (singleGet "owner") (ORIGIN)))
 			{
 				(llAddLink "subs" (channel) (channel))
+
+				[0x0]1
+				(return 0x0 0x20)
 			}
 		)
 
 		(when (&& (= (cmd) "upload") (= (singleGet "owner") (ORIGIN)))
 			{
-				(llAddLink "uploads" (singleGet "vidnum") (content))
+				[video_number](singleGet "vidnum")
+				(llAddLink "uploads" @video_number (content))
+				(kvSet "vidnames" @video_number (vidname))
+				(kvSet "uploaddate" @video_number (TIMESTAMP))
+
 				(singleSet "vidnum" (+ (singleGet "vidnum") 1))
 				(kvSet "status" (vidnum) 1)
-				;Add additional information?
+
+				[0x0]1
+				(return 0x0 0x20)
 			}
 		)
 
 		(when (&& (= (cmd) "remove") (= (singleGet "owner") (ORIGIN)))
 			{
 				(llRmLink "uploads" (vidnum))
+				(kvSet "vidnames" (vidnum) 0)
+				(kvSet "uploaddate" (vidnum) 0)
 				(kvSet "status" (vidnum) 0)
+
+				[0x0]1
+				(return 0x0 0x20)
 			}
 		)
 
@@ -68,8 +91,11 @@
 
 				(unless (|| (= @0x60 1) (= (singleGet "owner") (ORIGIN))) (STOP))
 
-				(llSet "uploads" (vidnum) (Div (llGet "uploads" (vidnum)) (EXP 0x100 10))) ;Obscure the value
+				(llSet "uploads" (vidnum) (Div (llGet "uploads" (vidnum)) (EXP 0x100 6))) ;Obscure the value
 				(kvSet "status" (vidnum) 5)
+
+				[0x0]1
+				(return 0x0 0x20)
 			}
 		)
 
@@ -85,6 +111,9 @@
 				[0x0]"addflag"
 				[0x20](vidnum)
 				(CALL (gass) @0x40 0 0x20 0x40 0x60 0x20)
+
+				[0x0]1
+				(return 0x0 0x20)
 			}
 		)
 
@@ -98,6 +127,34 @@
 				(unless (= @0x60 1) (STOP))
 
 				(kvSet "status" (vidnum) 3)
+
+				[0x0]1
+				(return 0x0 0x20)
+			}
+		)
+
+		(when (= (cmd) "deleteaccount")
+			{
+				[0x0] "checkperm"
+				[0x20] "blacklist"
+				[0x40] (ORIGIN)
+				(CALL (gass) DAPPDOUG 0 0x0 0x60 0x60 0x20)
+				
+				(unless (|| (= @0x60 1) (= (singleGet "owner") (ORIGIN))) (STOP))
+
+				[0x0] "checkname"
+				[0x20] "accountfactory"
+				[0x60] 0
+				(CALL (gass) DAPPDOUG 0 0x0 0x40 0x60 0x20)
+
+				[0x0]"deleteaccount"
+				[0x20](singleGet "username")
+				[0x40]0
+				(CALL (gass) @0x60 0 0x0 0x40 0x40 0x20)
+
+				(unless (= @0x40 1) (STOP))
+
+				(suicide (ORIGIN))
 			}
 		)
 

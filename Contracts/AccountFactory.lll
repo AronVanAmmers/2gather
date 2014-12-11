@@ -4,7 +4,7 @@
 	(include "./defs/stdll.def")
 	(include "./env.def")
 
-	(kvInit "created")
+	(kvInit "accounts")
 	(llInit "usernames")
 
 	(def 'username () (calldataload 0x20))
@@ -15,7 +15,7 @@
 		(when (= (calldataload 0x0) "create")
 			{
 
-				(unless (= (llGet "usernames" (username)) 0) (STOP)) ;Username taken
+				(unless (&& (= (llGet "usernames" (username)) 0) (= (kvGet "accounts" (ORIGIN)) 0)) (STOP)) ;Username taken/ user has an account
 
 				(llAddLink "usernames" (username) (ORIGIN))
 
@@ -28,7 +28,7 @@
 
 				[[@0x0]]1 ;note that this contract was made here
 
-				(kvSet "created" (ORIGIN) @0x0)
+				(kvSet "accounts" (ORIGIN) @0x0)
 
 				[0x20]"setperm"
 				[0x40]"useraccount"
@@ -36,12 +36,31 @@
 				[0x80]1
 				(CALL (gass) DAPPDOUG 0 0x20 0x80 0xA0 0x20)
 
+				[0xA0]"init"
+				[0xC0](username)
+				(CALL (gass) @0x0 0 0xA0 0x40 0xE0 0x20)
+
 				(return 0x0 0x20) ;Return address
 			}
 		)
 		(when (= (calldataload 0x0) "check")
 			{
 				[0x0]@@(calldataload 0x20)
+				(return 0x0 0x20)
+			}
+		)
+		(when (= (calldataload 0x0) "deleteaccount")
+			{
+				[0x0](calldataload 0x20) ;The username
+				[0x20](llGet "usernames" @0x0) ;The User address
+				[0x40](kvGet "accounts" @0x20) ;The contract address
+
+				(unless (= (CALLER) @0x40) (STOP))
+
+				(llRmLink "usernames" @0x0)
+				(kvSet "accounts" @0x20 0)
+
+				[0x0]1
 				(return 0x0 0x20)
 			}
 		)
