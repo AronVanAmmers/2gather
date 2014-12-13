@@ -34,3 +34,68 @@ transact:
 !}setup
 
 #Thats all Folks.
+
+#Testing functionality
+!{newaccount
+	transact:
+		{{AF}} => "create" "Dennis"
+	query:
+		{{AF}} => 0x01e27e67926b8b517abbbd0256041f7aed3ce278c56ee61492de96d001010000 => {{UA}}
+!}newaccount
+
+!{subscribe
+	transact:
+		{{UA}} => "subscribe" 0xDEADBEEF100
+!}subscribe
+
+!{unsubscribe
+	transact:
+		{{UA}} => "unsubscribe" 0xDEADBEEF100
+!}unsubscribe
+
+!{upload
+	transact:
+		{{UA}} => "upload" 0xBBBEEEEEEFFF 0xFFFEEEDDD
+!}upload
+
+!{remove
+	transact:
+		{{UA}} => "remove" 0xBBBEEEEEEFFF
+!}remove
+
+!{upload2
+	transact:
+		{{UA}} => "upload" 0xBBBEEEEEEFFF2 0xFFFEEEEEEDDD
+!}upload2
+
+!{upload3
+	transact:
+		{{UA}} => "upload" 0xBBBEEEEEEFFF3 0xFFFEEEEEEDDD42
+!}upload3
+
+!{flag
+	transact:
+		{{UA}} => "flag" 0xBBBEEEEEEFFF2	
+!}flag
+
+!{clearflag
+	transact:
+		{{FL}} => "clearflag" 0xBBBEEEEEEFFF2	
+!}clearflag
+
+!{blacklist
+	transact:
+		{{UA}} => "blacklist" 0xBBBEEEEEEFFF42	
+!}blacklist
+
+!{deleteaccount
+	transact:
+		{{UA}} => "deleteaccount"
+!}deleteaccount
+
+!{newaccount2
+	transact:
+		{{AF}} => "create" "Dennis"
+	query:
+		{{AF}} => 0x01e27e67926b8b517abbbd0256041f7aed3ce278c56ee61492de96d001010000 => {{UA}}
+!}newaccount2

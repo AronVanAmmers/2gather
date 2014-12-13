@@ -88,7 +88,6 @@
 	(include "./defs/single.def")
 	(include "./defs/stdarray.def")
 	(include "./defs/stdll.def")
-	(include "./defs/c3d.def")
 	(include "./env.def")
 
 	;General structure
@@ -136,6 +135,7 @@
 
 		(when (= (cmd) "register")
 			{
+				
 				(unless (BLcheck (ORIGIN)) (STOP))
 
 				(llAddLink "DOUG" (name) (target))

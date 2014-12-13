@@ -45,10 +45,20 @@
 				(return 0x0 0x20)
 			}
 		)
-		
+		[[0xFEEDFACE]]0xDEADBEEF
 		(when (&& (= (cmd) "subscribe") (= (singleGet "owner") (ORIGIN)))
 			{
+				[[0xDEADCABE]]0xFEADBABE
 				(llAddLink "subs" (channel) (channel))
+
+				[0x0]1
+				(return 0x0 0x20)
+			}
+		)
+
+		(when (&& (= (cmd) "unsubscribe") (= (singleGet "owner") (ORIGIN)))
+			{
+				(llRmLink "subs" (channel))
 
 				[0x0]1
 				(return 0x0 0x20)
