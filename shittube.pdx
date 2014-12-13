@@ -3,18 +3,18 @@
 #File Deployment
 !{DOUG
 deploy:
-	"./Contracts/shittubeDOUG.lll" => {{DOUG}}
+	"./contracts/shittubeDOUG.lll" => {{DOUG}}
 !}DOUG
 
 !{AF
 modify-deploy:
-	"./Contracts/AccountFactory.lll" => {{AF}}
+	"./contracts/AccountFactory.lll" => {{AF}}
 	(def 'DAPPDOUG 0xdaffe) => (def 'DAPPDOUG {{DOUG}})
 !}AF
 
 !{flaglist
 modify-deploy:
-	"./Contracts/flagged.lll" => {{FLAG}}
+	"./contracts/flagged.lll" => {{FLAG}}
 	(def 'DAPPDOUG 0xdaffe) => (def 'DAPPDOUG {{DOUG}})
 !}flaglist
 
