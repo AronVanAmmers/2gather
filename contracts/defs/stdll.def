@@ -70,6 +70,8 @@
 	(def 'llHeadSlot (name) (IllHeadSlot (vari name)))
 	(def 'llLenSlot (name) (IllLenSlot (vari name)))
 
+	(def 'llLen (name) @@(IllLenSLot (vari name)))
+
 	(def 'llInit (name addperm rmperm modperm) (IllInit (vari name) name addperm rmperm modperm))
 	(def 'llInit (name) (IllInit (vari name) name "none" "none" "none"))
 

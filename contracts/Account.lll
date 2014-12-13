@@ -4,6 +4,7 @@
 ;Track your uploads
 (def 'account ()
 {
+;	[[0x0]]0x1234567890
 	(include "./env.def")
 	(include "./defs/stdll.def")
 	(include "./defs/single.def")
@@ -45,10 +46,9 @@
 				(return 0x0 0x20)
 			}
 		)
-		[[0xFEEDFACE]]0xDEADBEEF
+
 		(when (&& (= (cmd) "subscribe") (= (singleGet "owner") (ORIGIN)))
 			{
-				[[0xDEADCABE]]0xFEADBABE
 				(llAddLink "subs" (channel) (channel))
 
 				[0x0]1
@@ -82,7 +82,10 @@
 
 		(when (&& (= (cmd) "remove") (= (singleGet "owner") (ORIGIN)))
 			{
+				[[0xEEEEEEDD]]0xDEDFEF
+				[[0x23]](llLen "uploads")
 				(llRmLink "uploads" (vidnum))
+				[[0x32]](llLen "uploads")
 				(kvSet "vidnames" (vidnum) 0)
 				(kvSet "uploaddate" (vidnum) 0)
 				(kvSet "status" (vidnum) 0)
@@ -129,12 +132,14 @@
 
 		(when (= (cmd) "clearflag")
 			{
+				[[0x12345]]0x12345
 				[0x0] "checkperm"
 				[0x20] "blacklist"
 				[0x40] (ORIGIN)
 				(CALL (gass) DAPPDOUG 0 0x0 0x60 0x60 0x20)
 
 				(unless (= @0x60 1) (STOP))
+				[[0x54321]]0x54321
 
 				(kvSet "status" (vidnum) 3)
 
