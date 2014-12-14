@@ -3,6 +3,7 @@
 	(include "./defs/stdll.def")
 	(include "./defs/single.def")
 	(include "./defs/stdkv.def")
+	(include "./env.def")
 
 	(llInit "flaggedaddr")
 	(kvInit "flaggedvidn")
@@ -12,9 +13,9 @@
 
 	(def 'cmd () (calldataload 0x0))
 	(def 'case () (calldataload 0x20))
+	(def 'vidnum () (calldataload 0x20))
 
 	(return 0 (lll{
-		
 		(when (= (cmd) "addflag")
 			{
 				[0x0]"checkperm"

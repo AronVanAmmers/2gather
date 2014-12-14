@@ -13,6 +13,8 @@ function MarketApi(session) {
 	var mysubs = [];
 	myMonkAddr = "";
 
+// @andreas I have taken the shittyplace models.js and put in my functions here I'm hoping this was a good way to start	
+
 	var updatefreq = 10; //number of blocks between looking for new content
 	var loadnum = 10; //number of most recent videos to ensure you load
 	
@@ -92,17 +94,17 @@ function MarketApi(session) {
 
 		//Find relevant contracts from Doug
 		flAddr = esl.ll.Main(dougAddr,StringToHex("DOUG"), StringToHex("flaggedlist"));
-
 		afAddr = esl.ll.Main(dougAddr,StringToHex("DOUG"), StringToHex("accountfactory"));
 
-		myMonkAddr = monk.ActiveAddress().data;
-
+//WHY ISN'T monk.ActiveAddress().data working @andreas ?	[FIX]
+		myMonkAddr = "0xbbbd0256041f7aed3ce278c56ee61492de96d001"
+//		myMonkAddr = monk.ActiveAddress().data;
 
 		//Find Account contract associated with that name
-		myaccAddr = esl.kv.Main(afAddr,HexToString("accounts"),myMonkAddr);
+		myaccAddr = esl.kv.Value(afAddr,StringToHex("accounts"),myMonkAddr);
 
 		//Load subs (This will be used for auto distribution of files)
-		mysubs = esl.ll.GetList(myaccAddr,HexToString("subs"));
+		mysubs = esl.ll.GetList(myaccAddr,StringToHex("subs"));
 
 		var resp = network.getWsResponse();
 		resp.Result = true;
@@ -113,28 +115,28 @@ function MarketApi(session) {
 	methods.GetChanVids = function(channelAddr, num) {
 		//This Returns the "num" most recent videos for the channel at channelAddr
 		//If num is zero then returns the full list
-		var vids = esl.ll.GetPairsRev(channelAddr,HexToString("uploads"),num);
+		var vids = esl.ll.GetPairsRev(channelAddr,StringToHex("uploads"),num);
 
 		var ret = []
 		for (var i = 0; i< vids.length; i++){
 			var vdat = {};
-			vdat.name = esl.kv.Value(channelAddr,HexToString("vidnames"),vids[i].Key);
+			vdat.name = esl.kv.Value(channelAddr,StringToHex("vidnames"),vids[i].Key);
 			vdat.file = vids[i].Value;
-			vdat.date = esl.kv.Value(channelAddr,HexToString("uploaddate"),vids[i].Key);
+			vdat.date = esl.kv.Value(channelAddr,StringToHex("uploaddate"),vids[i].Key);
 			vdat.vidnum = vids[i].Key;
-			vdat.status = esl.kv.Value(channelAddr, HexToString("status"),vids[i].Key);
+			vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),vids[i].Key);
 			ret.push(vdat);
 		}
 
-		return ret;
+		return ret; // @andreas I'm not sure at what points i need to do the network response and which ones I don't Some guidance here would be good
 	}
 
 	//Get Information about an account
 	methods.GetChanInfo = function(channelAddr){
 		var ret = {};
-		ret.Owner = esl.single.Value(channelAddr,HexToString("owner"));
-		ret.Username = esl.single.Value(channelAddr,HexToString("username"))
-		ret.Created = esl.single.Value(channelAddr,HexToString("created"))
+		ret.Owner = esl.single.Value(channelAddr,StringToHex("owner"));
+		ret.Username = esl.single.Value(channelAddr,StringToHex("username"))
+		ret.Created = esl.single.Value(channelAddr,StringToHex("created"))
 
 		return ret;
 	}
@@ -180,7 +182,7 @@ function MarketApi(session) {
 
 		//Here we would run code to remove these files from our IPFS cache... not sure how to do that
 
-
+		// @andreas [FIX]
 
 
 		//#################################################
@@ -199,13 +201,13 @@ function MarketApi(session) {
 	methods.GetFlaggedVids = function(num) {
 		//This Returns the "num" most recent flagged videos
 		//If num is zero then returns the full list
-		var vids = esl.ll.GetPairsRev(flAddr,HexToString("flaggedaddr"),num);
+		var vids = esl.ll.GetPairsRev(flAddr,StringToHex("flaggedaddr"),num);
 
 		var ret = []
 		for (var i = 0; i< vids.length; i++){
 			var vdat = {};
 			vdat.account = vids[i].Value;
-			vdat.vidnum = esl.kv.Value(channelAddr,HexToString("flaggedvidn"),vids[i].Key);
+			vdat.vidnum = esl.kv.Value(flAddr,StringToHex("flaggedvidn"),vids[i].Key);
 			vdat.casenum = vids[i].Key;
 			ret.push(vdat);
 		}
@@ -263,6 +265,8 @@ function MarketApi(session) {
 					if(tvids[j].status == 5){
 						//Then It is blacklisted Remove this from IPFS
 						//note when blacklisted you must match against the first 14 Bytes
+
+						// @andreas This is something else I'll need your help on. Are we able to find a file in our ipfs cache based on part of the hash?
 					} else {
 						//DOWNLOAD THIS VIDEO FROM IPFS file hash is tvids[j].file
 					}

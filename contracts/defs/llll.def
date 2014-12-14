@@ -22,10 +22,12 @@
 	(def 'llllPrevSlot (slot) (+ slot 1))
 	(def 'llllNextSlot (slot) (+ slot 2))
 
+	(def 'llllLinkExist (base slot) (|| (= @@(llllNextSlot @@(llllPrevSlot slot)) slot) (= slot @@(llllTailSlot base))))
+
 	(def 'llllSet (base slot offset value)
 		{
 			;This can only be called IF this link already exists.
-			(when (|| (= @@(llllNextSlot @@(llllPrevSlot slot)) slot) (= slot @@(llllTailSlot base))) [[(+ slot offset)]]value)
+			(when (llllLinkExist base slot) [[(+ slot offset)]]value)
 		}
 	)
 
@@ -42,9 +44,10 @@
 
 	(def 'llllAddLink (base slot value)
 		{	
-			
-			;key used (has a previous or is the tail)
-			(unless (|| (= @@(llllNextSlot @@(llllPrevSlot slot)) slot) (= slot @@(llllTailSlot base)))
+			(if (llllLinkExist base slot)
+				{
+					(llllSet base slot 0 value)
+				}
 				{
 					;Add new link
 					[[slot]]value
@@ -65,7 +68,7 @@
 		{
 			;Perform checks.
 			;key used (has a previous or is the tail)
-			(when (|| (= @@(llllNextSlot @@(llllPrevSlot slot)) slot) (= slot @@(llllTailSlot base)))
+			(when (llllLinkExist base slot)
 				{
 					;Remove link
 					;This's previous' next = This's Next

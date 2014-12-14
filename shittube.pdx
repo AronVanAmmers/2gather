@@ -49,54 +49,54 @@ transact:
 		{{UA}} => "subscribe" 0xDEADBEEF100
 !}subscribe
 
-!{unsubscribe
-	transact:
-		{{UA}} => "unsubscribe" 0xDEADBEEF100
-!}unsubscribe
+#!{unsubscribe
+#	transact:
+#		{{UA}} => "unsubscribe" 0xDEADBEEF100
+#!}unsubscribe
 
 !{upload
 	transact:
-		{{UA}} => "upload" 0xBBBEEEEEEFFF 0xFFFEEEDDD
+		{{UA}} => "upload" 0xAAAAAAAA1BBBEEEEEEFFF 0xFFFEEEDDD
 !}upload
 
-!{remove
-	transact:
-		{{UA}} => "remove" 0xBBBEEEEEEFFF
-!}remove
+#!{remove
+#	transact:
+#		{{UA}} => "remove" 1
+#!}remove
 
 !{upload2
 	transact:
-		{{UA}} => "upload" 0xBBBEEEEEEFFF2 0xFFFEEEEEEDDD
+		{{UA}} => "upload" 0xAAAAAAAA2BBBEEEEEEFFF2 0xFFFEEEEEEDDD
 !}upload2
 
 !{upload3
 	transact:
-		{{UA}} => "upload" 0xBBBEEEEEEFFF3 0xFFFEEEEEEDDD42
+		{{UA}} => "upload" 0xAAAAAAAA3BBBEEEEEEFFF3 0xFFFEEEEEEDDD42
 !}upload3
 
 !{flag
 	transact:
-		{{UA}} => "flag" 0xBBBEEEEEEFFF2	
+		{{UA}} => "flag" 2	
 !}flag
 
-!{clearflag
-	transact:
-		{{FL}} => "clearflag" 0xBBBEEEEEEFFF2	
-!}clearflag
+#!{clearflag
+#	transact:
+#		{{FL}} => "clearflag" 1
+#!}clearflag
 
 !{blacklist
 	transact:
-		{{UA}} => "blacklist" 0xBBBEEEEEEFFF42	
+		{{UA}} => "blacklist" 3	
 !}blacklist
 
-!{deleteaccount
-	transact:
-		{{UA}} => "deleteaccount"
-!}deleteaccount
-
-!{newaccount2
-	transact:
-		{{AF}} => "create" "Dennis"
-	query:
-		{{AF}} => 0x01e27e67926b8b517abbbd0256041f7aed3ce278c56ee61492de96d001010000 => {{UA}}
-!}newaccount2
+#!{deleteaccount
+#	transact:
+#		{{UA}} => "deleteaccount"
+#!}deleteaccount
+#
+#!{newaccount2
+#	transact:
+#		{{AF}} => "create" "Dennis"
+#	query:
+#		{{AF}} => 0x01e27e67926b8b517abbbd0256041f7aed3ce278c56ee61492de96d001010000 => {{UA}}
+#!}newaccount2
