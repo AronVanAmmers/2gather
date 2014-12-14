@@ -3,7 +3,7 @@
 #File Deployment
 !{DOUG
 deploy:
-	"./contracts/shittubeDOUG.lll" => {{DOUG}}
+	"./contracts/2gatherDOUG.lll" => {{DOUG}}
 !}DOUG
 
 !{AF
