@@ -20,6 +20,8 @@
 
 	(def 'vidnum () (calldataload 0x20))
 
+	(def 'btcaddress () (calldataload 0x20))
+
 	(llInit "subs")
 	(llInit "uploads")
 	(kvInit "vidnames")
@@ -32,6 +34,7 @@
 	(singleInit "created" (TIMESTAMP))
 	(singleInit "inited" 0)
 	(singleInit "owner" (ORIGIN))
+	(singleInit "BTCAddr" 0)
 
 	(singleInit "vidnum" 1)
 
@@ -41,6 +44,15 @@
 			{
 				(singleSet "inited" 1)
 				(singleSet "username" (initusrname))
+
+				[0x0]1
+				(return 0x0 0x20)
+			}
+		)
+
+		(when (&& (= (cmd) "setBTC") (= (singleGet "owner") (ORIGIN)))
+			{
+				(singleSet "BTCAddr" (btcaddress))
 
 				[0x0]1
 				(return 0x0 0x20)

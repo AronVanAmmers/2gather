@@ -137,11 +137,19 @@ function MarketApi(session) {
 		ret.Owner = esl.single.Value(channelAddr,StringToHex("owner"));
 		ret.Username = esl.single.Value(channelAddr,StringToHex("username"))
 		ret.Created = esl.single.Value(channelAddr,StringToHex("created"))
+		ret.BTCAddr = esl.single.Value(channelAddr,StringToHex("BTCAddr"))
 
 		return ret;
 	}
 
 	//My Account Functions
+	methods.setBTC = function(btcaddress){
+		var txData = [];
+		txData.push("setBTC");
+		txData.push(btcaddress);
+		return sendMsg(myaccAddr,txData);
+	}
+	
 	// Post a video
 	methods.PostVid = function(viddata){
 
