@@ -116,7 +116,7 @@
 
 				(unless (|| (= @0x60 1) (= (singleGet "owner") (ORIGIN))) (STOP))
 
-				(llSet "uploads" (vidnum) (Div (llGet "uploads" (vidnum)) (EXP 0x100 6))) ;Obscure the value
+;				(llSet "uploads" (vidnum) (Div (llGet "uploads" (vidnum)) (EXP 0x100 6))) ;Obscure the value
 				(kvSet "status" (vidnum) 5)
 
 				[0x0]1

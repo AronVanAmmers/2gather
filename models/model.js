@@ -1,4 +1,4 @@
-function MarketApi(session) {
+function DeVeiwApi(session) {
 
 	// TODO This section contains nothing that needs changing.
 
@@ -12,8 +12,6 @@ function MarketApi(session) {
 	myaccountAddr = "";
 	var mysubs = [];
 	myMonkAddr = "";
-
-// @andreas I have taken the shittyplace models.js and put in my functions here I'm hoping this was a good way to start	
 
 	var updatefreq = 10; //number of blocks between looking for new content
 	var loadnum = 10; //number of most recent videos to ensure you load
@@ -87,6 +85,18 @@ function MarketApi(session) {
 			return fileObj.Data;
 		}
 	};
+
+	function GetFile(hash){
+		var fullHash = "1220" + hash;
+		var fileObj = ipfs.GetFile(fullHash);
+		
+		if(fileObj.Error !== "") {
+			return "";
+		} else {
+			// This would be the file data as a string.
+			return fileObj.Data;
+		}
+	};
 	
 	/***************************************** actions/dapp logic ************************************/
 	
@@ -96,9 +106,7 @@ function MarketApi(session) {
 		flAddr = esl.ll.Main(dougAddr,StringToHex("DOUG"), StringToHex("flaggedlist"));
 		afAddr = esl.ll.Main(dougAddr,StringToHex("DOUG"), StringToHex("accountfactory"));
 
-//WHY ISN'T monk.ActiveAddress().data working @andreas ?	[FIX]
-		myMonkAddr = "0xbbbd0256041f7aed3ce278c56ee61492de96d001"
-//		myMonkAddr = monk.ActiveAddress().data;
+		myMonkAddr = monk.ActiveAddress().Data;
 
 		//Find Account contract associated with that name
 		myaccAddr = esl.kv.Value(afAddr,StringToHex("accounts"),myMonkAddr);
@@ -188,13 +196,6 @@ function MarketApi(session) {
 		var i = mysubs.indexOf(channelAddr);
 		mysubs.splice(i,1);
 
-		//Here we would run code to remove these files from our IPFS cache... not sure how to do that
-
-		// @andreas [FIX]
-
-
-		//#################################################
-
 		return sendMsg(myaccAddr,txData);
 	}
 
@@ -242,9 +243,10 @@ function MarketApi(session) {
 
 	//Account Creation and removal Functions
 	//Create a new account
-	methods.CreateAccount = function(){
+	methods.CreateAccount = function(username){
 		var txData = [];
 		txData.push("create");
+		txData.push(username);
 		return sendMsg(afAddr,txData);
 	}
 
@@ -273,10 +275,8 @@ function MarketApi(session) {
 					if(tvids[j].status == 5){
 						//Then It is blacklisted Remove this from IPFS
 						//note when blacklisted you must match against the first 14 Bytes
-
-						// @andreas This is something else I'll need your help on. Are we able to find a file in our ipfs cache based on part of the hash?
 					} else {
-						//DOWNLOAD THIS VIDEO FROM IPFS file hash is tvids[j].file
+						GetFile(tvids[j].file);
 					}
 				}
 			}
