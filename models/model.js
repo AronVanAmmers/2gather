@@ -127,9 +127,9 @@ function DeVeiwApi(session) {
 		var ret = []
 		for (var i = 0; i < allacc.length; i++){
 			var accdat = {};
-			vdat.username = allacc[i].Value;
-			vdat.pubAddr = allacc[i].Key;
-			vdat.chanAddr = esl.kv.Value(afAddr,StringToHex("accounts"),allacc[i].Key);
+			accdat.username = allacc[i].Value;
+			accdat.pubAddr = allacc[i].Key;
+			accdat.chanAddr = esl.kv.Value(afAddr,StringToHex("accounts"),allacc[i].Key);
 			ret.push(accdat);
 		}
 		return ret;
