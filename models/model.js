@@ -119,6 +119,34 @@ function DeVeiwApi(session) {
 		return resp;
 	}
 
+	//Channel obtaining functions
+	methods.GetAllAcc = function(){
+
+		var allacc = esl.ll.GetPairs(afAddr,StringToHex("usernames"),0)
+
+		var ret = []
+		for (var i = 0; i < allacc.length; i++){
+			var accdat = {};
+			vdat.username = allacc[i].Value;
+			vdat.pubAddr = allacc[i].Key;
+			vdat.chanAddr = esl.kv.Value(afAddr,StringToHex("accounts"),allacc[i].Key);
+			ret.push(accdat);
+		}
+		return ret;
+
+	}
+
+	methods.GetChanAddr = function(username){
+
+		var accPubAddr = esl.ll.Main(afAddr,StringToHex("usernames"),username);
+
+		if (accPubAddr==0){
+			return nil;
+		} else {
+			return esl.kv.Value(afAddr,StringToHex("accounts"),accPubAddr);
+		}
+	}
+
 	//For getting the videos associated with a channel. Passing your account address will get your own videos
 	methods.GetChanVids = function(channelAddr, num) {
 		//This Returns the "num" most recent videos for the channel at channelAddr
