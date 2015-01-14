@@ -1,33 +1,41 @@
 {
-  "name": "2gather",
+	"name": "2gather",
 	"id": "2gather",
-  "app_icon": "img/decerver.png",
-  "version": "0.5.0",
-  "homepage": "https://erisindustries.com",
-  "author": {
-    "name": "Eris Industries, Ltd.",
-    "url": "https://erisindustries.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/eris-ltd/2gather.git"
-  },
-  "bugs": {
-    "url": "https://github.com/eris-ltd/2gather/issues"
-  },
-  "licenses": [
-    {
-      "type": "CUSTOM",
-      "url": "https://github.com/eris-ltd/2gather/blob/master/LICENSE"
-    }
-  ],
-  "default_peer_server": "111.111.111.111",
-  "blockchain_directory": "shittube",
-  "blockchain_id": "0xDEADBEEF",
-  "primary_contract_address": "aaaaaaaaaaa",
-  "moduleDependencies": {
-    "thelonious": "0.8.0",
-    "ipfs": "0.8.0",
-    "eth": "0.8.0"
-  }
+	"app_icon": "img/decerver.png",
+	"version": "0.5.0",
+	"homepage": "https://erisindustries.com",
+	"author": {
+	"name": "Eris Industries, Ltd.",
+	"url": "https://erisindustries.com",
+
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/eris-ltd/2gather.git"
+	},
+	"bugs": {
+		"url": "https://github.com/eris-ltd/2gather/issues"
+	},
+	"licenses": [
+		{
+			"type": "CUSTOM",
+			"url": "https://github.com/eris-ltd/2gather/blob/master/LICENSE"
+		}
+	],
+
+	"module_dependencies": [
+		{
+			"name" : "monk",
+			"version" : "0.0.1",
+			"data" : 
+			{
+				  "peer_server_address": "111.111.111.111:9999",
+  				  "blockchain_id": "f858469a00e80e4f5eb536501eb7d98c7e1cc432",
+                  "root_contract": "0xcfaa4c649dc45196e21e5a91d673b7538bd72980"
+			}
+		},
+		{
+			"name" : "ipfs",
+			"version" : "0.0.1"
+		}
+	]
 }
