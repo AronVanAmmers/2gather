@@ -1,19 +1,15 @@
-function DeVeiwApi(session) {
-
-	// TODO This section contains nothing that needs changing.
+function TwoGather() {
 
 	/***************************************** ate/monk/ipfs stuff ************************************/
-	session = session;
 	methods = {};
 	
-	dougAddr = "cfaa4c649dc45196e21e5a91d673b7538bd72980";
+	dougAddr = RootContract;
 	flAddr = "";
 	afAddr = "";
 	myaccountAddr = "";
 	var mysubs = [];
 	myMonkAddr = "";
 
-	var updatefreq = 10; //number of blocks between looking for new content
 	var loadnum = 10; //number of most recent videos to ensure you load
 	
 	// Used to handle all incoming requests. Calls the Method with the request method name.
@@ -136,7 +132,7 @@ function DeVeiwApi(session) {
 
 	}
 
-	methods.GetChanAddr = function(username){
+	methods.findaccount = function(username){
 
 		var accPubAddr = esl.ll.Main(afAddr,StringToHex("usernames"),username);
 
@@ -177,7 +173,7 @@ function DeVeiwApi(session) {
 
 		return ret;
 	}
-
+	
 	//My Account Functions
 	methods.setBTC = function(btcaddress){
 		var txData = [];
@@ -285,200 +281,26 @@ function DeVeiwApi(session) {
 		return sendMsg(channelAddr,txData);
 	}
 
-	var blockN = 0;
+	//Run state updates THIS PRELOADS VIDEOS FROM YOUR SUBSCRIBERS SO YOU DON"T HAVE TO WAIT 
+	methods.sync = function(){
+		var vidsofsubs = [];
 
-
-	/***************************************** event listeners ************************************/	
-
-	this.newBlock = function(event){
-		if(blockN%updatefreq == 0){
-			//Run state updates THIS PRELOADS VIDEOS FROM YOUR SUBSCRIBERS SO YOU DON"T HAVE TO WAIT 
-			var vidsofsubs = [];
-
-			for(var i = 0; i<mysubs.length; i++){
-				var chan = mysubs[i];
-				var tvids = GetChanVids(mysubs[i],loadnum);
-				for(var j; j<tvids.length; j++){
-					//For each video we find we need to check its status
-					if(tvids[j].status == 5){
-						//Then It is blacklisted Remove this from IPFS
-						//note when blacklisted you must match against the first 14 Bytes
-					} else {
-						GetFile(tvids[j].file);
-					}
+		for(var i = 0; i < mysubs.length; i++){
+			var chan = mysubs[i];
+			var tvids = GetChanVids(mysubs[i],loadnum);
+			for(var j; j < tvids.length; j++){
+				//For each video we find we need to check its status
+				if(tvids[j].status == 5){
+					//Then It is blacklisted Remove this from IPFS
+					//note when blacklisted you must match against the first 14 Bytes
+				} else {
+					GetFile(tvids[j].file);
 				}
 			}
 		}
-		blockN = blockN + 1;
 	}
-	
-	this.newTxPre = function(event){
-
-	}
-
-	this.newTxPreFail = function(event){
-
-	}
-
-	this.newTxPost = function(event){
-
-	}
-
-	this.newTxPostFail = function(event){
-
-	}
-
-	this.startListening = function(){
-		events.subscribe("monk","newBlock","", this.newBlock);
-		events.subscribe("monk","newTx:pre","", this.newTxPre);
-		events.subscribe("monk","newTx:pre:fail","", this.newTxPreFail);
-		events.subscribe("monk","newTx:post","", this.newTxPost);
-		events.subscribe("monk","newTx:post:fail","", this.newTxPostFail);
-	}
-
-	this.stopListening = function(){
-		events.unsubscribe("monk","newBlock");
-		events.unsubscribe("monk","newTx:pre");
-		events.unsubscribe("monk","newTx:pre:fail");
-		events.unsubscribe("monk","newTx:post");
-		events.unsubscribe("monk","newTx:post:fail");
-	}
-};
-
-// This API will be for dapps, and should use the same names as ethereum uses imo.
-// It will be moved to the decerver core. <------- Don't use yet --------->
-function MonkHelper(blockchain){
-
-	bc = blockchain;
-
-	eventCallbacks = {};
-
-	this.StorageAt = function(accountAddress,storageAddress){
-		var sa = bc.StorageAt(accountAddress, storageAddress);
-		if (sa.Error !== ""){
-			return "0x";
-		} else {
-			return sa.Data;
-		}
-	}
-
-	this.Storage = function(accountAddress){
-		var storage = bc.Storage(accountAddress);
-		if (storage.Error !== ""){
-			return null;
-		} else {
-			return storage.Data;
-		}
-	}
-
-	this.Transact = function(recipientAddress,value,gas,gascost,data){
-		
-		var txRecipe = {
-			"Compiled" : false,
-			"Error"    : "",
-            "Success"  : false,
-            "Address"  : "",
-			"Hash"     : ""
-		};
-		
-		if (recipientAddress === "") {
-			Println("Create transaction.");
-			var addr = bc.Script(data, "lll-literal")
-			if (addr.Error !== "") {
-				return null;
-			} else {
-				txRecipe.Address = addr.Data;
-				txRecipe.Compiled = true;
-				txRecipe.Success = true;
-			}
-		} else if (data === "") {
-			Println("Processing tx");
-			var rData = bc.Tx(recipientAddress,value);
-			if (rData.Error !== ""){
-				return null;
-			}
-			txRecipe.Success = true;
-       		txRecipe.Hash = rData.Data.Hash;
-		} else if (value === ""){
-			Println("Processing message");
-			var txData = data.split("\n");
-			for (var i = 0; i < txData.length; i++){
-				txData[i] = txData[i].trim();
-			}
-			var rData = bc.Msg(recipientAddress,txData);
-			if (rData.Error !== ""){
-				return null
-			}
-			txRecipe.Success = true;
-			txRecipe.Hash = rData.Data.Hash;
-		} else {
-			// TODO general purpose tx
-			Println("Processing transaction");
-			var txData = txData.split("\n");
-			for (var i = 0; i < txData.length; i++){
-				txData[i] = txData[i].trim();
-			}
-			
-			//var rData = bc.Transact(recipientAddress,value,gas,gascost,txData);
-			//if (rData.Error !== ""){
-			//	return null
-			//}			
-			//txRecipe.Success = true;
-			//txRecipe.Hash = rData.Data.Hash;
-		}
-		return txRecipe;
-	}
-
-	this.WatchAcc = function(addr,callbackFun){
-		eventCallbacks[addr] = callbackFun;
-	}
-
-	this.UnwatchAcc = function(addr){
-		if (typeof(eventCallbacks[addr]) !== "undefined")
-		eventCallbacks[addr] = null;
-	}
-
-	this.newBlock = function(event){
-		// Hacky way to check all new transactions. Basically listen to
-		// new blocks and scan them for account updates.
-		var txs = event.Resource.Transactions;
-		var checked = {};
-		for (tx in txs){
-			var sen = tx.Sender;
-			if (typeof (checked[sen]) === "undefined"){
-				var cb = eventCallbacks[sen];
-				if (typeof(cb) === "function"){
-					cb();
-				}
-				checked[sen] = true;
-			}
-			var rec = tx.Recipient;
-			if (typeof (checked[rec]) === "undefined"){
-				var cb = eventCallbacks[rec];
-				if (typeof(cb) === "function"){
-					cb();
-				}
-				checked[rec] = true;
-			}
-			var cnb = tx.Coinbase;
-			if (typeof (checked[cnb]) === "undefined"){
-				var cb = eventCallbacks[cb];
-				if (typeof(cb) === "function"){
-					cb();
-				}
-				checked[cnb] = true;
-			}
-			
-		}
-	}
-
-	// Subscribe to block events.
-	events.subscribe("monk","newBlock","", this.newBlock);
-
-	// TODO accounts and balance
 
 }
-
 
 // We overwrite the new websocket session callback with this function. It will
 // create a new api and tie it to the session object.
