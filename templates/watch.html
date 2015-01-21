@@ -1,0 +1,66 @@
+<section class="tg-panel">
+  <header class="tg-panel-heading tg-primary-heading">
+    <h5 class="tg-heading">
+      {{ video.title }}
+    </h5>
+  </header>
+
+  <div class="tg-player-panel">
+    <div class="tg-player" video-player="{{ video_id }}"></div>
+  </div>
+
+  <div class="row tg-grid">
+    <div class="col-md-8 col">
+      <header class="tg-panel-heading">
+        <h5 class="tg-heading">
+          Video Info
+        </h5>
+      </header>
+
+      <div class="row tg-padded">
+        <img ng-src="{{ video.thumbnails[1].url }}" class="col-md-4" />
+        <div class="tg-video-panel-inner col-md-8">
+          <h4>{{ video.title }}</h4>
+          <p>{{ video.description }}</p>
+        </div>
+      </div>
+
+      <header class="tg-panel-heading row sub-heading">
+        <h5 class="tg-heading col-md-6">
+          Comments
+        </h5>
+        <div class="tg-video-comments-header col-md-6">
+          <input type="search" ng-model="q" class="col-md-11 form-control" placeholder="Filter comments..." />
+        </div>
+      </header>
+
+      <div class="tg-video-comments">
+        <div ng-repeat="comment in video_comments | filter:q | limit:12"
+             ng-class-even="'even'"
+             class="tg-video-comment row tg-expand">
+               <strong class="col-md-2">
+                 <span class="fa fa-user"></span>
+                 {{ comment.author }}:
+               </strong>
+               <p class="col-md-9">{{ comment.content }}</p>
+        </div>
+      </div>
+    </div>
+    <div ng-controller="VideoPanelCtrl" class="tg-video-panel col-md-4 col">
+      <header class="tg-panel-heading">
+        <h5 class="tg-heading">
+          Related Videos
+        </h5>
+      </header>
+
+      <div class="tg-player-videos off">
+        <div class="tg-videos-list row tg-grid">
+          <div ng-include="tpl('video-listing')"
+               ng-repeat="video in relatedVideos | limit:14"
+               class="col-md-6 tg-videos-list-entry thumb-layout">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
