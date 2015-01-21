@@ -205,7 +205,7 @@ option {
     height: 640px;
     overflow: hidden;
     position: relative;
-    background: url(/bg.png);
+    background: url(/img/bg.png);
 }
 .tg-player-panel .tg-player {
     border: 0;

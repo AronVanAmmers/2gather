@@ -12,8 +12,7 @@ node_modules
 bower_components
 /selenium
 /coverage
-/app/assets
 .tmp/
 /dist
 /build
-app/lib
+/lib
