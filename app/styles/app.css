@@ -1,0 +1,227 @@
+select,
+input,
+option {
+    font-family: 'Open Sans';
+}
+.tg-videos-list-entry {
+    position: relative;
+    border: 1px solid black;
+    -webkit-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+    -webkit-transition-property: opacity, -webkit-transform;
+    transition-property: opacity, transform;
+    overflow: hidden;
+    background: white;
+}
+.tg-videos-list-entry.picture-layout {
+    height: 200px;
+}
+.tg-videos-list-entry.thumb-layout {
+    height: 150px;
+}
+.tg-videos-list-entry.thumb-layout > .tg-video-entry-link:after,
+.tg-videos-list-entry.picture-layout > .tg-video-entry-link:after {
+    box-shadow: inset #111 0 0 50px;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+@media only screen and (max-width: 991px) {
+    .tg-videos-list-entry {
+        height: auto!important;
+    }
+    .tg-videos-list-entry img,
+    .tg-videos-list-entry > .tg-video-entry-link:after {
+        position: static!important;
+    }
+    .tg-videos-list-entry.thumb-layout img,
+    .tg-videos-list-entry.picture-layout img {
+        width: 100%!important;
+    }
+}
+.tg-videos-list-entry.thumb-layout:hover,
+.tg-videos-list-entry.picture-layout:hover {
+    position: relative;
+    z-index: 200;
+    -webkit-transform: scale(1.15);
+    transform: scale(1.15);
+}
+.tg-videos-list-entry.detail-layout {
+    height: 120px;
+    padding: 10px;
+    border: 2px solid white;
+}
+.tg-videos-list-entry.detail-layout:hover {
+    border: 2px solid #aaa;
+}
+.tg-videos-list-entry.detail-layout img {
+    margin: 10px;
+    float: left;
+    height: 100px;
+}
+.tg-videos-list-entry.thumb-layout img,
+.tg-videos-list-entry.picture-layout img {
+    position: absolute;
+    width: 140%;
+    left: -20%;
+    top: -20%;
+}
+.tg-side-navigation {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    width: 25%;
+    right: 0;
+    background: #eee;
+    box-shadow: 0 0 50px #333;
+}
+.tg-view-icon {
+    font-size: 20px;
+    padding: 0px 10px;
+    display: inline-block;
+}
+.tg-panel-actions {
+    padding-top: 5px;
+    text-align: right;
+}
+.tg-padded {
+    padding: 20px;
+}
+.tg-categories-list-items {
+    margin: 0 10px;
+    display: inline-block;
+    border-radius: 5px;
+    background: #ccc;
+    padding: 0 10px;
+}
+.tg-categories-list-item {
+    padding: 5px 8px;
+    text-transform: capitalize;
+    display: inline-block;
+}
+.tg-categories-list-item,
+.tg-categories-list-item:hover {
+    text-decoration: none;
+}
+.tg-categories-list-item.selected {
+    background: #aaa;
+}
+.tg-panel-heading {
+    position: relative;
+    background: #ddd;
+    overflow: auto;
+    padding: 10px 20px;
+}
+.tg-panel-heading.sub-heading {
+    background: #eee;
+}
+.tg-heading {
+    font-family: 'Open Sans';
+    font-size: 1.5em;
+}
+.tg-header {
+    border-top: 2px solid #222;
+    box-shadow: 0 0 50px #000;
+    border-bottom: 1px solid #222;
+    background: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    overflow: hidden;
+}
+.tg-header-nav-item {
+    list-style: none;
+    display: inline-block;
+}
+.tg-video-comment {
+    padding: 1em;
+}
+.tg-video-comment.even {
+    background: #f3f3f3;
+}
+.tg-nav-icon {
+    float: left;
+    line-height: 50px;
+    width: 50px;
+    text-align: center;
+}
+.tg-nav-icon {
+    background: #610910;
+}
+.tg-search-icon {
+    background: #222;
+}
+.tg-nav-icon,
+.tg-search-input {
+    color: white;
+    font-size: 20px;
+}
+.tg-search-input {
+    float: left;
+    padding: 10px;
+    background: #A4A4A4;
+    border: 0;
+    width: 50%;
+}
+.tg-search-input:focus {
+    outline: 0;
+}
+.tg-grid,
+.tg-grid .col {
+    padding: 0;
+    margin: 0;
+}
+.tg-video-panel-inner {
+    padding: 10px;
+}
+.tg-advanced-search-link {
+    float: right;
+    line-height: 30px;
+    padding: 0 20px;
+    border-radius: 5px;
+    margin: 10px;
+    margin-right: 50px;
+    background: #444;
+}
+.tg-advanced-search-link,
+.tg-advanced-search-link:hover {
+    color: white;
+}
+.tg-advanced-search-header {
+    border-top: 1px solid black;
+    padding: 20px;
+    color: white;
+    background: #111;
+    clear: both;
+    overflow: auto;
+}
+.tg-player-panel {
+    border-bottom: 20px solid #610910;
+    height: 640px;
+    overflow: hidden;
+    position: relative;
+    background: url(/bg.png);
+}
+.tg-player-panel .tg-player {
+    border: 0;
+    position: absolute;
+    z-index: 500;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 80%!important;
+    margin: 50px 10%;
+}
+.tg-player-videos {
+    position: relative;
+}
+.tg-video-comment {
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+}

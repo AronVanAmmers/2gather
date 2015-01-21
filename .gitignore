@@ -1,3 +1,14 @@
 .ethchain
 eth-config.json
 *.*~
+.DS_Store
+.agignore
+node_modules
+bower_components
+/selenium
+/coverage
+/app/assets
+.tmp/
+/dist
+/build
+app/lib
