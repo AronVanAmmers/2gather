@@ -1,5 +1,7 @@
 {
 	"loading_order" : [
-		"models.js"
+		"decerver_api.js",
+		"2gatherAPI.js",
+		"2gather.js"
 	]
 }

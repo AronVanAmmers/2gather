@@ -94,16 +94,18 @@
 
 	;Minimum Viable Doug Set Up
 	(llInit "permnames" "none" "none" "none")
-	(llAddLink "permnames" "doug" 0)
-	(llAddLink "permnames" "accountfactory" 1)
-	(llAddLink "permnames" "useraccount" 2)
+	(llAddLink "permnames" "doug" 1)
+	(llAddLink "permnames" "accountfactory" 2)
+	(llAddLink "permnames" "useraccount" 3)
+	(llAddLink "permnames" "blacklist" 4)
 
 	(arrayInit "perms" "none" "none" "none" 4) ;Gives Caller all permissions
-	(arraySetE "perms" (CALLER) 0 1)
 	(arraySetE "perms" (CALLER) 1 1)
 	(arraySetE "perms" (CALLER) 2 1)
+	(arraySetE "perms" (CALLER) 3 1)
+	(arraySetE "perms" (CALLER) 4 1)
 
-	(def 'BLcheck (addr) (= (arrayGetE "perms" addr 0) 1))
+	(def 'BLcheck (addr) (= (arrayGetE "perms" addr 1) 1))
 
 	;(Register)
 	(def 'cmd () (calldataload 0x0))
@@ -178,7 +180,9 @@
 		(when (= (cmd) "setperm")
 			{
 				(unless (BLcheck (ORIGIN)) (STOP))
-				(arraySetE "perms" (target) (llGet "permnames" (name)) (permnum))
+				[0x0](llGet "permnames" (name))
+				(when (= @0x0 0) (STOP))
+				(arraySetE "perms" (target) @0x0 (permnum))
 				[0x0]1
 				(return 0x0 0x20)
 			}
