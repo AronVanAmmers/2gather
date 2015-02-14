@@ -2,10 +2,23 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
 
   .constant('TPL_PATH', './templates')
 
-  .run(['$rootScope', 'TPL_PATH', function($rootScope,   TPL_PATH) {
+  .run(['$rootScope', 'TPL_PATH', 'Transaction', function($rootScope,   TPL_PATH, Transaction) {
     $rootScope.tpl = function(file) {
       return TPL_PATH + '/' + file + '.html';
     };
+
+    function promptUsername() {
+      return prompt('User not found. Please enter a username to create a new user') || promptUsername();      
+    }
+
+    Transaction('GET', 'session').then(function(user){
+        $rootScope.user = res;
+      }, function(error){
+        Transaction('POST', 'user',{user_name: promptUsername()}).then(function(res){
+          $rootScope.user = res;
+        });
+    });
+
 
     $rootScope.$on('$routeChangeStart', function() {
       $rootScope.$broadcast('ntLoadingStart');

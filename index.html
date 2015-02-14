@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html data-ng-app="2gather">
   <head>
     <title>2gather</title>
@@ -15,12 +15,13 @@
   </head>
 
   <body tg-scroll-to-top tg-loading-indicator>
-    <div id="wrapper">
+    <div id="wrapper" ng-if="user">
       <header class="tg-header">
+        <a ng-show="user" href="" class="pull-right" style="margin: 15px;">Welcome {{user.user_name}}</a>
         <form ng-submit="search()" ng-controller="SearchFormCtrl" class="tg-search-header">
           <section>
             <a href="#/" class="fa fa-home tg-nav-icon"></a>
-            <input type="search" ng-model="q" class="tg-search-input" />              
+            <input type="search" ng-model="q" class="tg-search-input" />
             <a href class="fa fa-search tg-nav-icon tg-search-icon" ng-click="search()"></a>
             <a href="" class="tg-advanced-search-link" ng-click="advanced = advanced ? null : {}">
               <span class="fa fa-cog"></span>
@@ -57,6 +58,7 @@
 <script type="text/javascript" src="lib/nprogress/nprogress.js"></script>
 <script type="text/javascript" src="scripts/data.js"></script>
 <script type="text/javascript" src="scripts/2gather.js"></script>
+<script type="text/javascript" src="scripts/transaction.js"></script>
 <script type="text/javascript" src="scripts/tgAnimations.js"></script>
 <!-- endbuild -->
   </body>
