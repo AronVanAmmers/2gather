@@ -115,6 +115,14 @@ function TwoGatherAPI() {
 		accTx = hash;
 		return hash;
 	}
+
+	this.getSession = function(){
+		if(smath.isZero(myaccAddr)){
+			return null;
+		} else {
+			return this.getUser(channelAddrToUsername(myaccAddr));
+		}
+	}
 	
 	// Get the user data for a given user.
 	this.getUser = function(userName){
@@ -131,9 +139,12 @@ function TwoGatherAPI() {
 		var chanData = getChanInfo(channelAddr);
 		var vids = getChanVids(channelAddr);
 		
-		userData.user_name = chanData.username;
+		userData.user_name = sutil.hexToString(chanData.username);
 		userData.user_id = chanData.owner;
-		userData.created = chanData.created;
+		
+		var ts = parseInt(chanData.created,16);
+
+		userData.created = new Date(ts*1000).toString();
 		userData.btc_address = chanData.btc_address;
 		userData.doug_perm = hasDOUGPerm(userName);
 		userData.blacklist_perm = hasBlacklistPerm(userName);

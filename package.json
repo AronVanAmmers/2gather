@@ -28,8 +28,8 @@
             "version": "0.0.1",
             "data": {
                 "peer_server_address": "111.111.111.111:9999",
-                "blockchain_id": "f858469a00e80e4f5eb536501eb7d98c7e1cc432",
-                "root_contract": "0xcfaa4c649dc45196e21e5a91d673b7538bd72980"
+                "blockchain_id": "b3795e3116fc55ef914ba605d9cacf597f25774a",
+                "root_contract": "0a5d21c3fd19a72787158164a297817c90ba556a"
             }
   },
         {
