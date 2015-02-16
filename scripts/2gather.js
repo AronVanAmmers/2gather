@@ -12,7 +12,7 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
     }
 
     Transaction('GET', 'session').then(function(user){
-        $rootScope.user = user;
+      $rootScope.user = user;
       }, function(error){
         Transaction('POST', 'user',{user_name: promptUsername()}).then(function(res){
           $rootScope.user = res;
