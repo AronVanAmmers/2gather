@@ -77,6 +77,22 @@ function TwoGather() {
 		}
 	}
 
+	handlers.session = function(urlObj, httpReq) {
+		Println("Getting session.");
+		if(httpReq.Method === "GET") {			
+			if(urlObj.path.length !== 1){
+				return network.getHttpResponse(400,{},"Bad request: invalid path.");
+			}
+			var user = tgApi.getSession();
+			if(user === null){
+				return network.getHttpResponse(404,{},"Resource not found.");
+			}
+			return network.getHttpResponseJSON(user);
+		} else {
+			return network.getHttpResponse(400,{},"Bad request: method not supported (" + httpReq.Method + ")");
+		}
+	}
+
 	function doUser(username, method, body){
 		if (method === "GET"){
 			// This is a request to get user data.

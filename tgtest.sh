@@ -7,6 +7,8 @@ printf "${GREEN}Switching to 2gather - will fail if already in focus, but this d
 curl http://localhost:3000/admin/switch/2gather
 printf "\n"
 
+sleep 2
+
 echo -e "${GREEN}*********** Create user 'tester' ************${NC}"
 
 CREATE_USER_HASH=$(curl -X POST -H "Content-Type: application/json" -d '{"user_name":"tester"}' http://localhost:3000/apis/2gather/user)
@@ -16,6 +18,8 @@ printf "TX HASH: $CREATE_USER_HASH\n"
 echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
+
+sleep 1
 
 echo -e "${GREEN}*********** Set bitcoin address ************${NC}"
 
@@ -27,10 +31,14 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Unset bitcoin address ************${NC}"
 
 UNSET_BTC_HASH=$(curl -X PATCH -H "Content-Type: application/json" -d '[{"op":"remove", "field" : "btc_addr", "value" : ""}]' http://localhost:3000/apis/2gather/user/tester)
 printf "TX HASH: $UNSET_BTC_HASH\n"
+
+sleep 1
 
 # Get
 echo "User data:"
@@ -47,6 +55,8 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Remove subscription ************${NC}"
 
 REMOVE_SUB_HASH=$(curl -X DELETE http://localhost:3000/apis/2gather/user/tester/subs/tester)
@@ -56,6 +66,8 @@ printf "TX HASH: $REMOVE_SUB_HASH\n"
 echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
+
+sleep 1
 
 echo -e "${GREEN}*********** Add video ************${NC}"
 
@@ -68,6 +80,8 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Flag video ************${NC}"
 
 FLAG_VIDEO_HASH=$(curl -X PATCH -H "Content-Type: application/json" -d '[{"op":"replace", "field" : "flag", "value" : true}]' http://localhost:3000/apis/2gather/user/tester/videos/0x1)
@@ -78,36 +92,44 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Unflag video ************${NC}"
 
 UNFLAG_VIDEO_HASH=$(curl -X PATCH -H "Content-Type: application/json" -d '[{"op":"remove", "field" : "flag", "value" : false}]' http://localhost:3000/apis/2gather/user/tester/videos/0x1)
 printf "TX HASH: $UNFLAG_VIDEO_HASH\n"
 
-# Get to see values
+# Get
 echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
+
+sleep 1
 
 echo -e "${GREEN}*********** Remove video ************${NC}"
 
 REMOVE_VIDEO_HASH=$(curl -X DELETE http://localhost:3000/apis/2gather/user/tester/videos/0x1)
 printf "TX HASH: $REMOVE_VIDEO_HASH\n"
 
-# Get to see values
+# Get
 echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Add video 2 ************${NC}"
 
 # Add a test video.
-ADD_VIDEO_HASH2=$(curl -X POST -H "Content-Type: application/json" -d '{"name":"testvid", "url":"/home/androlo/small.mp4"}' http://localhost:3000/apis/2gather/user/tester/videos)
+ADD_VIDEO_HASH2=$(curl -X POST -H "Content-Type: application/json" -d '{"name":"testvid", "url":"$HOME/.decerver/dapps/2gather/test.mp4"}' http://localhost:3000/apis/2gather/user/tester/videos)
 printf "TX HASH: $ADD_VIDEO_HASH2\n"
 
 # Get
 echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
+
+sleep 1
 
 echo -e "${GREEN}*********** Flag video 2 ************${NC}"
 
@@ -119,6 +141,8 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Blacklist video ************${NC}"
 
 BLACKLIST_VIDEO_HASH=$(curl -X PATCH -H "Content-Type: application/json" -d '[{"op":"replace", "field" : "blacklist", "value" : true}]' http://localhost:3000/apis/2gather/user/tester/videos/0x2)
@@ -128,6 +152,8 @@ printf "TX HASH: $BLACKLIST_VIDEO_HASH\n"
 echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
+
+sleep 1
 
 echo -e "${GREEN}*********** Remove video 2 ************${NC}"
 
@@ -139,10 +165,14 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Remove blacklist permission ************${NC}"
 
 UNSET_BLACKLIST_HASH=$(curl -X PATCH -H "Content-Type: application/json" -d '[{"op":"remove", "field" : "blacklist_perm", "value" : false }]' http://localhost:3000/apis/2gather/user/tester)
 printf "TX HASH: $UNSET_BLACKLIST_HASH\n"
+
+sleep 1
 
 # Get to see values
 echo "User data:"
@@ -159,14 +189,18 @@ echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
 
+sleep 1
+
 echo -e "${GREEN}*********** Delete user 'tester' ************${NC}"
 
 DELETE_USER_HASH=$(curl -X DELETE http://localhost:3000/apis/2gather/user/tester)
 printf "TX HASH: $DELETE_USER_HASH\n"
 
-# Get to see values (should not find the resource).
+# Get
+echo "User data:"
 curl http://localhost:3000/apis/2gather/user/tester
 printf "\n"
+sleep 1
 
 echo -e "${GREEN}*********** Check transaction statuses ************\n\n${NC}"
 
