@@ -231,6 +231,7 @@ function TwoGatherAPI() {
 
 	// Post a video
 	this.addVideo = function(name,url) {
+		Println("Adding file '" + url + "' to ipfs.");
 		var hash = writeFile(url);
 		if(hash === ""){
 			Println("Error when adding file '" + url + "' to ipfs.");
@@ -255,16 +256,7 @@ function TwoGatherAPI() {
 		var vids = esl.ll.GetPairsRev(channelAddr, StringToHex("uploads"), 10);
 		for (var i = 0; i < vids.length; i++) {
 			if(Equals(vids[i].Key,vidnum)){
-				var vdat = {};
-				vdat.name = esl.kv.Value(channelAddr, StringToHex("vidnames"),
-						vids[i].Key);
-				vdat.file = vids[i].Value;
-				vdat.date = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
-						vids[i].Key);
-				vdat.vidnum = vids[i].Key;
-				vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
-						vids[i].Key);
-				return vdat;
+				return vidObjToVidData(vids[i],channelAddr);
 			}
 		}
 		return null;
@@ -392,19 +384,26 @@ function TwoGatherAPI() {
 
 		var ret = [];
 		for (var i = 0; i < vids.length; i++) {
-			var vdat = {};
-			vdat.name = esl.kv.Value(channelAddr, StringToHex("vidnames"),
-					vids[i].Key);
-			vdat.file = vids[i].Value;
-			vdat.date = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
-					vids[i].Key);
-			vdat.vidnum = vids[i].Key;
-			vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
-					vids[i].Key);
-			ret.push(vdat);
+			ret.push(vidObjToVidData(vids[i],channelAddr));
 		}
 		return ret;
 	};
+
+	function vidObjToVidData(vidObj,channelAddr){
+		Printf("VIDOBJ: %v\n",vidObj);
+		var vdat = {};
+		vdat.name = esl.kv.Value(channelAddr, StringToHex("vidnames"),
+				vidObj.Key);
+		vdat.file = vidObj.Value;
+		vdat.date = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
+				vidObj.Key);
+		vdat.vidnum = vidObj.Key;
+		vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
+				vidObj.Key);
+		var vidHash = "1220" + vdat.file.slice(2);
+		vdat.url = ipfs.GetFileURL(vidHash,false);
+		return vdat;
+	}	
 
 	// Get Information about an account
 	function getChanInfo(channelAddr) {
