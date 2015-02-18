@@ -1,20 +1,20 @@
-#THE SHITTUBE DEPLOYMENT FILE
+#THE 2GATHER DEPLOYMENT FILE
 
 #File Deployment
 !{DOUG
 deploy:
-	"./contracts/2gatherDOUG.lll" => {{DOUG}}
+	"./2gatherDOUG.lll" => {{DOUG}}
 !}DOUG
 
 !{AF
 modify-deploy:
-	"./contracts/AccountFactory.lll" => {{AF}}
+	"./AccountFactory.lll" => {{AF}}
 	(def 'DAPPDOUG 0xdaffe) => (def 'DAPPDOUG {{DOUG}})
 !}AF
 
 !{flaglist
 modify-deploy:
-	"./contracts/flagged.lll" => {{FLAG}}
+	"./flagged.lll" => {{FLAG}}
 	(def 'DAPPDOUG 0xdaffe) => (def 'DAPPDOUG {{DOUG}})
 !}flaglist
 
