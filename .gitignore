@@ -1,9 +1,9 @@
 .ethchain
-/.fr-LfnHp5
-/.chain
+.fr-LfnHp5
+.chain
 config.json
 genesis.json
-/.temp
+.temp
 eth-config.json
 *.*~
 .DS_Store

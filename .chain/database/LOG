@@ -1,5 +1,0 @@
-=============== Jan 21, 2015 (CET) ===============
-12:07:40.129604 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-12:07:40.144384 db@open opening
-12:07:40.156816 db@janitor F·2 G·0
-12:07:40.157274 db@open done T·12.631773ms
