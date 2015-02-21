@@ -1,0 +1,16 @@
+ipfsbuild:
+  image: eris/ipfs
+
+  volumes: 
+    - /home/androlo/.decerver/filesystems/ipfs:/root/.go-ipfs:rw
+
+  ports:
+    - "4001:4001"
+    - "4002:4002/udp"
+    - "5001:5001"
+    - "8080:8080"
+
+2gatherbuild:
+  build: .
+  ports:
+    - "3000:3000"
