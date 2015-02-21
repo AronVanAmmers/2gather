@@ -1,58 +1,57 @@
 {
-    "name": "2gather",
-    "id": "2gather",
-    "app_icon": "img/decerver.png",
-    "version": "0.5.0",
-    "homepage": "https://erisindustries.com",
-    "author": {
-        "name": "Eris Industries, Ltd.",
-        "url": "https://erisindustries.com"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/eris-ltd/2gather.git"
-    },
-    "bugs": {
-        "url": "https://github.com/eris-ltd/2gather/issues"
-    },
-    "licenses": [
-        {
-            "type": "CUSTOM",
-            "url": "https://github.com/eris-ltd/2gather/blob/master/LICENSE"
-  }
- ],
-
-    "module_dependencies": [
-        {
-            "name": "monk",
-            "version": "0.0.1",
-            "data": {
-                "peer_server_address": "111.111.111.111:9999",
-                "blockchain_id": "b3795e3116fc55ef914ba605d9cacf597f25774a",
-                "root_contract": "0a5d21c3fd19a72787158164a297817c90ba556a"
-            }
+  "name": "2gather",
+  "id": "2gather",
+  "app_icon": "img/decerver.png",
+  "version": "0.5.0",
+  "homepage": "https://erisindustries.com",
+  "author": {
+    "name": "Eris Industries, Ltd.",
+    "url": "https://erisindustries.com"
   },
-        {
-            "name": "ipfs",
-            "version": "0.0.1"
-  }
- ],
-    "devDependencies": {
-        "grunt": "0.4.4",
-        "grunt-contrib-concat": "0.4.0",
-        "grunt-contrib-connect": "0.7.1",
-        "grunt-contrib-copy": "^0.5.0",
-        "grunt-contrib-cssmin": "^0.9.0",
-        "grunt-contrib-uglify": "^0.4.0",
-        "grunt-contrib-watch": "0.6.1",
-        "grunt-karma": "0.8.2",
-        "grunt-open": "^0.2.3",
-        "grunt-shell": "0.6.4",
-        "grunt-usemin": "^2.1.1",
-        "karma": "0.12.8",
-        "karma-chrome-launcher": "^0.1.3",
-        "karma-jasmine": "0.1.5",
-        "karma-script-launcher": "0.1.0",
-        "matchdep": "0.3.0"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/eris-ltd/2gather.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eris-ltd/2gather/issues"
+  },
+  "licenses": [
+    {
+      "type": "CUSTOM",
+      "url": "https://github.com/eris-ltd/2gather/blob/master/LICENSE"
     }
+  ],
+  "module_dependencies": [
+    {
+      "name": "monk",
+      "version": "0.8.1",
+      "data": {
+        "peer_server_address": "111.111.111.111:9999",
+        "blockchain_id": "",
+        "root_contract": ""
+      }
+    },
+    {
+      "name": "ipfs",
+      "version": "0.0.1"
+    }
+  ],
+  "devDependencies": {
+    "grunt": "0.4.4",
+    "grunt-contrib-concat": "0.4.0",
+    "grunt-contrib-connect": "0.7.1",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-cssmin": "^0.9.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-karma": "0.8.2",
+    "grunt-open": "^0.2.3",
+    "grunt-shell": "0.6.4",
+    "grunt-usemin": "^2.1.1",
+    "karma": "0.12.8",
+    "karma-chrome-launcher": "^0.1.3",
+    "karma-jasmine": "0.1.5",
+    "karma-script-launcher": "0.1.0",
+    "matchdep": "0.3.0"
+  }
 }

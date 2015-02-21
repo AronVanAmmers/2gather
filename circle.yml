@@ -1,0 +1,33 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - pip install -r requirements.txt
+    # - npm install bower
+
+  override:
+    - npm install
+    - bower install
+    # - grunt test
+
+test:
+  pre:
+    - "fig -f spec/fig_testing.yml build && docker pull eris/ipfs"
+
+  override:
+    # start with the test fig. wait for contracts to be deployed (sleep could probably be 60). run the tests.
+    - "fig -f spec/fig_testing.yml up > $CIRCLE_ARTIFACTS/output.log & sleep 90 && go run spec/apitest.go"
+
+  post:
+    - fig kill
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker build -t eris/2gather:latest .
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push eris/2gather:latest
+      - fig rm --force -v
