@@ -1,5 +1,6 @@
 
 function TwoGather() {
+	var COMMITTING = false;
 
 	handlers = {};
 	tgApi = new TwoGatherAPI();
@@ -9,6 +10,7 @@ function TwoGather() {
 	// pass that object into the appropriate sub handler (should one exist).
 	// Sub handlers needs to return a response object.
 	this.handle = function(httpReq) {
+		
 		Println("Receiving");
 		var urlObj = network.parseUrl(httpReq);
 		// Error 400 bad request
@@ -77,6 +79,27 @@ function TwoGather() {
 		}
 	}
 
+	handlers.mining = function(urlObj, httpReq) {
+		Println("Mining");
+		Println(httpReq.Method);
+		if(httpReq.Method === "POST") {			
+			if(urlObj.path.length !== 1){
+				return network.getHttpResponse(400,{},"Bad request: invalid path.");
+			}
+			Println(httpReq.body);
+			if (httpReq.Body === "on"){
+				monk.AutoCommit(true);
+			} else if (httpReq.Body === "off"){
+				monk.AutoCommit(false);
+			} else {
+				return network.getHttpResponse(400,{}, "Bad request.");
+			}
+			return network.getHttpResponse(200,{}, "");
+		} else {
+			return network.getHttpResponse(400,{},"Bad request: method not supported (" + httpReq.Method + ")");
+		}
+	}
+
 	handlers.session = function(urlObj, httpReq) {
 		Println("Getting session.");
 		if(httpReq.Method === "GET") {			
@@ -114,8 +137,9 @@ function TwoGather() {
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");
 			}
 			// DEBUG
-			monk.Commit();
-			
+			if(COMMITTING){
+				monk.Commit();
+			}
 			return network.getHttpResponseJSON(hash);
 		} else if (method === "PATCH"){
 			var user = tgApi.getUser(username);
@@ -164,8 +188,10 @@ function TwoGather() {
 				}
 			}
 			// DEBUG
-			monk.Commit();
-			return network.getHttpResponseJSON(patches);
+			if(COMMITTING){
+				monk.Commit();
+			}
+			return network.getHttpResponseJSON(txHashes);
 		} else if (method === "DELETE"){
 			Println("DELETING USER: " + username);
 			var hash = tgApi.deleteAccount(username);
@@ -173,7 +199,9 @@ function TwoGather() {
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");
 			}
 			// DEBUG
-			monk.Commit();
+			if(COMMITTING){
+				monk.Commit();
+			}
 			return network.getHttpResponseJSON(hash);
 		} else {
 			return network.getHttpResponse(405,{},"Method not allowed: " + method);
@@ -205,7 +233,9 @@ function TwoGather() {
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");
 			}
 			// DEBUG
-			monk.Commit();
+			if(COMMITTING){
+				monk.Commit();
+			}
 			return network.getHttpResponseJSON(hash);
 		} else if (method === "PATCH"){
 			var video = tgApi.getVideoData(username,videoId);
@@ -243,15 +273,19 @@ function TwoGather() {
 				}
 			}
 			// DEBUG
-			monk.Commit();
-			return network.getHttpResponseJSON(patches);
+			if(COMMITTING){
+				monk.Commit();
+			}
+			return network.getHttpResponseJSON(txHashes);
 		} else if (method === "DELETE"){
 			var hash = tgApi.removeVideo(videoId);
 			if (hash === "0x0"){
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");
 			}
 			// DEBUG
-			monk.Commit();
+			if(COMMITTING){
+				monk.Commit();
+			}
 			return network.getHttpResponseJSON(hash);
 		} else {
 			return network.getHttpResponse(405,{},"Method not allowed: " + method);
@@ -271,7 +305,9 @@ function TwoGather() {
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");
 			}
 			// DEBUG
-			monk.Commit();
+			if(COMMITTING){
+				monk.Commit();
+			}
 
 			return network.getHttpResponseJSON(hash);
 		} else if (method === "DELETE"){
@@ -282,7 +318,9 @@ function TwoGather() {
 			}
 
 			// DEBUG
-			monk.Commit();
+			if(COMMITTING){
+				monk.Commit();
+			}
 			return network.getHttpResponseJSON(hash);
 		} else {
 			return network.getHttpResponse(405,{},"Method not allowed: " + method);
