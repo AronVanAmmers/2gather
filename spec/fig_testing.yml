@@ -8,9 +8,12 @@
 
   environment:
     - LOG_LEVEL=3
+    - CONTAINERS=true
 
   links:
     - ipfs
+
+  command: /home/eris/.decerver/dapps/2gather/spec/teststart.sh
 
 ipfs:
   image: eris/ipfs
@@ -20,4 +23,3 @@ ipfs:
 
   ports:
     - "4001:4001"
-    - "8080:8080"

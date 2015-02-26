@@ -36,10 +36,10 @@ transact:
 #Thats all Folks.
 
 #Testing functionality
-!{newaccount
-	transact:
-		{{AF}} => "create" "Dennis"
-!}newaccount
+#!{newaccount
+#	transact:
+#		{{AF}} => "create" "Dennis"
+#!}newaccount
 
 #	query:
 #		{{AF}} => 0x01e27e67926b8b517abbbd0256041f7aed3ce278c56ee61492de96d001010000 => {{UA}}
@@ -76,7 +76,7 @@ transact:
 
 #!{flag
 #	transact:
-#		{{UA}} => "flag" 2	
+#		{{UA}} => "flag" 2
 #!}flag
 
 #!{clearflag
@@ -86,7 +86,7 @@ transact:
 
 #!{blacklist
 #	transact:
-#		{{UA}} => "blacklist" 3	
+#		{{UA}} => "blacklist" 3
 #!}blacklist
 
 #!{deleteaccount
