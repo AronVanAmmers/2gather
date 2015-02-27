@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/eris-ltd/2gather/autotest/tester"
+	"./tester"
 	"fmt"
 	"path/filepath"
 	"os"
