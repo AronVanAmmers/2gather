@@ -5,7 +5,6 @@ machine:
 dependencies:
   pre:
     - pip install -r requirements.txt
-    # - npm install bower
 
   override:
     - npm install
@@ -15,13 +14,15 @@ dependencies:
 test:
   pre:
     - "fig -f spec/fig_testing.yml build && docker pull eris/ipfs"
+    # start with the test fig. wait for contracts to be compiled and deployed.
+    - "fig -f spec/fig_testing.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60"
 
   override:
-    # start with the test fig. wait for contracts to be deployed (sleep could probably be 60). run the tests.
-    - "fig -f spec/fig_testing.yml up > $CIRCLE_ARTIFACTS/output.log & sleep 90 && go run spec/apitest.go"
+    # - go run spec/apitest.go
+    - go run autotest/main.go
 
   post:
-    - fig kill
+    - fig -f spec/fig_testing.yml kill
 
 deployment:
   hub:
