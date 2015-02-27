@@ -29,8 +29,8 @@ angular.module('2gather').factory('Transaction', function($http, $q) {
         if(method === 'GET')
           $http.get(baseUrl + '/' + url).success(defer.resolve).error(defer.reject);
         else
-          $http({method: method, url: baseUrl + '/' + url, data: body}).success(function(res) {
-            pollTransactionState(res.hash).then(defer.resolve, defer.reject);
+          $http({method: method, url: baseUrl + '/' + url, data: body}).success(function(hash) {
+            pollTransactionState(hash).then(defer.resolve, defer.reject);
           }).error(defer.reject);
 
         return defer.promise;
