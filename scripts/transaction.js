@@ -4,7 +4,8 @@ angular.module('2gather').factory('Transaction', function($http, $q) {
 
     function pollTransactionState(transactionHash) {
         var defer = $q.defer();
-        $http.get(baseUrl + '/' + transactionHash).error(defer.reject).success(function(res, status){
+        $http.get(baseUrl + '/txs/' + transactionHash).error(defer.reject).success(function(res, status){
+          res = parseInt(res);
           switch (res) {
               case 1: //pending
                   setTimeout(function() { //recursively poll the transaction stage until response changes
@@ -30,6 +31,7 @@ angular.module('2gather').factory('Transaction', function($http, $q) {
           $http.get(baseUrl + '/' + url).success(defer.resolve).error(defer.reject);
         else
           $http({method: method, url: baseUrl + '/' + url, data: body}).success(function(hash) {
+            hash = hash.substr(1,hash.length-2); //hash surrounded in by API
             pollTransactionState(hash).then(defer.resolve, defer.reject);
           }).error(defer.reject);
 
