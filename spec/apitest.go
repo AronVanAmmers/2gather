@@ -18,6 +18,7 @@ var NULL_BYTES *bytes.Buffer = bytes.NewBuffer([]byte{})
 type Config struct {
 	UserName string `json:"user_name"`
 	VideoUrl string `json:"video_url"`
+	VideoName string `json:"video_name"`
 	FastFail bool   `json:"fast_fail"`
 }
 
@@ -53,6 +54,7 @@ type testRunner struct {
 	client   *testClient
 	user     string
 	videoUrl string
+	videoName string
 	fastFail bool
 }
 
@@ -100,7 +102,7 @@ func (tc *testClient) post(ep string, data []byte) (resp *http.Response, err err
 	return
 }
 
-func (tc *testClient) postJSON(ep string, obj map[string]interface{}) (hash string, err error) {
+func (tc *testClient) postJSON(ep string, obj interface{}) (hash string, err error) {
 	bts, jErr := json.Marshal(obj)
 	if jErr != nil {
 		err = jErr
@@ -117,11 +119,83 @@ func (tc *testClient) postJSON(ep string, obj map[string]interface{}) (hash stri
 	return
 }
 
+
+func (tc *testClient) patch(ep string, data []byte) (resp *http.Response, err error) {
+
+	p := tc.baseUrl + ep
+	fmt.Println("[REQUEST]\tSending PATCH request to: " + p)
+	req, rErr := http.NewRequest("PATCH", p, bytes.NewBuffer(data))
+	if rErr != nil {
+		err = rErr
+		return
+	}
+	resp, err = tc.client.Do(req)
+	if err == nil && resp.StatusCode != 200 {
+		err = fmt.Errorf("[REQUEST]\tRequest not successful. Status: %s\n", resp.Status)
+		resp = nil
+		return
+	}
+	return
+}
+
+func (tc *testClient) patchJSON(ep string, obj interface{}) (hash string, err error) {
+	bts, jErr := json.Marshal(obj)
+	if jErr != nil {
+		err = jErr
+		return
+	}
+	resp, rErr := tc.patch(ep, bts)
+	if rErr != nil {
+		err = rErr
+		return
+	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	hash = strings.Trim(string(body), "\"")
+	return
+}
+
+
+func (tc *testClient) delete(ep string, data []byte) (resp *http.Response, err error) {
+
+	p := tc.baseUrl + ep
+	fmt.Println("[REQUEST]\tSending DELETE request to: " + p)
+	req, rErr := http.NewRequest("DELETE", p, bytes.NewBuffer(data))
+	if rErr != nil {
+		err = rErr
+		return
+	}
+	resp, err = tc.client.Do(req)
+	if err == nil && resp.StatusCode != 200 {
+		err = fmt.Errorf("[REQUEST]\tRequest not successful. Status: %s\n", resp.Status)
+		resp = nil
+		return
+	}
+	return
+}
+
+func (tc *testClient) deleteJSON(ep string, obj interface{}) (hash string, err error) {
+	bts, jErr := json.Marshal(obj)
+	if jErr != nil {
+		err = jErr
+		return
+	}
+	resp, rErr := tc.delete(ep, bts)
+	if rErr != nil {
+		err = rErr
+		return
+	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	hash = strings.Trim(string(body), "\"")
+	return
+}
+
 // -----------------------------------------------------------
 // ---------------------RUNNER FUNCTIONS----------------------
 // -----------------------------------------------------------
-func NewTestRunner(baseUrl, userName, videoUrl string, fastFail bool) *testRunner {
-	return &testRunner{NewTestClient(baseUrl), userName, videoUrl, fastFail}
+func NewTestRunner(baseUrl, userName, videoUrl string, videoName string, fastFail bool) *testRunner {
+	return &testRunner{NewTestClient(baseUrl), userName, videoUrl, videoName, fastFail}
 }
 
 // -----------------------------------------------------------
@@ -355,7 +429,7 @@ func (tr *testRunner) createUser(resetAlready bool) {
 	}
 
 	if usr.UserName != tr.user {
-		fmt.Println("[TEST-RUNNER]\tTest failed: User name '" + usr.UserName + "'. Expected: " + tr.user)
+		fmt.Println("[TEST-RUNNER]\tTest failed: UserName Got: <" + usr.UserName + ">. Expected: <" + tr.user + ">.")
 		fmt.Println("[TEST-RUNNER]\tRetrying the test.")
 		if resetAlready {
 			fmt.Println("[TEST-MASTER]\tNo you're not.")
@@ -367,8 +441,132 @@ func (tr *testRunner) createUser(resetAlready bool) {
 	fmt.Println("[TEST-RUNNER]\tTest successful.")
 }
 
-func (tr *testRunner) patchUser(resetAlready bool) {
+func (tr *testRunner) updateUser(resetAlready bool) {
+	fmt.Println("[TEST-RUNNER]\tTesting: Patch (update) User")
 
+	ud := make(map[string]string)
+	userData := []map[string]string{ud}
+	userData[0]["blacklist_perm"] = "replace"
+
+	url := "user/" + tr.user
+	hash, err := tr.client.patchJSON(url, userData)
+
+	if err != nil {
+		fmt.Println("[RETURN]\tResult: Update User failed.")
+		abortTest(tr)
+	}
+
+	if( len(hash) <= 60 ) {
+		fmt.Printf("[TEST-RUNNER]\tTransactionID invalid: %v. Restarting Test.\n", hash)
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo You're not.")
+			abortTest(tr)
+		} else {
+			tr.updateUser(true)
+		}
+	}
+
+	fmt.Println("[TEST-RUNNER]\tTx passed: polling status.")
+	err = tr.poll(hash)
+	if err != nil {
+		fmt.Println("[TEST-RUNNER]\tPolling: Timed Out. Restarting.")
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo you're not.")
+			abortTest(tr)
+		} else {
+			tr.updateUser(true)
+		}
+	}
+	time.Sleep(3 * time.Second)
+
+	usr, uErr := tr.getUser(tr.user)
+
+	if uErr != nil {
+		fmt.Printf("[TEST-RUNNER]\tTest failed: User data corrupted: %v\n", uErr.Error())
+		fmt.Println("[TEST-RUNNER]\tRetrying the test.")
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo you're not.")
+			abortTest(tr)
+		} else {
+			tr.updateUser(true)
+		}
+	}
+
+	if usr.UserName != tr.user {
+		fmt.Println("[TEST-RUNNER]\tTest failed: User name '" + usr.UserName + "'. Expected: " + tr.user)
+		fmt.Println("[TEST-RUNNER]\tRetrying the test.")
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo you're not.")
+			abortTest(tr)
+		} else {
+			tr.updateUser(true)
+		}
+	}
+	fmt.Println("[TEST-RUNNER]\tTest successful.")
+}
+
+func (tr *testRunner) deleteUser(resetAlready bool) {
+	fmt.Println("[TEST-RUNNER]\tTesting: Delete User")
+
+	userData := make(map[string]interface{})
+	userData["user_name"] = tr.user
+
+	url := "user/" + tr.user
+	hash, err := tr.client.deleteJSON(url, userData)
+	if err != nil {
+		fmt.Println("[RETURN]\tResult: Update User failed.")
+		abortTest(tr)
+	}
+
+	if( len(hash) <= 60 ) {
+		fmt.Printf("[TEST-RUNNER]\tTransactionID invalid: %v. Restarting Test.\n", hash)
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo You're not.")
+			abortTest(tr)
+		} else {
+			tr.deleteUser(true)
+		}
+	}
+
+	fmt.Println("[TEST-RUNNER]\tTx passed: polling status.")
+	err = tr.poll(hash)
+	if err != nil {
+		fmt.Println("[TEST-RUNNER]\tPolling: Timed Out. Restarting.")
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo you're not.")
+			abortTest(tr)
+		} else {
+			tr.deleteUser(true)
+		}
+	}
+	time.Sleep(3 * time.Second)
+
+	usr, uErr := tr.getSession()
+
+	// this should 404
+	fmt.Printf("%s", uErr)
+	if uErr == nil {
+		fmt.Printf("[TEST-RUNNER]\tTest failed: User not deleted.")
+		fmt.Println("[TEST-RUNNER]\tRetrying the test.")
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo you're not.")
+			abortTest(tr)
+		} else {
+			tr.deleteUser(true)
+		}
+	}
+
+	if usr.UserName != "" {
+		fmt.Println("[TEST-RUNNER]\tTest failed: User name <" + usr.UserName + ">. Expected: <NIL>")
+		fmt.Println("[TEST-RUNNER]\tRetrying the test.")
+		if resetAlready {
+			fmt.Println("[TEST-MASTER]\tNo you're not.")
+			abortTest(tr)
+		} else {
+			tr.deleteUser(true)
+		}
+	}
+	fmt.Println("[TEST-RUNNER]\tTest successful.")
 }
 
 func (tr *testRunner) setBTCAddr() {
@@ -418,7 +616,7 @@ func (tr *testRunner) createVideo(resetAlready bool) {
 	fmt.Println("[TEST-RUNNER]\tTesting: Create Video")
 
 	videoData := make(map[string]interface{})
-	videoData["name"] = tr.user
+	videoData["name"] = tr.videoName
 	videoData["url"] = tr.videoUrl
 
 	url := "user/" + tr.user + "/videos"
@@ -465,8 +663,8 @@ func (tr *testRunner) createVideo(resetAlready bool) {
 		}
 	}
 
-	if vid.VideoName != tr.videoUrl {
-		fmt.Println("[TEST-RUNNER]\tTest failed: Wrong Video name: Got: '" + vid.VideoName + "'. Expected: " + tr.videoUrl)
+	if vid.VideoName != tr.videoName {
+		fmt.Println("[TEST-RUNNER]\tTest failed: Wrong Video name: Got: <" + vid.VideoName + ">. Expected: <" + tr.videoName + ">.")
 		fmt.Println("[TEST-RUNNER]\tRetrying the test.")
 		if resetAlready {
 			fmt.Println("[TEST-MASTER]\tNo You're not.")
@@ -504,6 +702,12 @@ func (tr *testRunner) start() {
 	// tests post new user
 	// tests get user by id
 	tr.createUser(false)
+	// tests delete username
+	tr.deleteUser(false)
+	// reset to username
+	tr.createUser(false)
+	// tests patch (update) user
+	// tr.updateUser(false) // TODO - fix this (have to refactor the postJSON function)
 	// tests post new video
 	// tests get video by username and video nonce
 	tr.createVideo(false)
@@ -517,15 +721,14 @@ func main() {
 	cfg := loadConfig()
 
 	host := os.Getenv("SERVER_HOST")
-	//if host == "" {
 	host = "http://localhost:3000/apis/2gather/"
-	//}
-	baseUrl := host // path.Join(host, "apis/2gather")
-	tr := NewTestRunner(baseUrl, cfg.UserName, cfg.VideoUrl, cfg.FastFail)
+	baseUrl := host
+	tr := NewTestRunner(baseUrl, cfg.UserName, cfg.VideoUrl, cfg.VideoName, cfg.FastFail)
 	fmt.Println("-------------------------------------------------")
 	fmt.Printf("[TEST-MASTER]\t(Base Url)\t%v\n", tr.client.baseUrl)
 	fmt.Printf("[TEST-MASTER]\t(User Name)\t%v\n", tr.user)
 	fmt.Printf("[TEST-MASTER]\t(Video Url)\t%v\n", tr.videoUrl)
+	fmt.Printf("[TEST-MASTER]\t(Video Name)\t%v\n", tr.videoName)
 	fmt.Printf("[TEST-MASTER]\t(Fast fail)\t%v\n", tr.fastFail)
 	fmt.Println("-------------------------------------------------")
 	fmt.Println("[TEST-MASTER]\tStarting tests")

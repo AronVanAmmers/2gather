@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/eris-ltd/2gather/autotest/tester"
+	"./tester"
 	"fmt"
-	"path/filepath"
+	// "path/filepath"
 	"os"
 )
 
 const (
 	USER_NAME = "tester"
 	VIDEO_NAME = "testvid"
-	VIDEO_FILE_NAME = "test.mp4" 
+	// VIDEO_FILE_NAME = "test.mp4"
+	VIDEO_FILE_NAME = "autotest/test.mp4"
 )
 
 func main() {
@@ -25,7 +26,8 @@ func main() {
 	fmt.Println("Base Url: " + baseUrl)
 	fmt.Println("User Name: " + userName)
 	fmt.Println("Video Filename: " + videoFileName)
-	filePath, _ := filepath.Abs(videoFileName)
+	// filePath, _ := filepath.Abs(videoFileName)
+	filePath := videoFileName
 	fmt.Println("Video file path: " + filePath)
 	tr := tester.NewTestRunner(baseUrl, userName, videoName, filePath)
 	fmt.Println("Starting tests")
