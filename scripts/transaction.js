@@ -10,7 +10,7 @@ angular.module('2gather').factory('Transaction', function($http, $q) {
               case 1: //pending
                   setTimeout(function() { //recursively poll the transaction stage until response changes
                       pollTransactionState(transactionHash).then(defer.resolve);
-                  }, timeOutConfig);
+                  }, timeoutConfig);
                   break;
               case 2: //error
                   defer.reject(res, status);
