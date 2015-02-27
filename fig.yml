@@ -8,6 +8,7 @@
 
   environment:
     - LOG_LEVEL=3
+    - CONTAINER=true
 
   links:
     - ipfs

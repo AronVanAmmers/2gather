@@ -7,7 +7,7 @@
 
 * ~~(tx) (POST) {base-URL}/user~~
 * ~~(GET) {base-URL}/user/:username~~
-* (tx) (DELETE) {base-URL}/user/:username
+* ~~(tx) (DELETE) {base-URL}/user/:username~~
 * (tx) (PATCH) {base-URL}/user/username
 
 ### Resource: User.Subscriber
