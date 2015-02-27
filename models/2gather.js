@@ -156,7 +156,7 @@ function TwoGather() {
 				if (!isPatch(patch)){
 					return network.getHttpResponse(400,{},"Bad request - patch data malformed.");
 				}
-				if(patch.field === "btc_addr"){
+				if(patch.field === "btc_address"){
 					if(typeof(patch.value) !== "string" ){
 						return network.getHttpResponse(400,{},"Bad request - patch data malformed.");
 					}
