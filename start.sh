@@ -41,7 +41,7 @@ echo "root_contract ($root_contract)."
 
 mv package.json /tmp/
 
-jq '.module_dependencies[0].data |= . * {blockchain_id: "'$blockchain_id'", root_contract: "'$root_contract'"}' /tmp/package.json \
+jq '.module_dependencies[0].data |= . * {peer_server_address: "'${REMOTE_HOST:=104.236.146.58}:${REMOTE_PORT:=15256}'", blockchain_id: "'$blockchain_id'", root_contract: "'$root_contract'"}' /tmp/package.json \
   > package.json
 
 # put the 2gather DApp in focus
