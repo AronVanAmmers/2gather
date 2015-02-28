@@ -1,5 +1,5 @@
 angular.module('2gather').factory('Transaction', function($http, $q) {
-    var baseUrl = 'http://localhost:3000/apis/2gather'; //url to poll transactions
+    var baseUrl = 'http://'+location.hostname+':3000/apis/2gather'; //url to poll transactions
     var timeoutConfig = 5000; //in milliseconds
 
     function pollTransactionState(transactionHash) {
