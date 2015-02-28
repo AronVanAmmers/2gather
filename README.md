@@ -118,7 +118,7 @@ If you would like a chain for testing, then execute the `spec/teststart.sh` file
 
 #### Step 5: Connect to the Public Test Chain (Optional)
 
-If you would like to connect to the public test chain then execute the `./cmd.sh` file.
+If you would like to connect to the public test chain then execute the `./start.sh` file.
 
 ## License
 
@@ -126,6 +126,10 @@ GPL. See LICENSE.txt file.
 
 ## Contributions
 
-We are happy to accept contributions to this template distributed applications with the proviso that any and all contributions will be licensed GPL by Eris Industries. Even better than contributions to this template, please press teh big FORK button at the top and make the DApp your own. Do cool shit with it. Run it on your own chain. Connect with your own community. And **most importantly** HAVE FUN!
+We are happy to accept contributions to this template distributed applications with the proviso that any and all contributions will be licensed GPL by Eris Industries.
+
+Even better than contributions to this template, please press the big FORK button at the top and make the DApp your own. Do cool shit with it.
+
+Run it on your own chain. Connect with your own community. And **most importantly** HAVE FUN!
 
 Enjoy DApp-ing! :)
