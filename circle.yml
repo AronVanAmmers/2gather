@@ -9,7 +9,6 @@ dependencies:
   override:
     - npm install
     - bower install
-    # - grunt test
 
 test:
   pre:
@@ -18,8 +17,8 @@ test:
     - "fig -f spec/fig_testing.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60"
 
   override:
-    # - go run spec/apitest.go
-    - go run autotest/main.go
+    - go run spec/main.go
+    # - grunt test
 
   post:
     - fig -f spec/fig_testing.yml kill

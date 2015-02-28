@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./tester"
+	"./apitester"
 	"fmt"
 	// "path/filepath"
 	"os"
@@ -11,7 +11,7 @@ const (
 	USER_NAME = "tester"
 	VIDEO_NAME = "testvid"
 	// VIDEO_FILE_NAME = "test.mp4"
-	VIDEO_FILE_NAME = "autotest/test.mp4"
+	VIDEO_FILE_NAME = "spec/test.mp4"
 )
 
 func main() {
