@@ -34,7 +34,7 @@ epm config log_level:${LOG_LEVEL:=3}
 # Now we need to tell the DApp about our chain and then we’re ready to VRoom.
 
 blockchain_id=$(epm plop chainid)
-root_contract=$(epm plop vars | cut -d : -f 2)
+root_contract=${ROOT_CONTRACT:="46905240fc174f2269ae8e806f3bc6b94784664a"}
 
 echo "Configuring package.json with blockchain_id ($blockchain_id) and "
 echo "root_contract ($root_contract)."
