@@ -3,7 +3,7 @@
 echo ""
 echo ""
 echo "Fetching the Chain."
-epm fetch --checkout --name 2gather ${REMOTE_HOST:=104.236.140.216}:${REMOTE_PORT:=15258}
+epm fetch --checkout --name 2gather ${REMOTE_HOST:=104.236.146.58}:${REMOTE_PORT:=15258}
 echo "The chain has been fetched and checked out."
 
 echo ""
@@ -28,7 +28,7 @@ fi
 echo ""
 echo ""
 echo "Setting Connection."
-epm config remote_host:${REMOTE_HOST:=104.236.140.216} remote_port:${REMOTE_PORT:=15256} use_seed:true
+epm config remote_host:${REMOTE_HOST:=104.236.146.58} remote_port:${REMOTE_PORT:=15256} use_seed:true
 epm config log_level:${LOG_LEVEL:=3}
 
 # Now we need to tell the DApp about our chain and then we’re ready to VRoom.
