@@ -120,6 +120,10 @@ If you would like a chain for testing, then execute the `spec/teststart.sh` file
 
 If you would like to connect to the public test chain then execute the `./start.sh` file.
 
+### Running the app
+
+When the DApp is running, open http://localhost:3000/2gather/ in a browser.
+
 ## License
 
 GPL. See LICENSE.txt file.
