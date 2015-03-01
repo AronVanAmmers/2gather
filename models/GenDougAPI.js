@@ -1,4 +1,4 @@
-function GenDougApi() {
+function GenDougAPI() {
 	var gdaddr = sutil.stringToHex("0000000000THISISDOUG");
 
 	var txs = {};
