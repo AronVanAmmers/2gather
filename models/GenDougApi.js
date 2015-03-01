@@ -4,16 +4,16 @@ function GenDougApi() {
 	var txs = {};
 	//Doug Functions
 
-	this.checkName = function(name){
-		addr = esl.ll.Main(gdaddr, sutil.stringToHex("DOUG"),sutil.stringToHex(name));
+	this.checkName = function(contractname){
+		addr = esl.ll.Main(gdaddr, sutil.stringToHex("DOUG"),sutil.stringToHex(contractname));
 		return addr
 	}
 
-	this.register = function(name, addr){
+	this.register = function(contractname, contractaddr){
 		var txData = [];
 		txData.push("register");
-		txData.push(name);
-		txData.push(addr);
+		txData.push(contractname);
+		txData.push(contractaddr);
 
 		var hash = sendMsg(gdddr, txData);
 		this.trackTx(hash);
@@ -21,7 +21,81 @@ function GenDougApi() {
 	}
 
 	//Variable Functions
-	//TODO
+	this.varType = function(varname){
+		type = esl.stdvar.Type(gdaddr, sutil.stringToHex(varname));
+		return type
+	}
+
+	this.getVar = function(varname, key, elnum){
+		type = this.varType(varname);
+		if(type === "single"){
+			return esl.single.Value(gdaddr, sutil.stringToHex(varname));
+		}else if(type === "double"){
+			return esl.double.Value(gdaddr, sutil.stringToHex(varname));
+		}else if(type === "linkedlist"){
+			if(typeof key === "undefined"){
+				return esl.ll.GetPairs(gdaddr, sutil.stringToHex(varname));
+			} else {
+				return esl.ll.Main(gdaddr,sutil.stringToHex(varname), key);
+			}
+		}else if(type === "keyvalue"){
+			if(typeof key === "undefined"){
+				return null
+			}else{
+				return esl.kv.Value(gdaddr, sutil.stringToHex(varname), key);
+			}
+		}else if(type === "array"){
+			if(typeof key === "undefined" || typeof elnum === "undefined"){
+				return null
+			}else{
+				return esl.array.Element(gdaddr, sutil.stringToHex(varname), key, elnum)
+			}
+		}else {
+			return null
+		}
+	}
+
+	this.setVar = function(varname, type, args){
+		var txData = [];
+		txData.push("setvar");
+		txData.push(type);
+		if(type == "single"){
+			txData.push(args.Value[0]);
+		}else if (type == "double"){
+			txData.push(args.Value[0]);
+			txData.push(args.Value[1]);
+		}else if (type == "linkedlist"){
+			txData.push(args.Key);
+			txData.push(args.Value[0]);
+		}else if (type == "keyvalue"){
+			txData.push(args.Key);
+			txData.push(args.Value[0]);
+		}else if (type == "array"){
+			txData.push(args.Key);
+			txData.push(args.Enum);
+			txData.push(args.Value);
+		}else {
+			return null
+		}
+
+		var hash = sendMsg(gdddr, txData);
+		this.trackTx(hash);
+		return hash;
+	}
+
+	this.initVar = function(varname, type, esize){
+		var txData = [];
+		txData.push("setvar");
+		txData.push(type);
+		if (type == "array"){
+			esize = (typeof esize === "undefined") ? "0x100" : esize;
+			txData.push(esize);
+		}
+
+		var hash = sendMsg(gdddr, txData);
+		this.trackTx(hash);
+		return hash;
+	}
 
 	//Permissions
 	this.checkPerm = function(permname, target){
