@@ -28,7 +28,7 @@ function writeFile(data) {
 	if (hashObj.Error !== "") {
 		return "";
 	} else {
-		Println("Wrote file: " + url + ". Hash: " + hashObj.Data);
+		Println("Wrote file. Hash: " + hashObj.Data);
 		// This would be the 32 byte hash (omitting the initial "1220").
 		return "0x" + hashObj.Data.slice(6);
 	}

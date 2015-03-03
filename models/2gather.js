@@ -82,7 +82,7 @@ function TwoGather() {
 	handlers.mining = function(urlObj, httpReq) {
 		Println("Mining");
 		Println(httpReq.Method);
-		if(httpReq.Method === "POST") {			
+		if(httpReq.Method === "POST") {
 			if(urlObj.path.length !== 1){
 				return network.getHttpResponse(400,{},"Bad request: invalid path.");
 			}
@@ -94,7 +94,7 @@ function TwoGather() {
 			} else {
 				return network.getHttpResponse(400,{}, "Bad request.");
 			}
-			return network.getHttpResponse(200,{}, "");
+			return network.getHttpResponse(200,{}, "Completed.");
 		} else {
 			return network.getHttpResponse(400,{},"Bad request: method not supported (" + httpReq.Method + ")");
 		}
@@ -330,7 +330,7 @@ function TwoGather() {
 	function isPatch(obj){
 		if(obj.op === undefined || obj.field === undefined || obj.value === undefined){
 			return false;
-		} 
+		}
 		if (typeof(obj.op) !== "string" || (obj.op !== "replace" && obj.op !== "remove") ){
 			return false;
 		}
@@ -348,6 +348,7 @@ function TwoGather() {
 // *************************************** Initialization ***************************************
 
 var tg = new TwoGather();
+Println("Starting 2gather");
 tg.init();
 
 network.registerIncomingHttpCallback(tg.handle);
