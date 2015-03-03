@@ -57,7 +57,7 @@ type testRunner struct {
 	client   *testClient
 	userName     string
 	videoName string
-	videoUrl string
+	videoData string
 	vidNum string
 }
 
@@ -316,7 +316,7 @@ func (tr *testRunner) testAddVideo() {
 
 	videoData := &VideoData{}
 	videoData.Name = tr.videoName
-	videoData.Url = tr.videoUrl
+	videoData.Data = tr.videoData
 
 	hash, err := tr.client.postJSON("user/" + tr.userName + "/videos", videoData)
 
