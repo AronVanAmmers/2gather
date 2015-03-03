@@ -13,11 +13,14 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
 
     Transaction('GET', 'session').then(function(user){
       $rootScope.user = user;
-      }, function(error){
+      }, function(error) {
         Transaction('POST', 'user',{user_name: promptUsername()}).then(function(res){
+          Transaction('GET', 'session').then(function(user){
+            $rootScope.user = user;
+          });
           $rootScope.user = res;
-        });
-    });
+        });        
+      });
 
 
     $rootScope.$on('$routeChangeStart', function() {

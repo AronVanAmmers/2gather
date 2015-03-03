@@ -36,9 +36,14 @@ angular.module('2gather').factory('Transaction', function($http, $q) {
           $http.get(baseUrl + '/' + url).success(defer.resolve).error(defer.reject);
         else
           $http({method: method, url: baseUrl + '/' + url, data: body}).success(function(hash) {
+            $http({method: 'POST', url: baseUrl + '/mining', data: 'on'}).success(function(){ //turn on mining
             hash = hash.substr(1,hash.length-2); //hash surrounded in by API
-            pollTransactionState(hash).then(defer.resolve, defer.reject);
+            pollTransactionState(hash).then(function(res, status){
+              $http({method: 'POST', url: baseUrl + '/mining', data: 'off'}) //turn mining off after success
+              defer.resolve(res,status);
+            }, defer.reject);
           }).error(defer.reject);
+        }).error(defer.reject);
 
         return defer.promise;
     };
