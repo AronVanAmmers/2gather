@@ -10,15 +10,15 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     function promptUsername() {
       return prompt('User not found. Please enter a username to create a new user') || promptUsername();
     }
-    $rootScope.$broadcast('ntLoadingStart');
+    $rootScope.$broadcast('tgLoadingStart');
     Transaction('GET', 'session').then(function(user) {
       $rootScope.user = user;
-      $rootScope.$broadcast('ntLoadingEnd');
+      $rootScope.$broadcast('tgLoadingEnd');
       }, function(error) {
         Transaction('POST', 'user',{user_name: promptUsername()}).then(function(res){
           Transaction('GET', 'session').then(function(user){
             $rootScope.user = user;
-            $rootScope.$broadcast('ntLoadingEnd');
+            $rootScope.$broadcast('tgLoadingEnd');
           });
           $rootScope.user = res;
         });
@@ -26,7 +26,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
 
     $rootScope.$on('$routeChangeStart', function() {
-      $rootScope.$broadcast('ntLoadingStart');
+      $rootScope.$broadcast('tgLoadingStart');
     });
   }])
 
@@ -38,54 +38,23 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     };
   }])
 
-  .directive('ntLoadingIndicator', function() {
+  .directive('tgLoadingIndicator', function() {
     return function(scope) {
       NProgress.configure({ ease: 'ease', speed: 500 });
-
-      scope.$on('ntLoadingStart', function() {
-        console.log('loding start');
+      NProgress.start();
+      scope.$on('tgLoadingStart', function() {
+        console.log('loading start');
         NProgress.start();
       });
-      scope.$on('ntLoadingEnd', function() {
+      scope.$on('tgLoadingEnd', function() {
         NProgress.done();
-        console.log('loding end');
+        console.log('loading end');
       });
     };
   })
 
   .controller('HomeCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
 
-    var layout;
-    $scope.setLayout = function(l) {
-      layout = l;
-    };
-
-    $scope.isLayout = function(l) {
-      return layout == l;
-    };
-
-    function hasLocationChanged() {
-      return $location.path().indexOf('watch') >= 0;
-    };
-
-    $scope.$watchCollection(function() {
-      return $location.search();
-    }, function(data) {
-
-      //do not reload the results if the location changed to
-      //the watch page
-      if(hasLocationChanged()) return;
-
-      $scope.setLayout('pictures');
-
-      $rootScope.$broadcast('ntLoadingStart');
-
-      Search(data).then(function(videos) {
-        $scope.videos = videos;
-        $rootScope.$broadcast('ntLoadingEnd');
-      });
-
-    });
   }])
 
   .filter('limit', function() {
@@ -99,7 +68,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
     $scope.uploadVideo = function(video){
       var username = $scope.user.user_name;
-      Transaction('POST', username + '/video', {
+      Transaction('POST', 'user/' + username + '/video', {
         name: video.name,
         data: video.file.base64
       }).then(function(){
@@ -108,12 +77,10 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     };
 
     $scope.search = function() {
-      var order, category, q = $scope.q;
+      var q = $scope.q;
 
       $location.search({
-        q : q || '',
-        c : category || '',
-        o : order || ''
+        user : q || ''
       }).path('/');
     };
 

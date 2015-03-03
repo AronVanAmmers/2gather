@@ -15,7 +15,7 @@
   </head>
 
   <body tg-scroll-to-top tg-loading-indicator>
-    <div id="wrapper">
+    <div id="wrapper" ng-if="user">
       <header class="tg-header" ng-controller="HeaderCtrl">
         <a ng-show="user" href="#/" class="pull-right" style="margin: 15px;">Welcome {{user.user_name}}</a>
         <form ng-submit="search()" class="tg-search-header">
