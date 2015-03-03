@@ -15,36 +15,33 @@
   </head>
 
   <body tg-scroll-to-top tg-loading-indicator>
-    <div id="wrapper" ng-if="user">
-      <header class="tg-header">
-        <a ng-show="user" href="" class="pull-right" style="margin: 15px;">Welcome {{user.user_name}}</a>
-        <form ng-submit="search()" ng-controller="SearchFormCtrl" class="tg-search-header">
+    <div id="wrapper">
+      <header class="tg-header" ng-controller="HeaderCtrl">
+        <a ng-show="user" href="#/" class="pull-right" style="margin: 15px;">Welcome {{user.user_name}}</a>
+        <form ng-submit="search()" class="tg-search-header">
           <section>
             <a href="#/" class="fa fa-home tg-nav-icon"></a>
             <input type="search" ng-model="q" class="tg-search-input" />
             <a href class="fa fa-search tg-nav-icon tg-search-icon" ng-click="search()"></a>
-            <a href="" class="tg-advanced-search-link" ng-click="advanced = advanced ? null : {}">
-              <span class="fa fa-cog"></span>
-              Search Tools
+            <a href="" class="tg-advanced-search-link" ng-click="addingVideo = addingVideo ? null : {}">
+              <span class="fa fa-plus"></span>
+              Add video
             </a>
           </section>
-          <section ng-if="advanced" class="tg-advanced-search-header row">
-            <datalist id="categories" ng-controller="CategoryListCtrl">
-              <option value="{{ category }}" ng-repeat="category in categories" />
-            </datalist>
-            <div class="col-md-4">
-              <input type="text" ng-model="advanced.category" placeholder="Enter search topic" class="form-control" list="categories" />
-            </div>
-            <div class="col-md-4">
-              <select class="form-control" ng-model="advanced.orderby" ng-options="option as option for option in orderingOptions" placeholder="Sorting Options...">
-                  <option value="" style="display: none">Sort by...</option>
-              </select>
-            </div>
-            <button class="btn btn-default col-md-2">
-              <span class="fa fa-search"></span> Submit Search
-            </button>
-          </section>
         </form>
+        <section ng-if="addingVideo" class="tg-advanced-search-header row">
+          <form name="videoForm">
+            <div class="col-md-4">
+                <input type="file" ng-requird ng-model="newVideo.file" ng-change="newVideo.name = newVideo.name ? newVideo.name : newVideo.file.filename" class="form-control" base-sixty-four-input />
+            </div>
+            <div class="col-md-4">
+              <input type="text" ng-required placeholder="Enter video name" ng-model="newVideo.name" class="form-control" />
+            </div>
+            <button ng-click="uploadVideo(newVideo)" ng-disabled="videoForm.$invalid || videoForm.$pristine" class="btn btn-default col-md-2">
+              <span class="fa fa-thumbs-o-up"></span> Upload
+            </button>
+          </form>
+        </section>
       </header>
       <main id="view-container" class="tg-view-container">
         <div ng-view class="tg-view"></div>
@@ -56,7 +53,7 @@
 <script type="text/javascript" src="lib/angular-route/angular-route.js"></script>
 <script type="text/javascript" src="lib/angular-animate/angular-animate.js"></script>
 <script type="text/javascript" src="lib/nprogress/nprogress.js"></script>
-<script type="text/javascript" src="scripts/data.js"></script>
+<script type="text/javascript" src='lib/angular-base64-upload/dist/angular-base64-upload.js'></script>
 <script type="text/javascript" src="scripts/2gather.js"></script>
 <script type="text/javascript" src="scripts/transaction.js"></script>
 <script type="text/javascript" src="scripts/tgAnimations.js"></script>

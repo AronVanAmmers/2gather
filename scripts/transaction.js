@@ -8,17 +8,13 @@ angular.module('2gather').factory('Transaction', function($http, $q) {
           res = parseInt(res);
           switch (res) {
               case 1: //pending
+              case 3: //pending (network verified)
                   setTimeout(function() { //recursively poll the transaction stage until response changes
                       pollTransactionState(transactionHash).then(defer.resolve);
                   }, timeoutConfig);
                   break;
               case 2: //error
                   defer.reject(res, status);
-                  break;
-              case 3: //pending
-                  setTimeout(function() { //recursively poll the transaction stage until response changes
-                      pollTransactionState(transactionHash).then(defer.resolve);
-                  }, timeoutConfig);
                   break;
               case 4: //success
                   defer.resolve(res, status);

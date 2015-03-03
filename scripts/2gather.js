@@ -1,4 +1,4 @@
-angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
+angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
   .constant('TPL_PATH', './templates')
 
@@ -10,16 +10,18 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
     function promptUsername() {
       return prompt('User not found. Please enter a username to create a new user') || promptUsername();
     }
-
-    Transaction('GET', 'session').then(function(user){
+    $rootScope.$broadcast('ntLoadingStart');
+    Transaction('GET', 'session').then(function(user) {
       $rootScope.user = user;
+      $rootScope.$broadcast('ntLoadingEnd');
       }, function(error) {
         Transaction('POST', 'user',{user_name: promptUsername()}).then(function(res){
           Transaction('GET', 'session').then(function(user){
             $rootScope.user = user;
+            $rootScope.$broadcast('ntLoadingEnd');
           });
           $rootScope.user = res;
-        });        
+        });
       });
 
 
@@ -27,40 +29,6 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
       $rootScope.$broadcast('ntLoadingStart');
     });
   }])
-
-
-  .factory('getSet', function() {
-    return function() {
-      var val;
-      return function(data) {
-        return arguments.length ? (val = data) : val;
-      };
-    };
-  })
-
-  .value('appCategories', [
-    'decerver','thelonius', 'web development',
-    'blockchains', 'ethereum'
-  ])
-
-  .config(function($routeProvider, TPL_PATH) {
-    $routeProvider.when('/',{
-      controller : 'HomeCtrl',
-      templateUrl : TPL_PATH + '/home.html',
-      reloadOnSearch : false
-    }).when('/watch/:id',{
-      controller : 'WatchCtrl',
-      templateUrl : TPL_PATH + '/watch.html',
-      resolve: {
-        VideoInstance: ['Video', '$location', function(Video, $location) {
-          //match the ID with a regex instead of using route params
-          //since the route has not fully changed yet
-          var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
-          return Video(id);
-        }]
-      }
-    });
-  })
 
   .directive('ntScrollToTop', ['$window', '$rootScope', function($window, $rootScope) {
     return function() {
@@ -75,20 +43,17 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
       NProgress.configure({ ease: 'ease', speed: 500 });
 
       scope.$on('ntLoadingStart', function() {
+        console.log('loding start');
         NProgress.start();
       });
       scope.$on('ntLoadingEnd', function() {
         NProgress.done();
+        console.log('loding end');
       });
     };
   })
 
-  .factory('currentVideo', ['getSet', function(getSet) {
-    return getSet();
-  }])
-
-  .controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Search', 'Feed', 'TPL_PATH',
-                   function($scope,   $rootScope,   $location,   Search,   Feed,   TPL_PATH) {
+  .controller('HomeCtrl', ['$scope', '$rootScope', '$location', function($scope, $rootScope, $location) {
 
     var layout;
     $scope.setLayout = function(l) {
@@ -113,16 +78,6 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
 
       $scope.setLayout('pictures');
 
-      var c = data.c;
-      if(c && c.length > 0) {
-        $scope.searchTerm = c;
-        $scope.searchMethod = 'category';
-      } else {
-        data.q = data.q || 'Eris Industries';
-        $scope.searchMethod = 'query';
-        $scope.searchTerm = data.q;
-      }
-
       $rootScope.$broadcast('ntLoadingStart');
 
       Search(data).then(function(videos) {
@@ -130,9 +85,6 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
         $rootScope.$broadcast('ntLoadingEnd');
       });
 
-      Feed('most_popular').then(function(videos) {
-        $scope.popularVideos = videos;
-      });
     });
   }])
 
@@ -142,22 +94,21 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
     };
   })
 
-  .controller('CategoryListCtrl', ['$scope', 'appCategories',
-                           function($scope,   appCategories) {
-    $scope.categories = appCategories;
-  }])
+  .controller('HeaderCtrl', ['$scope', '$location', 'Transaction',
+                         function($scope,   $location, Transaction) {
 
-  .controller('SearchFormCtrl', ['$scope', '$location',
-                         function($scope,   $location) {
+    $scope.uploadVideo = function(video){
+      var username = $scope.user.user_name;
+      Transaction('POST', username + '/video', {
+        name: video.name,
+        data: video.file.base64
+      }).then(function(){
+        console.log('video uploaded')
+      });
+    };
 
     $scope.search = function() {
       var order, category, q = $scope.q;
-      if($scope.advanced) {
-        order = $scope.advanced.orderby;
-        category = $scope.advanced.category;
-      }
-
-      $scope.advanced = false;
 
       $location.search({
         q : q || '',
@@ -167,48 +118,11 @@ angular.module('2gather', ['data', 'ngRoute', 'tgAnimations'])
     };
 
     $scope.$on('$routeChangeStart', function() {
-      $scope.advanced = false;
-    });
-
-    $scope.orderingOptions = [
-      'relevance',
-      'published',
-      'viewCount',
-      'rating',
-      'position',
-      'commentCount',
-      'published',
-      'reversedPosition',
-      'title',
-      'viewCount'
-    ];
-  }])
-
-  .controller('WatchCtrl', ['$scope', '$rootScope', '$location',  'VideoInstance', 'VideoComments', 'TPL_PATH', 'currentVideo', 'Search', 'RelatedVideos',
-                    function($scope,   $rootScope,   $location,    VideoInstance,   VideoComments,   TPL_PATH,   currentVideo,   Search,   RelatedVideos) {
-
-    var videoID = VideoInstance.id;
-    $scope.video_id = videoID;
-    $scope.video = VideoInstance;
-
-    VideoComments(VideoInstance.id).then(function(comments) {
-      $scope.video_comments = comments;
-    });
-
-    currentVideo(VideoInstance);
-
-    RelatedVideos(videoID).then(function(videos) {
-      $scope.relatedVideos = videos;
-      $rootScope.$broadcast('ntLoadingEnd');
-    });
-
-    $scope.$on('$destroy', function() {
-      currentVideo(null);
+      $scope.newVideo = undefined;
     });
   }])
 
-  .controller('VideoPanelCtrl', ['$scope', 'currentVideo',
-                         function($scope,   currentVideo) {
+  .controller('WatchCtrl', ['$scope', '$rootScope', '$location',
+                    function($scope,   $rootScope,   $location){
 
-    $scope.video = currentVideo();
   }]);
