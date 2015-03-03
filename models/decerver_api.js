@@ -24,7 +24,7 @@ function SA(accAddr, sAddr) {
 };
 
 function writeFile(data) {
-	var hashObj = ipfs.PushFileData(url);
+	var hashObj = ipfs.PushFileData(data);
 	if (hashObj.Error !== "") {
 		return "";
 	} else {
