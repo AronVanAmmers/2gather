@@ -23,8 +23,8 @@ function SA(accAddr, sAddr) {
 	return sObj.Data;
 };
 
-function writeFile(url) {
-	var hashObj = ipfs.PushFile(url);
+function writeFile(data) {
+	var hashObj = ipfs.PushFileData(data);
 	if (hashObj.Error !== "") {
 		return "";
 	} else {

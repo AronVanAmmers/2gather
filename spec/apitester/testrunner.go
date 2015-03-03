@@ -17,7 +17,7 @@ type UserNameData struct {
 // Request bodies
 type VideoData struct {
 	Name string `json:"name"`
-	Url string `json:"url"`
+	Base64 string `json:"base64"`
 }
 
 type PatchString struct {
@@ -57,12 +57,12 @@ type testRunner struct {
 	client   *testClient
 	userName     string
 	videoName string
-	videoUrl string
+	videoData string
 	vidNum string
 }
 
-func NewTestRunner(baseUrl, userName, videoName, videoUrl string) *testRunner {
-	return &testRunner{NewTestClient(baseUrl), userName, videoName, videoUrl, ""}
+func NewTestRunner(baseUrl, userName, videoName, videoData string) *testRunner {
+	return &testRunner{NewTestClient(baseUrl), userName, videoName, videoData, ""}
 }
 
 func (tr *testRunner) Start() {
@@ -316,7 +316,7 @@ func (tr *testRunner) testAddVideo() {
 
 	videoData := &VideoData{}
 	videoData.Name = tr.videoName
-	videoData.Url = tr.videoUrl
+	videoData.Base64 = tr.videoData
 
 	hash, err := tr.client.postJSON("user/" + tr.userName + "/videos", videoData)
 

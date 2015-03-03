@@ -223,11 +223,11 @@ function TwoGather() {
 			if (nameObj.name === undefined || nameObj.name === ""){
 				return network.getHttpResponse(400,{},"Bad request - malformed video owner name.");
 			}
-			if (nameObj.url === undefined || nameObj.url === ""){
+			if (nameObj.base64 === undefined || nameObj.base64 === ""){
 				return network.getHttpResponse(400,{},"Bad request - malformed video owner url.");
 			}
-			Println("Posting video: " + nameObj.name + "/" + nameObj.url);
-			var hash = tgApi.addVideo(nameObj.name,nameObj.url);
+			Println("Posting video: " + nameObj.name);
+			var hash = tgApi.addVideo(nameObj.name,nameObj.base64);
 
 			if (hash === "0x0"){
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");

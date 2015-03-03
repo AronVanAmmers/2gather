@@ -233,11 +233,11 @@ function TwoGatherAPI() {
 	// VIDEO
 
 	// Post a video
-	this.addVideo = function(name,url) {
-		Println("Adding file '" + url + "' to ipfs.");
-		var hash = writeFile(url);
+	this.addVideo = function(name, data) {
+		Println("Adding file to ipfs.");
+		var hash = writeFile(data);
 		if(hash === ""){
-			Println("Error when adding file '" + url + "' to ipfs.");
+			Println("Error when adding file to ipfs.");
 			return "0x0";
 		}
 		return this.postVid(name,hash);
