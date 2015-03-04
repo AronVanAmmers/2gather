@@ -13,15 +13,19 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     $rootScope.$broadcast('tgLoadingStart');
     Transaction('GET', 'session').then(function(user) {
       $rootScope.user = user;
-      $rootScope.$broadcast('tgLoadingEnd');
       }, function(error) {
         Transaction('POST', 'user',{user_name: promptUsername()}).then(function(res){
           Transaction('GET', 'session').then(function(user){
             $rootScope.user = user;
-            $rootScope.$broadcast('tgLoadingEnd');
           });
           $rootScope.user = res;
         });
+      });
+
+      $rootScope.$watch('user', function(user){
+        if(!user) return;
+        $rootScope.$broadcast('tgLoadingEnd');
+        $rootScope.videos = user.videos;
       });
 
 
@@ -63,14 +67,14 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     };
   })
 
-  .controller('HeaderCtrl', ['$scope', '$location', 'Transaction',
-                         function($scope,   $location, Transaction) {
+  .controller('HeaderCtrl', ['$scope', '$location', '$rootScope','Transaction',
+                         function($scope,   $location, $rootScope, Transaction) {
 
     $scope.uploadVideo = function(video){
       var username = $scope.user.user_name;
       Transaction('POST', 'user/' + username + '/video', {
         name: video.name,
-        data: video.file.base64
+        base64: video.file.base64
       }).then(function(){
         console.log('video uploaded')
       });
@@ -84,6 +88,17 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
       }).path('/');
     };
 
+    $scope.$watch(function(){
+      return $location.search().user;
+    }, function(newValue, oldValue){
+      if(newValue === oldValue) return;
+      Transaction({method: 'GET', url: 'user/' + newValue})
+      .then(function(user){
+        $rootScope.videos = user.videos;
+      },
+      function(){});
+    });
+
     $scope.$on('$routeChangeStart', function() {
       $scope.newVideo = undefined;
     });
@@ -92,4 +107,12 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
   .controller('WatchCtrl', ['$scope', '$rootScope', '$location',
                     function($scope,   $rootScope,   $location){
 
+$scope.delete = function(video){
+  $rootScope.$broadcast('tgLoadingStart');
+  Transaction({method: 'DELETE', url: 'user/' + $rootScope.user.username + '/video/' + video.id})
+  .then(function(){
+    $rootScope.$broadcast('tgLoadingEnd');
+    $location.path('/');
+  });
+};
   }]);
