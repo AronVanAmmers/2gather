@@ -198,7 +198,7 @@ This causes the active user to unsubscribe to the target user. The target must b
 
 ### Resource: user.video
 
-#### POST `{base-URL}user/:username/video` (tx)
+#### POST `{base-URL}user/:username/videos` (tx)
 
 Uploads a video.
 
@@ -211,7 +211,7 @@ Request Body:
 }
 ```
 
-#### PATCH `{base-URL}/user/:username/video/:id` (tx)
+#### PATCH `{base-URL}/user/:username/videos/:id` (tx)
 
 Modify a video. A user can only modify their own videos via the current user. Any attempt to modify someone else’s videos will fail at the contract level.
 
@@ -222,7 +222,7 @@ Fields available to PATCH for the `user` resource:
 * `flag` Boolean
 * `blacklist` Boolean
 
-#### DELETE `{base-URL}/user/:username/video/:id` (tx)
+#### DELETE `{base-URL}/user/:username/videos/:id` (tx)
 
 Remove a video. The owner name has to be tied to the users thelonious address. If you try to remove some other users videos it’ll just fail. Here in case we add admin rights to remove.
 
