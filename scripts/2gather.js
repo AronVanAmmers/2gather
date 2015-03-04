@@ -72,7 +72,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
     $scope.uploadVideo = function(video){
       var username = $scope.user.user_name;
-      Transaction('POST', 'user/' + username + '/video', {
+      Transaction('POST', 'user/' + username + '/videos', {
         name: video.name,
         base64: video.file.base64
       }).then(function(){

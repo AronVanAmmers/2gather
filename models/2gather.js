@@ -6,11 +6,11 @@ function TwoGather() {
 	tgApi = new TwoGatherAPI();
 
 	// Used to handle all incoming requests. It is set as the callback for
-	// incominghttp requests. It parses the request URL into an object, then 
+	// incominghttp requests. It parses the request URL into an object, then
 	// pass that object into the appropriate sub handler (should one exist).
 	// Sub handlers needs to return a response object.
 	this.handle = function(httpReq) {
-		
+
 		Println("Receiving");
 		var urlObj = network.parseUrl(httpReq);
 		// Error 400 bad request
@@ -34,7 +34,7 @@ function TwoGather() {
 		}
 		return resp;
 	}
-	
+
 	// Handle user requests. Warning! - Very sophisticated routing algorithm at work.
 	handlers.user = function(urlObj,httpReq){
 		var path = urlObj.path;
@@ -50,21 +50,25 @@ function TwoGather() {
 			} else if (path[2] === "subs"){
 				Println("Sub request");
 				return doSub("",httpReq.Method,httpReq.Body);
+			} else {
+				return network.getHttpResponse(400,{},"Bad request: malformed URL");
 			}
 		} else if (path.length == 4){
 			if(path[2] === "videos"){
 				return doVideo(path[1],path[3],httpReq.Method,httpReq.Body);
 			} else if (path[2] === "subs"){
 				return doSub(path[3],httpReq.Method,httpReq.Body);
+			} else {
+				return network.getHttpResponse(400,{},"Bad request: malformed URL");
 			}
 		} else {
 			return network.getHttpResponse(400,{},"Bad request: malformed URL");
 		}
 	}
-	
+
 	handlers.txs = function(urlObj, httpReq) {
 		Println("Getting tx");
-		if(httpReq.Method === "GET") {			
+		if(httpReq.Method === "GET") {
 			if(urlObj.path.length !== 2){
 				return network.getHttpResponse(400,{},"Bad request: invalid path.");
 			}
@@ -102,7 +106,7 @@ function TwoGather() {
 
 	handlers.session = function(urlObj, httpReq) {
 		Println("Getting session.");
-		if(httpReq.Method === "GET") {			
+		if(httpReq.Method === "GET") {
 			if(urlObj.path.length !== 1){
 				return network.getHttpResponse(400,{},"Bad request: invalid path.");
 			}
@@ -260,7 +264,7 @@ function TwoGather() {
 					if(patch.op === "replace"){
 						txHashes[i] = tgApi.blacklistById(username, videoId);
 					} else {
-						return network.getHttpResponse(501,{},"Not yet supported - Blacklisting can't be undone.");	
+						return network.getHttpResponse(501,{},"Not yet supported - Blacklisting can't be undone.");
 					}
 				} else if (patch.field === "flag"){
 					if(patch.op === "replace"){
