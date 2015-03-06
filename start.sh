@@ -36,14 +36,23 @@ epm config log_level:${LOG_LEVEL:=3}
 blockchain_id=$(epm plop chainid)
 root_contract=${ROOT_CONTRACT:="46905240fc174f2269ae8e806f3bc6b94784664a"}
 
-echo "Configuring package.json with blockchain_id ($blockchain_id) and "
-echo "root_contract ($root_contract)."
+echo ""
+echo ""
+echo "Configuring package.json"
+echo "blockchain_id: $blockchain_id"
+echo "root_contract: $root_contract"
+echo "peer_server_address: ${REMOTE_HOST:=104.236.146.58}:${REMOTE_PORT:=15256}"
 
 mv package.json /tmp/
 
 jq '.module_dependencies[0].data |= . * {peer_server_address: "'${REMOTE_HOST:=104.236.146.58}:${REMOTE_PORT:=15256}'", blockchain_id: "'$blockchain_id'", root_contract: "'$root_contract'"}' /tmp/package.json \
   > package.json
 
-# put the 2gather DApp in focus
+echo ""
+echo ""
+echo "Starting up! (Wheeeeeee says the marmot)"
+echo ""
+echo ""
+
 sleep 5 && curl http://localhost:3000/admin/switch/2gather &
 decerver
