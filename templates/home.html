@@ -1,27 +1,30 @@
 <section class="tg-panel">
-  <header class="tg-panel-heading tg-primary-heading row">
-    <h5 class="tg-heading col-md-6">
+    <header class="tg-panel-heading tg-primary-heading row">
+        <h5 class="tg-heading col-md-6">
       Videos
     </h5>
-  </header>
-  <div class="tg-panel-content">
-    <div class="tg-videos-list row tg-grid">
-      <div ng-include="tpl('video-listing')"
-           ng-repeat="video in user.videos | limit:24"
-           class="tg-videos-list-entry col repeater">         
+    </header>
+    <div class="tg-panel-content">
+        <div class="tg-videos-list row tg-grid">
+            <div ng-repeat="video in user.videos | limit:24" class="tg-videos-list-entry col repeater">
+                <a href="#/watch/{{ video.vidnum }}" class="tg-video-entry-link">
+                    <h5 class="tg-heading">{{ video.name }}</h5>
+                </a>
+            </div>
         </div>
-     </div>
-  </div>
-  <header class="tg-panel-heading tg-primary-heading row">
-    <h5 class="tg-heading col-md-6">
+    </div>
+    <header class="tg-panel-heading tg-primary-heading row">
+        <h5 class="tg-heading col-md-6">
       Subscriptions
     </h5>
-  </header>
-  <div class="tg-panel-content">
-    <div class="tg-subscriptions-list row tg-grid">
-      <div ng-include="tpl('subscriptions-listing')"
-           ng-repeat="subscriptions in user.subscriptions | limit:24"
-           class="tg-subscriptions-list-entry col repeater"></div>
-     </div>
-  </div>
+    </header>
+    <div class="tg-panel-content">
+        <div class="tg-subscriptions-list row tg-grid">
+            <div ng-repeat="subscriptions in user.subscriptions | limit:24" class="tg-subscriptions-list-entry col repeater">
+                <a href="#/user/{{ subscription.user_name }}" class="tg-video-entry-link">
+                    <h5 class="tg-heading">{{ subscription.user_name }}</h5>
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
