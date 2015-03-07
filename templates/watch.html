@@ -1,12 +1,12 @@
 <section class="tg-panel">
   <header class="tg-panel-heading tg-primary-heading">
     <h5 class="tg-heading">
-      {{ video.title }}
+      {{ video.name }}
     </h5>
   </header>
 
   <div class="tg-player-panel">
-    <div class="tg-player" video-player="{{ video_id }}"></div>
+      <video ng-src="{{ video.url }}"></video>
   </div>
 
   <div class="row tg-grid">
@@ -20,7 +20,7 @@
       <div class="row tg-padded">
         <img ng-src="{{ video.thumbnail }}" class="col-md-4" />
         <div class="tg-video-panel-inner col-md-8">
-          <h4>{{ video.title }}</h4>
+          <h4>{{ video.name }}</h4>
         </div>
       </div>
     </div>

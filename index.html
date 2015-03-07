@@ -32,10 +32,10 @@
         <section ng-if="addingVideo" class="tg-advanced-search-header row">
           <form name="videoForm">
             <div class="col-md-4">
-                <input type="file" ng-requird ng-model="newVideo.file" ng-change="newVideo.name = newVideo.name ? newVideo.name : newVideo.file.filename" class="form-control" base-sixty-four-input />
+                <input type="file" ng-requird ng-model="newVideo.file" ng-change="newVideo.name = newVideo.name ? newVideo.name : newVideo.file.filename.substr(0,32)" class="form-control" base-sixty-four-input />
             </div>
             <div class="col-md-4">
-              <input type="text" ng-required placeholder="Enter video name" ng-model="newVideo.name" class="form-control" />
+              <input type="text" ng-required placeholder="Enter video name" ng-model="newVideo.name" class="form-control" maxlength="32" />
             </div>
             <button ng-click="uploadVideo(newVideo)" ng-disabled="videoForm.$invalid || videoForm.$pristine" class="btn btn-default col-md-2">
               <span class="fa fa-thumbs-o-up"></span> Upload
