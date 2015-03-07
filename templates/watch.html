@@ -1,28 +1,26 @@
 <section class="tg-panel">
-  <header class="tg-panel-heading tg-primary-heading">
-    <h5 class="tg-heading">
+    <header class="tg-panel-heading tg-primary-heading">
+        <h5 class="tg-heading">
       {{ video.name }}
     </h5>
-  </header>
+    </header>
 
-  <div class="tg-player-panel">
-      <video ng-src="{{ video.url }}"></video>
-  </div>
+    <div class="tg-player-panel text-center">
+        <video width="90%" style="margin-top: 5px" ng-src="{{ video.url }}"></video>
+    </div>
 
-  <div class="row tg-grid">
-    <div class="col-md-8 col">
-      <header class="tg-panel-heading">
-        <h5 class="tg-heading">
+    <div class="row tg-grid">
+        <div class="col-md-8 col">
+            <header class="tg-panel-heading">
+                <h5 class="tg-heading">
           Video Info
         </h5>
-      </header>
-
-      <div class="row tg-padded">
-        <img ng-src="{{ video.thumbnail }}" class="col-md-4" />
-        <div class="tg-video-panel-inner col-md-8">
-          <h4>{{ video.name }}</h4>
+                <ul>
+                    <li ng-repeat="(key,value) in video">
+                        {{key}} : {{value}}
+                    </li>
+                </ul>
+            </header>
         </div>
-      </div>
     </div>
-  </div>
 </section>

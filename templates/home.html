@@ -6,9 +6,11 @@
     </header>
     <div class="tg-panel-content">
         <div class="tg-videos-list row tg-grid">
-            <div ng-repeat="video in user.videos | limit:24" class="tg-videos-list-entry col repeater">
+            <p ng-hide="user.videos.length">No videos to show</p>
+            <div ng-repeat="video in user.videos | limit:24" class="tg-videos-list-entry col repeater picture-layout col-md-3">
                 <a href="#/watch/{{ video.vidnum }}" class="tg-video-entry-link">
                     <h5 class="tg-heading">{{ video.name }}</h5>
+                    <video width="100%" class="clip-thumbnail" ng-src="{{video.url}}"></video>                    
                 </a>
             </div>
         </div>
@@ -20,8 +22,9 @@
     </header>
     <div class="tg-panel-content">
         <div class="tg-subscriptions-list row tg-grid">
+            <p ng-hide="user.subscriptions.length">No subscriptions to show</p>
             <div ng-repeat="subscriptions in user.subscriptions | limit:24" class="tg-subscriptions-list-entry col repeater">
-                <a href="#/user/{{ subscription.user_name }}" class="tg-video-entry-link">
+                <a href="#/?user={{ subscription.user_name }}" class="tg-video-entry-link">
                     <h5 class="tg-heading">{{ subscription.user_name }}</h5>
                 </a>
             </div>
