@@ -15,23 +15,22 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             return prompt('User not found. Please enter a username to create a new user') || promptUsername();
         }
         $rootScope.$broadcast('tgLoadingStart');
+        Transaction('GET', 'session').then(function (user) {
+            $rootScope.user = user;
+        }, function (error) {
+            Transaction('POST', 'user', {
+                user_name: promptUsername()
+            }).then(function (res) {
                 Transaction('GET', 'session').then(function (user) {
                     $rootScope.user = user;
-                }, function (error) {
-                    Transaction('POST', 'user', {
-                        user_name: promptUsername()
-                    }).then(function (res) {
-                        Transaction('GET', 'session').then(function (user) {
-                            $rootScope.user = user;
-                        });
-                        $rootScope.user = res;
-                    });
                 });
+                $rootScope.user = res;
+            });
+        });
 
         $rootScope.$watch('user', function (user) {
             if (!user) return;
             $rootScope.$broadcast('tgLoadingEnd');
-            $rootScope.videos = user.videos;
         });
 
 
@@ -49,14 +48,18 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         controller: 'WatchCtrl',
         templateUrl: TPL_PATH + '/watch.html',
         resolve: {
-            Video: ['Transaction', '$location', '$rootScope',
-                function (Transaction, $location, $rootScope) {
+            Video: ['Transaction', '$location', '$rootScope', '$q',
+                function (Transaction, $location, $rootScope, $q) {
                     if (!$rootScope.user) $location.path('/');
                     else {
+                        var defer = $q.defer();
                         //match the ID with a regex instead of using route params
                         //since the route has not fully changed yetd
                         var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
-                        Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id);
+                        Transaction('GET', 'user/' + $rootScope.user.user_name + '/videos/' + id).then(function (res) {
+                            defer.resolve(res);
+                        });
+                        return defer.promise;
                     }
         }]
         }
