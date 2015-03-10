@@ -398,7 +398,7 @@ function TwoGatherAPI() {
 				vidObj.Key));
 		vdat.date = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
 				vidObj.Key);
-		vdat.vidnum = vidObj.Key;
+		vdat.id = vidObj.Key;
 		vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
 				vidObj.Key);
 		var vidHash = "1220" + vidObj.Value.slice(2);
