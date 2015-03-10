@@ -406,8 +406,9 @@ function TwoGatherAPI() {
 		vdat.id = vidObj.Key;
 		vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
 				vidObj.Key);
-		var vidHash = "1220" + vidObj.Value.slice(2);
-		vdat.url = ipfs.GetFileURL(vidHash,false).Data;
+		// var vidHash = "1220" + vidObj.Value.slice(2);
+		// vdat.url = ipfs.GetFileURL(vidHash,false).Data;
+		vdat.hash = "1220" + vidObj.Value.slice(2);
 		return vdat;
 	}
 
