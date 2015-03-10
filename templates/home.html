@@ -8,7 +8,8 @@
         <div class="tg-videos-list row tg-grid">
             <p ng-hide="user.videos.length">No videos to show</p>
             <div ng-repeat="video in videos | limit:24" class="tg-videos-list-entry col repeater picture-layout col-md-3">
-                <a href="#/watch/{{ video.vidnum }}" class="tg-video-entry-link">
+                <a href ng-click="delete()" ng-show="canDelete" class="pull-right"><i class="fa fa-times"></i></a>
+                <a href="#/watch/{{ video.id }}" class="tg-video-entry-link">
                     <h5 class="tg-heading">{{ video.name }}</h5>
                     <video width="100%" class="clip-thumbnail" ng-src="{{video.url}}"></video>                    
                 </a>

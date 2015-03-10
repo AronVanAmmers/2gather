@@ -9,8 +9,10 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $sceDelegateProvider.resourceUrlWhitelist(['self', 'http://ipfs:8080/**']);
   }])
 
-.run(['$rootScope', 'Transaction',
-    function ($rootScope, Transaction) {
+.run(['$rootScope', 'Transaction', '$location',
+    function ($rootScope, Transaction, $location) {
+        $location.path('/');
+
         function promptUsername() {
             return prompt('User not found. Please enter a username to create a new user') || promptUsername();
         }
@@ -28,8 +30,9 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         });
 
 
-        $rootScope.$on('$routeChangeStart', function () {
+        $rootScope.$on('$locationChangeStart', function (ev) {
             $rootScope.$broadcast('tgLoadingStart');
+            if (!$rootScope.user) ev.preventDefault();
         });
   }])
 
@@ -44,17 +47,14 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         resolve: {
             Video: ['Transaction', '$location', '$rootScope', '$q',
                 function (Transaction, $location, $rootScope, $q) {
-                    if (!$rootScope.user) $location.path('/');
-                    else {
-                        var defer = $q.defer();
-                        //match the ID with a regex instead of using route params
-                        //since the route has not fully changed yetd
-                        var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
-                        Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (res) {
-                            defer.resolve(res);
-                        });
-                        return defer.promise;
-                    }
+                    var defer = $q.defer();
+                    //match the ID with a regex instead of using route params
+                    //since the route has not fully changed yetd
+                    var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
+                    Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (res) {
+                        defer.resolve(res);
+                    });
+                    return defer.promise;
         }]
         }
     });
@@ -89,7 +89,16 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
 .controller('HomeCtrl', ['$scope', '$rootScope', '$location',
     function ($scope, $rootScope, $location) {
+        $scope.canDelete = function () {
+            return !$location.search().user; //not viewing subscription. so list of videos is user's own
+        };
 
+        $scope.delete = function (video) {
+            Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/video/' + Video.id)
+                .then(function () {
+                    $location.path('/');
+                });
+        };
   }])
 
 .filter('limit', function () {
@@ -126,11 +135,13 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             return $location.search().user;
         }, function (newValue, oldValue) {
             if (newValue === oldValue) return;
-            Transaction('GET', 'users/' + newValue)
-                .then(function (user) {
-                        $rootScope.videos = user.videos;
-                    },
-                    function () {});
+            if (!newValue)
+                $rootScope.videos = $rootScope.user.videos;
+            else
+                Transaction('GET', 'users/' + newValue + '/videos')
+                .then(function (videos) {
+                    $rootScope.videos = videos;
+                });
         });
 
         $scope.$on('$routeChangeStart', function () {
@@ -142,11 +153,4 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     function ($scope, $rootScope, $location, Video) {
 
         $scope.video = Video;
-
-        $scope.delete = function (video) {
-            Transaction('DELETE', 'users/' + $rootScope.user.username + '/video/' + video.id)
-                .then(function () {
-                    $location.path('/');
-                });
-        };
   }]);
