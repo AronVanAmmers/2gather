@@ -14,11 +14,10 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         function promptUsername() {
             return prompt('User not found. Please enter a username to create a new user') || promptUsername();
         }
-        $rootScope.$broadcast('tgLoadingStart');
         Transaction('GET', 'session').then(function (user) {
             $rootScope.user = user;
         }, function (error) {
-            Transaction('POST', 'user', {
+            Transaction('POST', 'users', {
                 user_name: promptUsername()
             }).then(function (res) {
                 Transaction('GET', 'session').then(function (user) {
@@ -26,11 +25,6 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                 });
                 $rootScope.user = res;
             });
-        });
-
-        $rootScope.$watch('user', function (user) {
-            if (!user) return;
-            $rootScope.$broadcast('tgLoadingEnd');
         });
 
 
@@ -56,7 +50,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                         //match the ID with a regex instead of using route params
                         //since the route has not fully changed yetd
                         var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
-                        Transaction('GET', 'user/' + $rootScope.user.user_name + '/videos/' + id).then(function (res) {
+                        Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (res) {
                             defer.resolve(res);
                         });
                         return defer.promise;
@@ -109,13 +103,13 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
         $scope.uploadVideo = function (video) {
             var username = $scope.user.user_name;
-            Transaction('POST', 'user/' + username + '/videos', {
+            Transaction('POST', 'users/' + username + '/videos', {
                 name: video.name,
                 base64: video.file.base64
             }).then(function () {
                 $scope.addingVideo = false;
-                Transaction('GET', 'session').then(function (user) {
-                    $rootScope.user.videos = user.videos;
+                Transaction('GET', 'users/' + username + '/videos').then(function (user) {
+                    $rootScope.videos = user.videos;
                 });
             });
         };
@@ -132,7 +126,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             return $location.search().user;
         }, function (newValue, oldValue) {
             if (newValue === oldValue) return;
-            Transaction('GET', 'user/' + newValue)
+            Transaction('GET', 'users/' + newValue)
                 .then(function (user) {
                         $rootScope.videos = user.videos;
                     },
@@ -150,10 +144,8 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.video = Video;
 
         $scope.delete = function (video) {
-            $rootScope.$broadcast('tgLoadingStart');
-            Transaction('DELETE', 'user/' + $rootScope.user.username + '/video/' + video.id)
+            Transaction('DELETE', 'users/' + $rootScope.user.username + '/video/' + video.id)
                 .then(function () {
-                    $rootScope.$broadcast('tgLoadingEnd');
                     $location.path('/');
                 });
         };
