@@ -52,7 +52,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     //since the route has not fully changed yetd
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
                     Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (video) {
-                        Transaction('GET', video.url).then(function (base64) {
+                        Transaction('GET', 'videos/' + video.hash).then(function (base64) {
                             video.base64 = base64;
                             defer.resolve(video);
                         });
