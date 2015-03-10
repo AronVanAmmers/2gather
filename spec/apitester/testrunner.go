@@ -75,6 +75,7 @@ func (tr *testRunner) Start() {
 	tr.testAddSub();
 	tr.testRemoveSub();
 	tr.testAddVideo();
+	tr.testGetUsersVideos();
 	tr.testGetVideo();
 	tr.testFlagVideo();
 	tr.testBlacklistVideo();
@@ -349,6 +350,43 @@ func (tr *testRunner) testAddVideo() {
 	for i := 0; i < len(usr.Videos); i++ {
 		if usr.Videos[i].Name == tr.videoName {
 			tr.videoId = usr.Videos[i].Id
+			fmt.Println("Test successful.");
+			return;
+		}
+	}
+
+	fmt.Println("Test Failed.");
+	tr.abortTest();
+}
+
+
+func (tr *testRunner) testGetUsersVideos() {
+	fmt.Println("Testing: Getting users videos.")
+
+	vids, vErr := tr.client.get("users/" + tr.userName + "/videos")
+
+	if vErr != nil {
+		fmt.Println("Test failed: Video data corrupted: " + vErr.Error())
+		tr.abortTest()
+	}
+
+	vidsBytes, err := ioutil.ReadAll(vids.Body)
+
+	if err != nil {
+		fmt.Println("Test failed: Could not read video data: " + err.Error())
+		tr.abortTest()
+	}
+
+	videos := []Video{}
+	err = json.Unmarshal(vidsBytes, &videos)
+
+	if err != nil {
+		fmt.Println("Test failed: Could not read video data: " + err.Error())
+		tr.abortTest()
+	}
+
+	if len(videos) != 0 {
+		if videos[0].Status == "0x01" {
 			fmt.Println("Test successful.");
 			return;
 		}
