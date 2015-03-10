@@ -176,7 +176,7 @@ func (tr *testRunner) session() (ret *User, err error) {
 
 func (tr *testRunner) getUser(userName string) (ret *User, err error) {
 
-	resp, err := tr.client.get("user/" + userName)
+	resp, err := tr.client.get("users/" + userName)
 	if err != nil {
 		return
 	}
@@ -258,7 +258,7 @@ func (tr *testRunner) testAddSub() {
 	userData.UserName = tr.userName
 
 	// Add the subscriber himself
-	hash, err := tr.client.postJSON("user/" + tr.userName + "/subs", userData)
+	hash, err := tr.client.postJSON("users/" + tr.userName + "/subs", userData)
 
 	if err != nil {
 		fmt.Println("Result: Add subscription failed.")
@@ -287,7 +287,7 @@ func (tr *testRunner) testRemoveSub() {
 	fmt.Println("Testing: Add subscription")
 
 	// Add the subscriber himself
-	hash, err := tr.client.delete("user/" + tr.userName + "/subs/" + tr.userName, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName + "/subs/" + tr.userName, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Remove subscription failed.")
@@ -318,7 +318,7 @@ func (tr *testRunner) testAddVideo() {
 	videoData.Name = tr.videoName
 	videoData.Base64 = tr.videoData
 
-	hash, err := tr.client.postJSON("user/" + tr.userName + "/videos", videoData)
+	hash, err := tr.client.postJSON("users/" + tr.userName + "/videos", videoData)
 
 	if err != nil {
 		fmt.Println("Result: Add video failed.")
@@ -386,7 +386,7 @@ func (tr *testRunner) testRemoveVideo() {
 		tr.abortTest()
 	}
 
-	hash, err := tr.client.delete("user/" + tr.userName + "/videos/" + vidNum, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName + "/videos/" + vidNum, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Delete video failed.")
@@ -414,7 +414,7 @@ func (tr *testRunner) testRemoveVideo() {
 func (tr *testRunner) testRemoveUser() {
 	fmt.Println("Testing: Remove User")
 
-	hash, err := tr.client.delete("user/" + tr.userName, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Delete user failed.")
@@ -441,7 +441,7 @@ func (tr *testRunner) testBTCAddr() {
 	patch := &PatchString{"replace", "btc_address","0xdeadbeef"}
 	patches := make([]*PatchString,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName, patches)
 
 	if err != nil {
 		fmt.Println("Result: Add btc_address failed: " + err.Error())
@@ -473,7 +473,7 @@ func (tr *testRunner) testBlacklistPerm() {
 	patch := &PatchBool{"replace", "blacklist_perm", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName, patches)
 
 	if err != nil {
 		fmt.Println("Result: Add blacklist perms failed: " + err.Error())
@@ -506,7 +506,7 @@ func (tr *testRunner) testFlagVideo() {
 	patch := &PatchBool{"replace", "flag", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName + "/videos/" + tr.vidNum, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.vidNum, patches)
 
 	if err != nil {
 		fmt.Println("Result: Flag failed: " + err.Error())
@@ -538,7 +538,7 @@ func (tr *testRunner) testBlacklistVideo() {
 	patch := &PatchBool{"replace", "blacklist", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName + "/videos/" + tr.vidNum, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.vidNum, patches)
 
 	if err != nil {
 		fmt.Println("Result: Blacklist failed: " + err.Error())
