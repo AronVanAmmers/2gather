@@ -253,8 +253,8 @@ Response body:
   "date": Number,
   "name": String,
   "status": Number
-  "url": String,
-  "vidnum": Number,
+  "hash": String,
+  "id": Number,
 }
 ```
 
