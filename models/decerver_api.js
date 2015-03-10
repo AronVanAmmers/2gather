@@ -48,7 +48,7 @@ function readFile(hash) {
 };
 
 function readFileRaw(fullHash) {
-	var fileObj = ipfs.GetFile(fullHash, true);
+	var fileObj = ipfs.GetFile(fullHash, false);
 
 	if (fileObj.Error !== "") {
 		return "";

@@ -5,7 +5,6 @@ import (
 	"path"
 	"io/ioutil"
 	"encoding/json"
-	"strings"
 	"time"
 	"os"
 )
@@ -51,7 +50,7 @@ type Video struct {
 	Date string `json:"date"`
 	Id string `json:"id"`
 	Status string `json:"status"`
-	Url string `json:"url"`
+	Hash string `json:"hash"`
 }
 
 type testRunner struct {
@@ -374,8 +373,7 @@ func (tr *testRunner) testGetVideo() {
 		tr.abortTest()
 	}
 
-	videoHash := usr.Videos[0].Url
-	videoHash = strings.Replace(videoHash, "http://ipfs:8080/ipfs/", "", 1)
+	videoHash := usr.Videos[0].Hash
 	hash, err := tr.client.get("videos/" + videoHash)
 
 	if err != nil {
