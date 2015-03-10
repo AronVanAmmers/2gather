@@ -246,7 +246,7 @@ option {
     height: 640px;
     overflow: hidden;
     position: relative;
-    background: url(/img/bg.png);
+    background: url(/2gather/img/bg.png);
 }
 .tg-player-panel .tg-player {
     border: 0;
