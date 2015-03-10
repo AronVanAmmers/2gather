@@ -46,7 +46,7 @@ function TwoGather() {
 			return doUser(path[1], httpReq.Method, httpReq.Body);
 		} else if (path.length == 3){
 			if(path[2] === "videos"){
-				return doVideo("","",httpReq.Method,httpReq.Body);
+				return doVideo(path[1],"",httpReq.Method,httpReq.Body);
 			} else if (path[2] === "subs"){
 				Println("Sub request");
 				return doSub("",httpReq.Method,httpReq.Body);
@@ -227,13 +227,23 @@ function TwoGather() {
 
 	function doVideo(username,videoId, method, body){
 		if (method === "GET"){
-			// This is a request to get user data.
-			Println("Getting video: " + username + "/" + videoId);
-			var video = tgApi.getVideoData(username,videoId);
-			if (video === null){
-				return network.getHttpResponse(404,{},"Resource not found.");
+			if(videoId === ""){
+				// Get list of users videos
+				Println("Getting all videos for " + username)
+				var vids = tgApi.getUserVids(username)
+				if (vids === null){
+					return network.getHttpResponse(404,{},"Resource not found.");
+				}
+				return network.getHttpResponseJSON(vids);
+			} else {
+				// This is a request to get user data.
+				Println("Getting video: " + username + "/" + videoId);
+				var video = tgApi.getVideoData(username,videoId);
+				if (video === null){
+					return network.getHttpResponse(404,{},"Resource not found.");
+				}
+				return network.getHttpResponseJSON(video);
 			}
-			return network.getHttpResponseJSON(video);
 		} else if (method === "POST"){
 			// We get videoId from the body here.
 			var nameObj = JSON.parse(body);

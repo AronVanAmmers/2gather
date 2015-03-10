@@ -161,6 +161,17 @@ function TwoGatherAPI() {
 		return userData;
 	}
 
+	this.getUserVids = function(userName){
+		var channelAddr = usernameToChannelAddr(userName);
+		if (IsZero(channelAddr)){
+			Println("User not found");
+			return null;
+		}
+
+		var vids = getChanVids(channelAddr);
+		return vids
+	}
+
 	// Subscribe to a channel
 	this.subTo = function(userName) {
 		var channelAddr = usernameToChannelAddr(userName);
