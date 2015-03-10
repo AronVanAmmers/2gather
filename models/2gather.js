@@ -36,7 +36,7 @@ function TwoGather() {
 	}
 
 	// Handle user requests. Warning! - Very sophisticated routing algorithm at work.
-	handlers.user = function(urlObj,httpReq){
+	handlers.users = function(urlObj,httpReq){
 		var path = urlObj.path;
 		if(path.length === 0 || path > 4){
 			return network.getHttpResponse(400,{},"Bad request: invalid path.");
