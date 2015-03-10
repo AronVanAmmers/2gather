@@ -46,3 +46,14 @@ function readFile(hash) {
 		return fileObj.Data;
 	}
 };
+
+function readFileRaw(fullHash) {
+	var fileObj = ipfs.GetFile(fullHash, true);
+
+	if (fileObj.Error !== "") {
+		return "";
+	} else {
+		// This would be the file data as a string.
+		return fileObj.Data;
+	}
+};

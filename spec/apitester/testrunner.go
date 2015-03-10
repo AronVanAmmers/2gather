@@ -5,6 +5,7 @@ import (
 	"path"
 	"io/ioutil"
 	"encoding/json"
+	"strings"
 	"time"
 	"os"
 )
@@ -75,6 +76,7 @@ func (tr *testRunner) Start() {
 	tr.testAddSub();
 	tr.testRemoveSub();
 	tr.testAddVideo();
+	tr.testGetVideo();
 	tr.testFlagVideo();
 	tr.testBlacklistVideo();
 	tr.testRemoveVideo();
@@ -357,6 +359,45 @@ func (tr *testRunner) testAddVideo() {
 	tr.abortTest();
 }
 
+func (tr *testRunner) testGetVideo() {
+	fmt.Println("Testing: Getting video.")
+
+	usr, uErr := tr.getUser(tr.userName)
+
+	if uErr != nil {
+		fmt.Println("Test failed: User data corrupted: " + uErr.Error())
+		tr.abortTest()
+	}
+
+	if len(usr.Videos) == 0 {
+		fmt.Println("Test failed: No videos in user account.")
+		tr.abortTest()
+	}
+
+	videoHash := usr.Videos[0].Url
+	videoHash = strings.Replace(videoHash, "http://ipfs:8080/ipfs/", "", 1)
+	hash, err := tr.client.get("videos/" + videoHash)
+
+	if err != nil {
+		fmt.Println("Result: Getting video failed.")
+		tr.abortTest()
+	}
+
+	vid, err := ioutil.ReadAll(hash.Body)
+
+	if err != nil {
+		fmt.Println("Result: Getting video failed.")
+		tr.abortTest()
+	}
+
+	if (string(vid) == tr.videoData) {
+		fmt.Println("Test successful.")
+		return
+	}
+
+	fmt.Println("Test Failed.");
+	tr.abortTest();
+}
 
 func (tr *testRunner) testRemoveVideo() {
 	fmt.Println("Testing: Remove Video")

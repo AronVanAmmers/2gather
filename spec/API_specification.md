@@ -60,6 +60,10 @@ Lots of flexibilty here regarding precise design.
     <td>Videos associated with a file/stream, a channel, and some other things.</td>
   </tr>
   <tr>
+    <td>videos</td>
+    <td>returns contents of videos based on the ipfs hash.</td>
+  </tr>
+  <tr>
     <td>txs</td>
     <td>Used for checking on txs.</td>
   </tr>
@@ -246,13 +250,19 @@ Response body:
 
 ```javascript
 {
+  "date": Number,
   "name": String,
-  "hash": String,
-  "upload_date": Number,
-  "video_number": Number,
   "status": Number
+  "url": String,
+  "vidnum": Number,
 }
 ```
+
+### Resource: videos
+
+#### GET `{base-URL}/videos/:hash`
+
+Returns the content of a video file.
 
 ### Resource: txs
 
