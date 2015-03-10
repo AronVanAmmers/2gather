@@ -38,46 +38,6 @@ Lots of flexibilty here regarding precise design.
 
 `Response` format: JSON body.
 
-**API calls**
-
-**Resources**
-
-<table>
-  <tr>
-    <td>resource type</td>
-    <td>description</td>
-  </tr>
-  <tr>
-    <td>user</td>
-    <td>A user has a channel, a user name, a bitcoin address (optional), videos, subscribers, and some other things.</td>
-  </tr>
-  <tr>
-    <td>user.subscriber</td>
-    <td>A subscriber is the name of another user to whom the user subscribes.</td>
-  </tr>
-  <tr>
-    <td>user.videos</td>
-    <td>Videos associated with a file/stream, a channel, and some other things.</td>
-  </tr>
-  <tr>
-    <td>videos</td>
-    <td>returns contents of videos based on the ipfs hash.</td>
-  </tr>
-  <tr>
-    <td>txs</td>
-    <td>Used for checking on txs.</td>
-  </tr>
-  <tr>
-    <td>mining</td>
-    <td>Used to turn mining on and off.</td>
-  </tr>
-  <tr>
-    <td>session</td>
-    <td>The current active session.</td>
-  </tr>
-</table>
-
-
 ### API Calls -- Base URL
 
 This is a list of useful API calls.
@@ -129,9 +89,9 @@ Response body:
 }
 ```
 
-### Resource: user
+### Resource: users
 
-#### POST `{base-URL}/user` (tx)
+#### POST `{base-URL}/users` (tx)
 
 Creates a new user account. This will create an account and let the current post/remove videos, and add/remove subscriptions.
 
@@ -143,13 +103,13 @@ Request Body:
 }
 ```
 
-#### DELETE `{base-URL}/user/:username` (tx)
+#### DELETE `{base-URL}/users/:username` (tx)
 
 Deletes a user account. The account has to be tied to the user's currently used address. If trying to remove some other users account the contracts will not allow and the call to the API will fail.
 
 **Note**, The API endpoint currently requires a username in case we add the possibility for admins to remove other users later.
 
-#### GET `{base-URL}/user/:username`
+#### GET `{base-URL}/users/:username`
 
 Retrieves user data. Somewhat overlaps with `session` data in how the response body is structured, but this call allows for retrieval of any user's information while the `session` GET only allows the current user to retrieve their own information.
 
@@ -166,7 +126,7 @@ Retrieves user data. Somewhat overlaps with `session` data in how the response b
 }
 ```
 
-#### (PATCH) `{base-URL}/user/:username` (tx)
+#### (PATCH) `{base-URL}/users/:username` (tx)
 
 Modify a user. A user can only modify the account tied to their thelonious address. Any attempt to modify someone else’s address will fail.
 
@@ -182,9 +142,9 @@ To set doug or blacklist permissions for a user, just send a ‘replace’ OP. I
 
 To remove the permission send a ‘remove’ OP.
 
-### Resource: user.subscriber
+### Resource: users.subscriber
 
-#### POST `{base-URL}/user/:username/subs/` (tx)
+#### POST `{base-URL}/users/:username/subs/` (tx)
 
 Subscribes to another user.
 
@@ -196,13 +156,13 @@ Request Body:
 }
 ```
 
-#### DELETE `{base-URL}/user/:username/subs/:subname` (tx)
+#### DELETE `{base-URL}/users/:username/subs/:subname` (tx)
 
 This causes the active user to unsubscribe to the target user. The target must be subscribed to by the active user or it will fail.
 
-### Resource: user.video
+### Resource: users.video
 
-#### POST `{base-URL}user/:username/videos` (tx)
+#### POST `{base-URL}/users/:username/videos` (tx)
 
 Uploads a video.
 
@@ -215,7 +175,7 @@ Request Body:
 }
 ```
 
-#### PATCH `{base-URL}/user/:username/videos/:id` (tx)
+#### PATCH `{base-URL}/users/:username/videos/:id` (tx)
 
 Modify a video. A user can only modify their own videos via the current user. Any attempt to modify someone else’s videos will fail at the contract level.
 
@@ -226,11 +186,11 @@ Fields available to PATCH for the `user` resource:
 * `flag` Boolean
 * `blacklist` Boolean
 
-#### DELETE `{base-URL}/user/:username/videos/:id` (tx)
+#### DELETE `{base-URL}/users/:username/videos/:id` (tx)
 
 Remove a video. The owner name has to be tied to the users thelonious address. If you try to remove some other users videos it’ll just fail. Here in case we add admin rights to remove.
 
-#### GET `{base-URL}/user/:username/videos/`
+#### GET `{base-URL}/users/:username/videos/`
 
 Gets all the users videos.
 
@@ -242,7 +202,7 @@ Reponse body:
 }
 ```
 
-#### GET `{base-URL}/user/:username/videos/:id`
+#### GET `{base-URL}/users/:username/videos/:id`
 
 Gets the video with the given id.
 
