@@ -48,7 +48,7 @@ type User struct {
 type Video struct {
 	Name string `json:"name"`
 	Date string `json:"date"`
-	VidNum string `json:"vidnum"`
+	Id string `json:"id"`
 	Status string `json:"status"`
 	Url string `json:"url"`
 }
@@ -58,7 +58,7 @@ type testRunner struct {
 	userName     string
 	videoName string
 	videoData string
-	vidNum string
+	videoId string
 }
 
 func NewTestRunner(baseUrl, userName, videoName, videoData string) *testRunner {
@@ -227,7 +227,7 @@ func (tr *testRunner) testCreateUser() {
 	userData := &UserNameData{}
 	userData.UserName = tr.userName
 
-	hash, err := tr.client.postJSON("user", userData)
+	hash, err := tr.client.postJSON("users", userData)
 
 	if err != nil {
 		fmt.Println("Result: Create User failed.")
@@ -347,7 +347,7 @@ func (tr *testRunner) testAddVideo() {
 
 	for i := 0; i < len(usr.Videos); i++ {
 		if usr.Videos[i].Name == tr.videoName {
-			tr.vidNum = usr.Videos[i].VidNum
+			tr.videoId = usr.Videos[i].Id
 			fmt.Println("Test successful.");
 			return;
 		}
@@ -373,20 +373,20 @@ func (tr *testRunner) testRemoveVideo() {
 		tr.abortTest()
 	}
 
-	vidNum := ""
+	videoId := ""
 
 	for i := 0; i < len(usr.Videos); i++ {
 		if usr.Videos[i].Name == tr.videoName {
-			vidNum = usr.Videos[i].VidNum
+			videoId = usr.Videos[i].Id
 		}
 	}
 
-	if vidNum == "" {
+	if videoId == "" {
 		fmt.Println("Video not in user account.")
 		tr.abortTest()
 	}
 
-	hash, err := tr.client.delete("users/" + tr.userName + "/videos/" + vidNum, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName + "/videos/" + videoId, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Delete video failed.")
@@ -506,7 +506,7 @@ func (tr *testRunner) testFlagVideo() {
 	patch := &PatchBool{"replace", "flag", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.vidNum, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.videoId, patches)
 
 	if err != nil {
 		fmt.Println("Result: Flag failed: " + err.Error())
@@ -538,7 +538,7 @@ func (tr *testRunner) testBlacklistVideo() {
 	patch := &PatchBool{"replace", "blacklist", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.vidNum, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.videoId, patches)
 
 	if err != nil {
 		fmt.Println("Result: Blacklist failed: " + err.Error())

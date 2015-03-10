@@ -13,11 +13,11 @@ dependencies:
 test:
   pre:
     - "docker-compose -f spec/fig_testing.yml build && docker pull eris/ipfs"
-    # start with the test fig. wait for contracts to be compiled and deployed.
-    - "docker-compose -f spec/fig_testing.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60"
 
   override:
-    - go run spec/main.go
+    # start with the test fig. wait for contracts to be compiled and deployed.
+    - "docker-compose -f spec/fig_testing.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60 && go run spec/main.go":
+        timeout: 900
     # - grunt test
 
   post:
