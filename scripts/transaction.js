@@ -54,8 +54,10 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
                 }).error(defer.reject);
             }).error(defer.reject);
 
-        return defer.promise.then(function () {
+        defer.promise.then(function () {
             $rootScope.$broadcast('tgLoadingEnd');
         });
+
+        return defer.promise;
     };
 });
