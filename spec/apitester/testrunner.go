@@ -227,7 +227,7 @@ func (tr *testRunner) testCreateUser() {
 	userData := &UserNameData{}
 	userData.UserName = tr.userName
 
-	hash, err := tr.client.postJSON("user", userData)
+	hash, err := tr.client.postJSON("users", userData)
 
 	if err != nil {
 		fmt.Println("Result: Create User failed.")
