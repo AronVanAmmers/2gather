@@ -66,6 +66,19 @@ function TwoGather() {
 		}
 	}
 
+	handlers.videos = function(urlObj, httpReq) {
+		Println("Getting video");
+		if(httpReq.Method === "GET") {
+			if(urlObj.path.length !== 2) {
+				return network.getHttpResponse(400,{},"Bad request: invalid path.");
+			}
+			video = tgApi.getVideo(urlObj.path[1]);
+			return network.getHttpResponse(200,{},video);
+		} else {
+			return network.getHttpResponse(400,{},"Bad request: method not supported (" + httpReq.Method + ")");
+		}
+	}
+
 	handlers.txs = function(urlObj, httpReq) {
 		Println("Getting tx");
 		if(httpReq.Method === "GET") {
