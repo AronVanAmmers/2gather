@@ -6,7 +6,9 @@
     </header>
 
     <div class="tg-player-panel text-center">
-        <video width="90%" style="margin-top: 5px" ng-src="{{ video.url }}"></video>
+        <video width="90%" style="margin-top: 5px" controls>
+            <source type="video/mp4" src="data:video/mp4;base64,{{video.base64}}">
+        </video>
     </div>
 
     <div class="row tg-grid">

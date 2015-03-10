@@ -51,8 +51,11 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     //match the ID with a regex instead of using route params
                     //since the route has not fully changed yetd
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
-                    Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (res) {
-                        defer.resolve(res);
+                    Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (video) {
+                        Transaction('GET', video.url).then(function (base64) {
+                            video.base64 = base64;
+                            defer.resolve(video);
+                        });
                     });
                     return defer.promise;
         }]
@@ -151,6 +154,5 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
 .controller('WatchCtrl', ['$scope', '$rootScope', '$location', 'Video',
                     function ($scope, $rootScope, $location, Video) {
-
         $scope.video = Video;
   }]);
