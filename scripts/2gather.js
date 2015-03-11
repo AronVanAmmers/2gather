@@ -49,7 +49,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         resolve: {
             Video: ['Transaction', '$location', '$rootScope', '$q', '$sce',
                 function (Transaction, $location, $rootScope, $q, $sce) {
-                    if (!$rootScope.uer) {
+                    if (!$rootScope.user) {
                         $location.path('/');
                         return;
                     }
