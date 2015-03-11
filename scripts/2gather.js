@@ -49,13 +49,17 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         resolve: {
             Video: ['Transaction', '$location', '$rootScope', '$q', '$sce',
                 function (Transaction, $location, $rootScope, $q, $sce) {
+                    if (!$rootScope.uer) {
+                        $location.path('/');
+                        return;
+                    }
                     var defer = $q.defer();
                     //match the ID with a regex instead of using route params
                     //since the route has not fully changed yetd
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
                     Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (video) {
                         Transaction('GET', 'videos/' + video.hash).then(function (base64) {
-                            video.base64 = $sce.trustAsUrl(base64);
+                            video.base64 = $sce.trustAsUrl('data:video/mp4;base64,' + base64);
                             defer.resolve(video);
                         });
                     });
@@ -92,8 +96,8 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     };
 })
 
-.controller('HomeCtrl', ['$scope', '$rootScope', '$location',
-    function ($scope, $rootScope, $location) {
+.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Transactions',
+    function ($scope, $rootScope, $location, Transaction) {
         $scope.canDelete = function () {
             return !$location.search().user; //not viewing subscription. so list of videos is user's own
         };
@@ -139,7 +143,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.$watch(function () {
             return $location.search().user;
         }, function (newValue, oldValue) {
-            if (newValue === oldValue) return;
+            if (newValue === oldValue || $location.path() !== '/') return;
             if (!newValue)
                 $rootScope.videos = $rootScope.user.videos;
             else
