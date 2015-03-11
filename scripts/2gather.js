@@ -12,6 +12,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .run(['$rootScope', 'Transaction', '$location',
     function ($rootScope, Transaction, $location) {
         $location.path('/');
+        $location.search({});
 
         function promptUsername() {
             return prompt('User not found. Please enter a username to create a new user') || promptUsername();
@@ -59,7 +60,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
                     Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (video) {
                         Transaction('GET', 'videos/' + video.hash).then(function (base64) {
-                            video.base64 = $sce.trustAsUrl('data:video/mp4;base64,' + base64);
+                            video.base64 = $sce.trustAsResourceUrl('data:video/mp4;base64,' + base64);
                             defer.resolve(video);
                         });
                     });
@@ -103,9 +104,9 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         };
 
         $scope.delete = function (video) {
-            Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/video/' + video.id)
+            Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/videos/' + video.id)
                 .then(function () {
-                    $location.path('/');
+                    $scope.user.videos
                 });
         };
   }])
