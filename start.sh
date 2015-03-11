@@ -3,7 +3,7 @@
 echo ""
 echo ""
 echo "Fetching the Chain."
-epm fetch --checkout --name 2gather ${REMOTE_HOST:=104.236.146.58}:${REMOTE_PORT:=15258}
+epm fetch --checkout --name 2gather ${REMOTE_HOST:=104.236.146.58}:${FETCH_PORT:=15258}
 echo "The chain has been fetched and checked out."
 
 echo ""
