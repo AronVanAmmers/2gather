@@ -103,7 +103,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         };
 
         $scope.delete = function (video) {
-            Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/video/' + Video.id)
+            Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/video/' + video.id)
                 .then(function () {
                     $location.path('/');
                 });
@@ -119,6 +119,19 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('HeaderCtrl', ['$scope', '$location', '$rootScope', 'Transaction',
                          function ($scope, $location, $rootScope, Transaction) {
 
+        $scope.subscribedTo = function (username) {
+            return $rootScope.user.subscribers.indexOf(username) !== -1;
+        };
+
+        $scope.subscribe = function () {
+            if (subscribedTo($rootScope.viewingUser)) return;
+            Transaction('POST', 'user/' + $rootScope.user.user_name + '/subs', {
+                user_name: $rootScope.viewingUser
+            }).then(function () {
+                $rootScope.user.subscribers.push($rootScope.viewingUser);
+            });
+        };
+
         $scope.uploadVideo = function (video) {
             var username = $scope.user.user_name;
             Transaction('POST', 'users/' + username + '/videos', {
@@ -128,6 +141,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                 $scope.addingVideo = false;
                 Transaction('GET', 'users/' + username + '/videos').then(function (videos) {
                     $rootScope.videos = videos;
+                    $rootScope.user.videos = videos;
                 });
             });
         };
@@ -143,6 +157,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.$watch(function () {
             return $location.search().user;
         }, function (newValue, oldValue) {
+            $scope.viewingUser = undefined;
             if (newValue === oldValue || $location.path() !== '/') return;
             if (!newValue)
                 $rootScope.videos = $rootScope.user.videos;
@@ -150,7 +165,8 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                 Transaction('GET', 'users/' + newValue + '/videos')
                 .then(function (videos) {
                     $rootScope.videos = videos;
-                }, function(res){
+                    $rootScope.viewingUser = newValue;
+                }, function (res) {
                     alert('No such user found');
                     $scope.videos = [];
                 });
@@ -159,7 +175,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.$on('$routeChangeStart', function () {
             $scope.newVideo = undefined;
         });
-}])
+            }])
 
 .controller('WatchCtrl', ['$scope', '$rootScope', '$location', 'Video',
                     function ($scope, $rootScope, $location, Video) {

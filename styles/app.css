@@ -264,8 +264,8 @@ option {
     overflow: hidden;
 }
 
-tg-remove-icon {
-    postion: relative;
+.tg-remove-icon {
+    position: relative;
     z-index: 5;
     padding: 10px;
 }
