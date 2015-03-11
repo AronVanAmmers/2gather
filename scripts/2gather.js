@@ -176,6 +176,9 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     $rootScope.viewingUser = newValue;
                 }, function (res) {
                     alert('No such user found');
+                    $location.search({
+                        user: oldValue
+                    });
                     $scope.videos = [];
                 });
         });
