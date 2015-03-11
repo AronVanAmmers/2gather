@@ -18,12 +18,14 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         }
         Transaction('GET', 'session').then(function (user) {
             $rootScope.user = user;
+            $rootScope.videos = user.videos;
         }, function (error) {
             Transaction('POST', 'users', {
                 user_name: promptUsername()
             }).then(function (res) {
                 Transaction('GET', 'session').then(function (user) {
                     $rootScope.user = user;
+                    $rootScope.videos = user.videos;
                 });
                 $rootScope.user = res;
             });
@@ -120,8 +122,8 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                 base64: video.file.base64
             }).then(function () {
                 $scope.addingVideo = false;
-                Transaction('GET', 'users/' + username + '/videos').then(function (user) {
-                    $rootScope.videos = user.videos;
+                Transaction('GET', 'users/' + username + '/videos').then(function (videos) {
+                    $rootScope.videos = videos;
                 });
             });
         };
