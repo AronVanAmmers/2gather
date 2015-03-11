@@ -96,7 +96,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
     };
 })
 
-.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Transactions',
+.controller('HomeCtrl', ['$scope', '$rootScope', '$location', 'Transaction',
     function ($scope, $rootScope, $location, Transaction) {
         $scope.canDelete = function () {
             return !$location.search().user; //not viewing subscription. so list of videos is user's own
@@ -150,6 +150,9 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                 Transaction('GET', 'users/' + newValue + '/videos')
                 .then(function (videos) {
                     $rootScope.videos = videos;
+                }, function(res){
+                    alert('No such user found');
+                    $scope.videos = [];
                 });
         });
 
