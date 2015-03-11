@@ -47,15 +47,15 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         controller: 'WatchCtrl',
         templateUrl: TPL_PATH + '/watch.html',
         resolve: {
-            Video: ['Transaction', '$location', '$rootScope', '$q',
-                function (Transaction, $location, $rootScope, $q) {
+            Video: ['Transaction', '$location', '$rootScope', '$q', '$sce',
+                function (Transaction, $location, $rootScope, $q, $sce) {
                     var defer = $q.defer();
                     //match the ID with a regex instead of using route params
                     //since the route has not fully changed yetd
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
                     Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (video) {
                         Transaction('GET', 'videos/' + video.hash).then(function (base64) {
-                            video.base64 = base64;
+                            video.base64 = $sce.trustAsUrl(base64);
                             defer.resolve(video);
                         });
                     });
