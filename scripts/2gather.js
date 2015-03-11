@@ -33,9 +33,9 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         });
 
 
-        $rootScope.$on('$locationChangeStart', function (ev) {
+        $rootScope.$on('$locationChangeStart', function (ev, next) {
             $rootScope.$broadcast('tgLoadingStart');
-            if (!$rootScope.user) ev.preventDefault();
+            if (!$rootScope.user && next.indexOf('#') !== next.length - 2) ev.preventDefault();
         });
   }])
 
@@ -103,10 +103,14 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             return !$location.search().user; //not viewing subscription. so list of videos is user's own
         };
 
-        $scope.delete = function (video) {
+        $scope.addVideo = function () {
+            $scope.$emit('addVideo');
+        };
+
+        $scope.delete = function (video, index) {
             Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/videos/' + video.id)
                 .then(function () {
-                    $scope.user.videos
+                    $scope.user.videos.splice(index, 1);
                 });
         };
   }])
@@ -154,12 +158,19 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             });
         };
 
+
+
+        $rootScope.$on('addVideo', function () {
+            $scope.addingVideo = true;
+        });
+
         $scope.search = function () {
             var q = $scope.q;
 
             $location.search({
                 user: q || ''
             }).path('/');
+            $scope.q = undefined;
         };
 
         $scope.$watch(function () {
@@ -176,9 +187,11 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     $rootScope.viewingUser = newValue;
                 }, function (res) {
                     alert('No such user found');
-                    $location.search({
-                        user: oldValue
-                    });
+                    if (oldValue)
+                        $location.search({
+                            user: oldValue
+                        });
+                    else $location.search({});
                     $scope.videos = [];
                 });
         });
