@@ -24,9 +24,11 @@
                     <a href="#/" class="fa fa-home tg-nav-icon"></a>
                     <input type="search" ng-model="q" class="tg-search-input" />
                     <a href class="fa fa-search tg-nav-icon tg-search-icon" ng-click="search()"></a>
-                    <a href="" ng-class="{'disabled' : subscribedTo(viewingUser) }" class="tg-advanced-search-link" ng-click="subscribe()" ng-if="viewingUser">
+                    <a href class="tg-advanced-search-link" ng-click="toggleSubscribe()" ng-if="viewingUser">
                         <span class="fa fa-chain"></span>
-                        Subscribe to {{viewingUser}}
+                        <span ng-hide="subscribedTo(viewingUser)">Subscribe to</span>
+                        <span ng-show="subscribedTo(viewingUser)">Unsubscribe from</span>
+                        {{viewingUser}}
                     </a>
                     <a href="" class="tg-advanced-search-link" ng-click="addingVideo = addingVideo ? null : {}">
                         <span class="fa fa-plus"></span>

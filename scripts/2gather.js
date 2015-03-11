@@ -124,13 +124,20 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             return $rootScope.user.subscribers.indexOf(username) !== -1;
         };
 
-        $scope.subscribe = function () {
-            if (subscribedTo($rootScope.viewingUser)) return;
-            Transaction('POST', 'user/' + $rootScope.user.user_name + '/subs', {
-                user_name: $rootScope.viewingUser
-            }).then(function () {
-                $rootScope.user.subscribers.push($rootScope.viewingUser);
-            });
+        $scope.toggleSubscribe = function () {
+            if (subscribedTo($rootScope.viewingUser)) {
+                Transaction('DELETE', 'user/' + $rootScope.user.user_name + '/subs/' + $rootScope.viewingUser)
+                    .then(function () {
+                        var subs = $rootScope.user.subscribers;
+                        subs.splice(subs.indexOf($rootScope.viewingUser), 1);
+                    });
+            } else {
+                Transaction('POST', 'user/' + $rootScope.user.user_name + '/subs', {
+                    user_name: $rootScope.viewingUser
+                }).then(function () {
+                    $rootScope.user.subscribers.push($rootScope.viewingUser);
+                });
+            }
         };
 
         $scope.uploadVideo = function (video) {
