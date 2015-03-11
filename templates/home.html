@@ -6,7 +6,7 @@
     </header>
     <div class="tg-panel-content">
         <div class="tg-videos-list row tg-grid">
-            <p ng-hide="videos.length">No videos to show, why not <a href ng-click="addVideo">add one</a>?</p>
+            <p ng-hide="videos.length">No videos to show, why not <a href ng-click="addVideo()">add one</a>?</p>
             <div ng-repeat="video in videos | limit:24" class="tg-videos-list-entry col repeater picture-layout col-md-3">
                 <a href ng-click="delete(video, $index)" ng-show="canDelete" class="tg-remove-icon pull-right"><i class="fa fa-times"></i></a>
                 <a href="#/watch/{{ video.id }}" class="tg-video-entry-link">
