@@ -30,7 +30,7 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
         $rootScope.$broadcast('tgLoadingStart');
         var defer = $q.defer();
         if (method === 'GET')
-            $http.get(baseUrl + '/' + url).success(defer.resolve).error(defer.reject);
+            $http.get(baseUrl + '/' + url).success(success).error(error);
         else
             $http({
                 method: method,
@@ -49,14 +49,21 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
                             url: baseUrl + '/mining',
                             data: 'off'
                         }) //turn mining off after success
-                        defer.resolve(res, status);
-                    }, defer.reject);
-                }).error(defer.reject);
-            }).error(defer.reject);
-
-        return defer.promise.then(function (res) {
+                        success(res, status);
+                    }, error);
+                }).error(error);
+            }).error(error);
+        
+        function error(error, status){
             $rootScope.$broadcast('tgLoadingEnd');
-            return res;
-        });
+            defer.reject(err, status);
+        }
+        
+        function success(res, status){
+            $rootScope.$broadcast('tgLoadingEnd');
+            defer.resolve(res, status);
+        }
+
+        return defer.promise;
     };
 });
