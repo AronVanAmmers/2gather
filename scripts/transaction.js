@@ -56,7 +56,7 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
         
         function error(error, status){
             $rootScope.$broadcast('tgLoadingEnd');
-            defer.reject(err, status);
+            defer.reject(error, status);
         }
         
         function success(res, status){
