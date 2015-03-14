@@ -71,7 +71,11 @@ func (tr *testRunner) Start() {
 	tr.testCreateUser();
 	tr.testSession()
 	tr.testBTCAddr()
-	tr.testBlacklistPerm()
+	if os.Getenv("TESTNET") != "true" {
+		tr.testBlacklistPerm()
+	} else {
+		fmt.Println("On Main Testnet; Skipping Blacklist test.")
+	}
 	tr.testAddSub();
 	tr.testRemoveSub();
 	tr.testAddVideo();
@@ -201,7 +205,7 @@ func (tr *testRunner) getUser(userName string) (ret *User, err error) {
 
 func (tr *testRunner) testSessionEmpty() () {
 
-	fmt.Println("Testing Session")
+	fmt.Println("Testing Session is Empty.")
 	_, err := tr.session()
 	if err == nil {
 		fmt.Println("Test failed: Session not null.")
@@ -211,10 +215,12 @@ func (tr *testRunner) testSessionEmpty() () {
 }
 
 func (tr *testRunner) testSession() () {
-	fmt.Println("Testing Session")
+
+	fmt.Println("Testing Session is Populated.")
 	usr, err := tr.session()
 	if err != nil {
-		return
+		fmt.Printf("Test failed: no active user was retrieved: %s", err)
+		tr.abortTest()
 	}
 	if usr.UserName != tr.userName {
 		fmt.Println("Test failed: User name '" + usr.UserName + "'. Expected: " + tr.userName)

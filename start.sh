@@ -12,7 +12,7 @@ local_host=${LOCAL_HOST:=0.0.0.0}
 local_port=${LOCAL_PORT:=15254}
 max_peers=${MAX_PEERS:=10}
 log_level=${LOG_LEVEL:=3}
-root_contract=${ROOT_CONTRACT:="46905240fc174f2269ae8e806f3bc6b94784664a"}
+root_contract=${ROOT_CONTRACT:="faa95be4dd0bd3086be3344920961d1a35653d95"}
 
 echo ""
 echo ""
@@ -44,17 +44,17 @@ echo ""
 echo "Setting Connection."
 epm config remote_host:$remote_host remote_port:$remote_port use_seed:true
 epm config log_level:$log_level
-blockchain_id=$(epm plop chainid)
 
 echo ""
 echo ""
 echo "Catching up the Chain... This may take a minute ->"
 echo ""
 echo ""
-epm --log 4 run &
-sleep 60
+epm --log 3 run &
+sleep 30
 epm plop pid | xargs kill
 
+blockchain_id=$(epm plop chainid)
 echo ""
 echo ""
 echo "Configuring package.json"
