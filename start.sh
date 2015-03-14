@@ -60,6 +60,11 @@ jq '.module_dependencies[0].data |= . * {peer_server_address: "'$remote_host:$re
 
 echo ""
 echo ""
+echo "Your Key Session is ... ->"
+echo $key_session
+
+echo ""
+echo ""
 echo "Starting up! (Wheeeeeee says the marmot)"
 echo ""
 echo ""
