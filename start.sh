@@ -48,6 +48,15 @@ blockchain_id=$(epm plop chainid)
 
 echo ""
 echo ""
+echo "Catching up the Chain... This may take a minute ->"
+echo ""
+echo ""
+epm --log 4 run &
+sleep 60
+epm plop pid | xargs kill
+
+echo ""
+echo ""
 echo "Configuring package.json"
 echo "blockchain_id: $blockchain_id"
 echo "root_contract: $root_contract"
@@ -68,6 +77,5 @@ echo ""
 echo "Starting up! (Wheeeeeee says the marmot)"
 echo ""
 echo ""
-
 sleep 5 && curl http://localhost:3000/admin/switch/2gather &
 decerver
