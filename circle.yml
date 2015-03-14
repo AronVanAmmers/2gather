@@ -22,12 +22,10 @@ test:
     # start with the test fig. wait for contracts to be compiled and deployed.
     - "docker-compose -f spec/docker-compose.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60 && go run spec/main.go":
         timeout: 900
+    - docker-compose -f spec/docker-compose.yml kill
     # test against main testnet
     - "docker-compose up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd2_output.log & sleep 75 && go run spec/main.go":
         timeout: 900
-
-  post:
-    - docker-compose -f spec/docker-compose.yml kill
     - docker-compose kill
 
 deployment:
