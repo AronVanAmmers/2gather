@@ -7,7 +7,7 @@ remote_host=${REMOTE_HOST:=104.236.146.58}
 fetch_port=${FETCH_PORT:=15258}
 remote_port=${REMOTE_PORT:=15256}
 key_session="$(strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 10 | tr -d '\n' ; echo)"
-key_session=${KEY_SESSION:=key_session}
+key_session=${KEY_SESSION:=$key_session}
 local_host=${LOCAL_HOST:=0.0.0.0}
 local_port=${LOCAL_PORT:=15254}
 max_peers=${MAX_PEERS:=10}
@@ -44,9 +44,6 @@ echo ""
 echo "Setting Connection."
 epm config remote_host:$remote_host remote_port:$remote_port use_seed:true
 epm config log_level:$log_level
-
-# Now we need to tell the DApp about our chain and then we’re ready to VRoom.
-
 blockchain_id=$(epm plop chainid)
 
 echo ""
