@@ -81,8 +81,16 @@ func (tr *testRunner) Start() {
 	tr.testAddVideo();
 	tr.testGetUsersVideos();
 	tr.testGetVideo();
-	tr.testFlagVideo();
-	tr.testBlacklistVideo();
+	if os.Getenv("TESTNET") != "true" {
+		tr.testFlagVideo();
+	} else {
+		fmt.Println("On Main Testnet; Skipping Flag test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testBlacklistVideo();
+	} else {
+		fmt.Println("On Main Testnet; Skipping Blacklist Video test.")
+	}
 	tr.testRemoveVideo();
 	tr.testRemoveUser();
 	tr.mining(false)
