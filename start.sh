@@ -2,6 +2,11 @@
 
 echo ""
 echo ""
+echo "Your environment good human ->"
+printenv
+
+echo ""
+echo ""
 echo "Setting Defaults to start the DApp."
 remote_host=${REMOTE_HOST:=104.236.146.58}
 fetch_port=${FETCH_PORT:=15258}
@@ -9,15 +14,15 @@ remote_port=${REMOTE_PORT:=15256}
 key_session="$(strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 10 | tr -d '\n' ; echo)"
 key_session=${KEY_SESSION:=$key_session}
 local_host=${LOCAL_HOST:=0.0.0.0}
-local_port=${LOCAL_PORT:=15254}
+local_port=${LOCAL_PORT:=30303}
 max_peers=${MAX_PEERS:=10}
 log_level=${LOG_LEVEL:=3}
-root_contract=${ROOT_CONTRACT:="faa95be4dd0bd3086be3344920961d1a35653d95"}
+root_contract=${ROOT_CONTRACT:="0x46905240fc174f2269ae8e806f3bc6b94784664a"}
 
 echo ""
 echo ""
 echo "Fetching the Chain."
-epm fetch --checkout --name 2gather $remote_host:$fetch_port
+epm --log 3 fetch --checkout --name 2gather $remote_host:$fetch_port
 echo "The chain has been fetched and checked out."
 
 echo ""
@@ -71,6 +76,21 @@ echo ""
 echo ""
 echo "Your Key Session is ... ->"
 echo $key_session
+
+echo ""
+echo ""
+echo "Your genesis.json is ... ->"
+epm plop genesis
+
+echo ""
+echo ""
+echo "Your config.json is ... ->"
+epm plop config
+
+echo ""
+echo ""
+echo "Your package.json is ... ->"
+cat package.json
 
 echo ""
 echo ""
