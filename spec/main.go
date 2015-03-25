@@ -5,14 +5,24 @@ import (
 	"fmt"
 	// "path/filepath"
 	"os"
+	"math/rand"
 )
 
 const (
-	USER_NAME = "tester"
 	VIDEO_NAME = "testvid"
 	// VIDEO_FILE_NAME = "test.mp4"
 	VIDEO_DATA = "Hahahahahaaaaaa"
 )
+
+// For making a random string for the username
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+func randSeq(n int) string {
+    b := make([]rune, n)
+    for i := range b {
+        b[i] = letters[rand.Intn(len(letters))]
+    }
+    return string(b)
+}
 
 func main() {
 	host := os.Getenv("SERVER_HOST")
@@ -20,9 +30,9 @@ func main() {
 		host = "http://localhost:3000/apis/2gather/"
 	//}
 	baseUrl := host
-	userName := USER_NAME
 	videoName := VIDEO_NAME
 	videoData := VIDEO_DATA
+	userName := randSeq(28)
 	fmt.Println("Base Url: " + baseUrl)
 	fmt.Println("User Name: " + userName)
 	fmt.Println("Video Data: " + videoData)
