@@ -35,4 +35,3 @@ deployment:
       - docker build -t eris/2gather:latest .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push eris/2gather:latest
-      - docker-compose rm --force -v
