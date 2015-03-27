@@ -58,7 +58,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     //match the ID with a regex instead of using route params
                     //since the route has not fully changed yetd
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
-                    Transaction('GET', 'users/' + $rootScope.user.user_name + '/videos/' + id).then(function (video) {
+                    Transaction('GET', 'users/' + $rootScope.viewingUser + '/videos/' + id).then(function (video) {
                         Transaction('GET', 'videos/' + video.hash).then(function (base64) {
                             video.base64 = $sce.trustAsResourceUrl('data:video/mp4;base64,' + base64);
                             defer.resolve(video);
