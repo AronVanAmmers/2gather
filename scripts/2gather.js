@@ -125,6 +125,17 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('HeaderCtrl', ['$scope', '$location', '$rootScope', 'Transaction',
                          function ($scope, $location, $rootScope, Transaction) {
 
+        var currentlyViewedUser = $rootScope.user;
+        $rootScope.getCurrentlyViewedUser = function () {
+            return currentlyViewedUser;
+        };
+        $rootScope.$watch('viewingUser', function (newValue, oldValue) {
+            if (newValue === oldValue) return;
+            Transaction('GET', 'user/' + newValue).then(function (user) {
+                currentlyViewedUser = user;
+            });
+        });
+
         $rootScope.subscribedTo = function (username) {
             return $rootScope.user.subscribers.indexOf(username) !== -1;
         };
