@@ -435,7 +435,7 @@ function TwoGatherAPI() {
 	}
 
 	function getChanSubs(channelAddr) {
-		var ret = esl.ll.GetPairsRev(channelAddr, StringToHex("subs"));
+		var ret = esl.ll.GetList(channelAddr, StringToHex("subs"));
 		return ret;
 	};
 
