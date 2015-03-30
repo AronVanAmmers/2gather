@@ -36,7 +36,9 @@ This DApp is in active development. Here is what we have done and not done.
 * ~~fig files for production~~
 * ~~fig files for testing~~
 * ~~build prototype view layer~~
-* connect prototype view to API endpoints
+* ~~connect prototype view to API endpoints~~
+* display BTC addresses for [ProTipHQ](https://www.indiegogo.com/projects/protip-peer-to-peer-tipping-for-the-web) integration
+* add a ChangeTip functionality ...?
 
 ## Installation
 
@@ -44,7 +46,11 @@ In general there are two ways in which to install the 2gather distributed applic
 
 ### Easy Installation
 
-**Dependencies**: for the easy installation there are 2 required dependencies: [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/). Docker is a run anywhere container solution which we feel makes development, deployment, testing, and running of distributed applications a breeze. We are moving most of our development, testing, and usage efforts for Eris Industries to use a container-based paradigm. Given the complexity of getting p2p software running, Docker containers provide an excellent mechanism for handling the building and running of distributed applications. Docker Compose (recently renamed from the `fig` tool which was purchased by Docker last year) is a way to compose groups of containers and makes running those containers ultra simple.
+**Dependencies**: for the easy installation there are 2 required dependencies: [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/). 
+
+Docker is a run anywhere container solution which we feel makes development, deployment, testing, and running of distributed applications a breeze. We are moving most of our development, testing, and usage efforts for Eris Industries to use a container-based paradigm. Given the complexity of getting p2p software running, Docker containers provide an excellent mechanism for handling the building and running of distributed applications. 
+
+Docker Compose (recently renamed from the `fig` tool which was purchased by Docker last year) is a way to compose groups of containers and makes running those containers ultra simple.
 
 [Install Docker](http://docs.docker.com/installation/). Install instructions will vary by platform. **NOTE** Eris Industries requires a docker version >= 1.4 to work properly. We highly recommend that you install docker version 1.5.
 
