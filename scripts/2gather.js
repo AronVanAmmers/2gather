@@ -138,7 +138,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         };
 
         $rootScope.toggleSubscribe = function () {
-            if (subscribedTo(currentlyViewedUser.user_name)) {
+            if ($rootScope.subscribedTo(currentlyViewedUser.user_name)) {
                 Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/subs/' + currentlyViewedUser.user_name)
                     .then(function () {
                         var subs = $rootScope.user.subscribers;
