@@ -125,11 +125,11 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('HeaderCtrl', ['$scope', '$location', '$rootScope', 'Transaction',
                          function ($scope, $location, $rootScope, Transaction) {
 
-        $scope.subscribedTo = function (username) {
+        $rootScope.subscribedTo = function (username) {
             return $rootScope.user.subscribers.indexOf(username) !== -1;
         };
 
-        $scope.toggleSubscribe = function () {
+        $rootScope.toggleSubscribe = function () {
             if (subscribedTo($rootScope.viewingUser)) {
                 Transaction('DELETE', 'user/' + $rootScope.user.user_name + '/subs/' + $rootScope.viewingUser)
                     .then(function () {

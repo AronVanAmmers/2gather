@@ -18,10 +18,16 @@
           Video Info
         </h5>
                 <ul>
-                    <li ng-repeat="(key,value) in video">
+                    <li ng-repeat="(key,value) in video" ng-hide="key == 'base64'">
                         {{key}} : {{value}}
                     </li>
                 </ul>
+                <a href class="tg-advanced-search-link" ng-click="toggleSubscribe()" ng-if="viewingUser">
+                    <span class="fa fa-chain"></span>
+                    <span ng-hide="subscribedTo(viewingUser)">Subscribe to</span>
+                    <span ng-show="subscribedTo(viewingUser)">Unsubscribe from</span>
+                    {{viewingUser}}
+                </a>
             </header>
         </div>
     </div>
