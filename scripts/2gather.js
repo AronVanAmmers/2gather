@@ -43,6 +43,10 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         controller: 'HomeCtrl',
         templateUrl: TPL_PATH + '/home.html',
         reloadOnSearch: false
+    }).when('/profile', {
+        controller: 'ProfileCtrl',
+        templateUrl: TPL_PATH + '/profile.html',
+        reloadOnSearch: false
     }).when('/watch/:id', {
         controller: 'WatchCtrl',
         templateUrl: TPL_PATH + '/watch.html',
@@ -216,4 +220,16 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('WatchCtrl', ['$scope', '$rootScope', '$location', 'Video',
                     function ($scope, $rootScope, $location, Video) {
         $scope.video = Video;
+  }]);
+
+.controller('ProfileCtrl', ['$scope', '$rootScope', '$location', 'Transaction',
+                    function ($scope, $rootScope, $location, Transaction) {
+        $scope.user = $rootScope.user;
+        $scope.saveUser = function () {
+            Transaction('PATCH', 'users/' + $scope.user.user_name).then(function (res) {
+                $location.path('/');
+            }, function(){
+                alert('ERROR: Could not save user'); 
+            });
+        };
   }]);
