@@ -40,6 +40,10 @@ This DApp is in active development. Here is what we have done and not done.
 * display BTC addresses for [ProTipHQ](https://www.indiegogo.com/projects/protip-peer-to-peer-tipping-for-the-web) integration
 * add a ChangeTip functionality ...?
 
+### Warning
+
+This distributed application (DApp) is under heavy development. As such the blockchain it uses gets reset frequently (we will note here when we feel the chain has stabilized and when our development slows down). We do not currently have a backup/export/import functionality for smart contract housed information (yet), so at this time when the blockchain resets all videos are lost and will have to be readded.
+
 ## Installation
 
 In general there are two ways in which to install the 2gather distributed application, an easy way (which we **highly** recommend), and a hard way.
