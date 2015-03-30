@@ -106,8 +106,8 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.canDelete = function () {
             return !$location.search().user; //not viewing subscription. so list of videos is user's own
         };
-        
-        $scope.getSubscriptions = function(){
+
+        $scope.getSubscriptions = function () {
             var user = $rootScope.getCurrentlyViewedUser() || $rootScope.user;
             return user.subscriptions;
         };
@@ -142,8 +142,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         };
 
         $rootScope.viewingUser = function () {
-            if (!currentlyViewedUser) return;
-            return currentlyViewedUser.user_name;
+            return $location.search().user;
         };
 
         $rootScope.toggleSubscribe = function () {
@@ -230,11 +229,15 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', 'Transaction',
                     function ($scope, $rootScope, $location, Transaction) {
         $scope.user = $rootScope.user;
-        $scope.saveUser = function () {
-            Transaction('PATCH', 'users/' + $scope.user.user_name).then(function (res) {
+        $scope.saveBtcAddress = function () {
+            Transaction('PATCH', 'users/' + $scope.user.user_name, {
+                op: 'replace',
+                field: 'btc_addre',
+                value: $scope.user.btc_addr
+            }).then(function (res) {
                 $location.path('/');
-            }, function(){
-                alert('ERROR: Could not save user'); 
+            }, function () {
+                alert('ERROR: Could not save user');
             });
         };
   }]);
