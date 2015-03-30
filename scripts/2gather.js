@@ -135,13 +135,13 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 
         $rootScope.toggleSubscribe = function () {
             if (subscribedTo(currentlyViewedUser.user_name)) {
-                Transaction('DELETE', 'user/' + $rootScope.user.user_name + '/subs/' + currentlyViewedUser.user_name)
+                Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/subs/' + currentlyViewedUser.user_name)
                     .then(function () {
                         var subs = $rootScope.user.subscribers;
                         subs.splice(subs.indexOf(currentlyViewedUser.user_name), 1);
                     });
             } else {
-                Transaction('POST', 'user/' + $rootScope.user.user_name + '/subs', {
+                Transaction('POST', 'users/' + $rootScope.user.user_name + '/subs', {
                     user_name: currentlyViewedUser.user_name
                 }).then(function () {
                     $rootScope.user.subscribers.push(currentlyViewedUser.user_name);
@@ -198,7 +198,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                         else $location.search({});
                         $scope.videos = [];
                     });
-                Transaction('GET', 'user/' + newValue).then(function (user) {
+                Transaction('GET', 'users/' + newValue).then(function (user) {
                     currentlyViewedUser = user;
                 });
             }
