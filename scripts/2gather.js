@@ -233,7 +233,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.saveBtcAddress = function () {
             Transaction('PATCH', 'users/' + $scope.user.user_name, {
                 op: 'replace',
-                field: 'btc_addre',
+                field: 'btc_address',
                 value: $scope.user.btc_addr
             }).then(function (res) {
                 $location.path('/');
