@@ -89,7 +89,7 @@ cd 2gather
 At this point there are two possible compositions of the containers which you can use. The composition we suggest starting with is the testing containers which will deploy your own chain locally along with all of the contracts required for the DApp and allow you to begin operating the DApp on a local chain.
 
 ```bash
-(sudo) docker-compose -f spec/fig_testing.yml up
+(sudo) docker-compose -f spec/docker_compose.yml up
 ```
 
 The second way you could work is to link into the public testing chain which we use. Note, the production blockchain will be released when we have finalized the testing cycle. See the `Status` section above. To work with the public test chain
@@ -100,7 +100,7 @@ The second way you could work is to link into the public testing chain which we 
 
 Note that depending on your system setup `sudo` command may or may not be necessary.
 
-The first time you `docker-compose up` it will take a while to download and configure the base images. After that it will be ultra fast. Note that when using the testing composition with the `-f spec/fig_testing.yml` flag, you will want to wait about 60 seconds after the containers boot before working with the API. This is to allow the chain to be established and the contracts to be deployed.
+The first time you `docker-compose up` it will take a while to download and configure the base images. After that it will be ultra fast. Note that when using the testing composition with the `-f spec/docker_compose.yml` flag, you will want to wait about 60 seconds after the containers boot before working with the API. This is to allow the chain to be established and the contracts to be deployed.
 
 #### Warning When Using Containers
 
