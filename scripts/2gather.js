@@ -220,7 +220,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('WatchCtrl', ['$scope', '$rootScope', '$location', 'Video',
                     function ($scope, $rootScope, $location, Video) {
         $scope.video = Video;
-  }]);
+  }])
 
 .controller('ProfileCtrl', ['$scope', '$rootScope', '$location', 'Transaction',
                     function ($scope, $rootScope, $location, Transaction) {
