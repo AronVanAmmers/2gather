@@ -28,7 +28,6 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     $rootScope.user = user;
                     $rootScope.videos = user.videos;
                 });
-                $rootScope.user = res;
             });
         });
 
