@@ -46,9 +46,9 @@ In general there are two ways in which to install the 2gather distributed applic
 
 ### Easy Installation
 
-**Dependencies**: for the easy installation there are 2 required dependencies: [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/). 
+**Dependencies**: for the easy installation there are 2 required dependencies: [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/).
 
-Docker is a run anywhere container solution which we feel makes development, deployment, testing, and running of distributed applications a breeze. We are moving most of our development, testing, and usage efforts for Eris Industries to use a container-based paradigm. Given the complexity of getting p2p software running, Docker containers provide an excellent mechanism for handling the building and running of distributed applications. 
+Docker is a run anywhere container solution which we feel makes development, deployment, testing, and running of distributed applications a breeze. We are moving most of our development, testing, and usage efforts for Eris Industries to use a container-based paradigm. Given the complexity of getting p2p software running, Docker containers provide an excellent mechanism for handling the building and running of distributed applications.
 
 Docker Compose (recently renamed from the `fig` tool which was purchased by Docker last year) is a way to compose groups of containers and makes running those containers ultra simple.
 
@@ -97,6 +97,10 @@ The second way you could work is to link into the public testing chain which we 
 Note that depending on your system setup `sudo` command may or may not be necessary.
 
 The first time you `docker-compose up` it will take a while to download and configure the base images. After that it will be ultra fast. Note that when using the testing composition with the `-f spec/fig_testing.yml` flag, you will want to wait about 60 seconds after the containers boot before working with the API. This is to allow the chain to be established and the contracts to be deployed.
+
+#### Warning When Using Containers
+
+**NOTE**: When using containers, the keys do not persist. In addition, the usernames are tied to a public key address. So if you use a container and then restart the container you will get a new key so you will have to reregister with a *new* username unless you deleted your old username before exiting the containers before -- as only one username is allowed per chain and each username is tied to a public key address. The containers are for rapid prototyping and testing and so we do not see this as a problem as it is using containers how they should be used. We are working toward moving keys as close as possible to the user (ideally, in the browser), but that work will be ongoing for quite some time. If you wish to persist your username then you will have to use the Onerous Installation below or export a volume which container the keys.
 
 ### Onerous Installation
 
