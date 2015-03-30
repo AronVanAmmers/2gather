@@ -24,7 +24,7 @@
     <div class="tg-panel-content">
         <div class="tg-subscriptions-list row tg-grid">
             <p ng-hide="user.subscriptions.length">No subscriptions to show. Search for a user above to subscribe</p>
-            <div ng-repeat="subscription in user.subscribers | limit:24" class="tg-subscriptions-list-entry col repeater">
+            <div ng-repeat="subscription in user.subscriptions | limit:24" class="tg-subscriptions-list-entry col repeater">
                 <a href="#/?user={{ subscription.user_name }}" class="tg-video-entry-link">
                     <h5 class="tg-heading">{{ subscription.user_name }}</h5>
                 </a>

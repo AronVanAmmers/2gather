@@ -133,7 +133,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             return currentlyViewedUser;
         };
         $rootScope.subscribedTo = function (username) {
-            return $rootScope.user.subscribers.indexOf(username) !== -1;
+            return $rootScope.user.subscriptions.indexOf(username) !== -1;
         };
 
         $rootScope.viewingUser = function () {
@@ -145,14 +145,14 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
             if ($rootScope.subscribedTo(currentlyViewedUser.user_name)) {
                 Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/subs/' + currentlyViewedUser.user_name)
                     .then(function () {
-                        var subs = $rootScope.user.subscribers;
+                        var subs = $rootScope.user.subscriptions;
                         subs.splice(subs.indexOf(currentlyViewedUser.user_name), 1);
                     });
             } else {
                 Transaction('POST', 'users/' + $rootScope.user.user_name + '/subs', {
                     user_name: currentlyViewedUser.user_name
                 }).then(function () {
-                    $rootScope.user.subscribers.push(currentlyViewedUser.user_name);
+                    $rootScope.user.subscriptions.push(currentlyViewedUser.user_name);
                 });
             }
         };
