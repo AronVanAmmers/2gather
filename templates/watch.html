@@ -23,11 +23,11 @@
                     </li>
                     <li>Bitcoin address: {{getCurrentlyViewedUser().btc_address}}</li>
                 </ul>
-                <a href class="tg-advanced-search-link" ng-click="toggleSubscribe()" ng-if="viewingUser">
+                <a href class="tg-advanced-search-link" ng-click="toggleSubscribe()" ng-if="viewingUser()">
                     <span class="fa fa-chain"></span>
-                    <span ng-hide="subscribedTo(viewingUser)">Subscribe to</span>
-                    <span ng-show="subscribedTo(viewingUser)">Unsubscribe from</span>
-                    {{viewingUser}}
+                    <span ng-hide="subscribedTo(viewingUser())">Subscribe to</span>
+                    <span ng-show="subscribedTo(viewingUser())">Unsubscribe from</span>
+                    {{viewingUser()}}
                 </a>
             </header>
         </div>
