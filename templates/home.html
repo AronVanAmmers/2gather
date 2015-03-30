@@ -18,12 +18,14 @@
     </div>
     <header class="tg-panel-heading tg-primary-heading row">
         <h5 class="tg-heading col-md-6">
-      Subscriptions
+      <span ng-hide="viewingUser()">Your Subscriptions</span>
+      <span ng-show="viewingUser()">{{viewingUser()}}'s Subscriptions</span>
     </h5>
     </header>
     <div class="tg-panel-content">
         <div class="tg-subscriptions-list row tg-grid">
-            <p ng-hide="user.subscriptions.length">No subscriptions to show. Search for a user above to subscribe</p>
+            <p ng-hide="getSubscriptions().length || viewingUser()">No subscriptions to show. Search for a user above to subscribe</p>
+            <p ng-show="!getSubscriptions().length && viewingUser()">{{viewingUser()}} has no subscriptions.</p>
             <div ng-repeat="subscription in getSubscriptions() | limit:24" class="tg-subscriptions-list-entry col repeater">
                 <a href="#/?user={{ subscription }}" class="tg-video-entry-link">
                     <h5 class="tg-heading">{{ subscription }}</h5>

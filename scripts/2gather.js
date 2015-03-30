@@ -106,6 +106,11 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.canDelete = function () {
             return !$location.search().user; //not viewing subscription. so list of videos is user's own
         };
+        
+        $scope.getSubscriptions = function(){
+            var user = $rootScope.getCurrentlyViewedUser() || $rootScope.user;
+            return user.subscriptions;
+        };
 
         $scope.addVideo = function () {
             $scope.$emit('addVideo');
