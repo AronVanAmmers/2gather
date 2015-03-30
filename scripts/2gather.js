@@ -151,7 +151,8 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                 Transaction('DELETE', 'users/' + $rootScope.user.user_name + '/subs/' + currentlyViewedUser.user_name)
                     .then(function () {
                         var subs = $rootScope.user.subscriptions;
-                        subs.splice(subs.indexOf(currentlyViewedUser.user_name), 1);
+                        if (currentlyViewedUser)
+                            subs.splice(subs.indexOf(currentlyViewedUser.user_name), 1);
                     });
             } else {
                 Transaction('POST', 'users/' + $rootScope.user.user_name + '/subs', {
