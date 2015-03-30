@@ -57,7 +57,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     var defer = $q.defer();
                     //match the ID with a regex instead of using route params
                     //since the route has not fully changed yetd
-                    var username = $rootScope.viewingUser || $rootScope.user.user_name;
+                    var username = currentlyViewedUser ? currentlyViewedUser.user_name : $rootScope.user.user_name;
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
                     Transaction('GET', 'users/' + username + '/videos/' + id).then(function (video) {
                         Transaction('GET', 'videos/' + video.hash).then(function (base64) {
@@ -125,33 +125,26 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
 .controller('HeaderCtrl', ['$scope', '$location', '$rootScope', 'Transaction',
                          function ($scope, $location, $rootScope, Transaction) {
 
-        var currentlyViewedUser = $rootScope.user;
+        var currentlyViewedUser;
         $rootScope.getCurrentlyViewedUser = function () {
             return currentlyViewedUser;
         };
-        $rootScope.$watch('viewingUser', function (newValue, oldValue) {
-            if (newValue === oldValue) return;
-            Transaction('GET', 'user/' + newValue).then(function (user) {
-                currentlyViewedUser = user;
-            });
-        });
-
         $rootScope.subscribedTo = function (username) {
             return $rootScope.user.subscribers.indexOf(username) !== -1;
         };
 
         $rootScope.toggleSubscribe = function () {
-            if (subscribedTo($rootScope.viewingUser)) {
-                Transaction('DELETE', 'user/' + $rootScope.user.user_name + '/subs/' + $rootScope.viewingUser)
+            if (subscribedTo(currentlyViewedUser.user_name)) {
+                Transaction('DELETE', 'user/' + $rootScope.user.user_name + '/subs/' + currentlyViewedUser.user_name)
                     .then(function () {
                         var subs = $rootScope.user.subscribers;
-                        subs.splice(subs.indexOf($rootScope.viewingUser), 1);
+                        subs.splice(subs.indexOf(currentlyViewedUser.user_name), 1);
                     });
             } else {
                 Transaction('POST', 'user/' + $rootScope.user.user_name + '/subs', {
-                    user_name: $rootScope.viewingUser
+                    user_name: currentlyViewedUser.user_name
                 }).then(function () {
-                    $rootScope.user.subscribers.push($rootScope.viewingUser);
+                    $rootScope.user.subscribers.push(currentlyViewedUser.user_name);
                 });
             }
         };
@@ -188,24 +181,27 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
         $scope.$watch(function () {
             return $location.search().user;
         }, function (newValue, oldValue) {
-            $scope.viewingUser = undefined;
+            currentlyViewedUser = undefined;
             if (newValue === oldValue || $location.path() !== '/') return;
             if (!newValue)
                 $rootScope.videos = $rootScope.user.videos;
-            else
+            else {
                 Transaction('GET', 'users/' + newValue + '/videos')
-                .then(function (videos) {
-                    $rootScope.videos = videos;
-                    $rootScope.viewingUser = newValue;
-                }, function (res) {
-                    alert('No such user found');
-                    if (oldValue)
-                        $location.search({
-                            user: oldValue
-                        });
-                    else $location.search({});
-                    $scope.videos = [];
+                    .then(function (videos) {
+                        $rootScope.videos = videos;
+                    }, function (res) {
+                        alert('No such user found');
+                        if (oldValue)
+                            $location.search({
+                                user: oldValue
+                            });
+                        else $location.search({});
+                        $scope.videos = [];
+                    });
+                Transaction('GET', 'user/' + newValue).then(function (user) {
+                    currentlyViewedUser = user;
                 });
+            }
         });
 
         $scope.$on('$routeChangeStart', function () {
