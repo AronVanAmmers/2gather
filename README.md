@@ -124,7 +124,7 @@ Follow our [Go VROOM Guide Here](https://decerver.io/tutorials/)
 
 #### Step 2: Ensure IPFS is Set Up
 
-Follow IPFS's [Guide Here](https://github.com/jbenet/go-ipfs)
+Follow IPFS's [Guide Here](https://github.com/ipfs/go-ipfs)
 
 #### Step 3: Install the DApp
 
@@ -156,17 +156,27 @@ brew install jq
 
 For other systems see the [JQ download page](http://stedolan.github.io/jq/download/).
 
-#### Step 4: Roll the Chain (Optional)
+#### Step 4: Start IPFS
+
+Make sure that an IPFS gateway is running and is write accessible on port 8080.
+
+```bash
+ipfs daemon -writable
+```
+
+Note that IPFS daemon command will block in a terminal, so you will need to run it in a separate terminal window.
+
+#### Step 5: Roll the Chain (Optional)
 
 If you would like a chain for testing, then execute the `spec/teststart.sh` file. That will establish a new chain with proper configuration for local testing.
 
-#### Step 5: Connect to the Public Test Chain (Optional)
+#### Step 6: Connect to the Public Test Chain (Optional)
 
 If you would like to connect to the public test chain then execute the `./start.sh` file.
 
 ### Running the app
 
-When the DApp is running, open http://localhost:3000/2gather/ in a browser.
+When the DApp is running, open [http://localhost:3000/2gather/](http://localhost:3000/2gather/) in a browser.
 
 ## License
 
