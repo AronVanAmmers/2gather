@@ -132,6 +132,7 @@ Clone this repository into your `~/.decerver/dapps` folder:
 
 ```bash
 git clone git@github.com:eris-ltd/2gather.git ~/.decerver/dapps/2gather
+cd ~/.decerver/dapps/2gather
 ```
 
 You'll need to install the front end dependencies as well. We use the [Bower](http://bower.io/) package manager to manage our front end dependencies.
