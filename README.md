@@ -140,6 +140,22 @@ You'll need to install the front end dependencies as well. We use the [Bower](ht
 bower install
 ```
 
+You will also need the `jq` program installed.
+
+On Ubuntu:
+
+```bash
+sudo apt-get install jq
+```
+
+On OSX:
+
+```bash
+brew install jq
+```
+
+For other systems see the [JQ download page](http://stedolan.github.io/jq/download/).
+
 #### Step 4: Roll the Chain (Optional)
 
 If you would like a chain for testing, then execute the `spec/teststart.sh` file. That will establish a new chain with proper configuration for local testing.
