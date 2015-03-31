@@ -66,6 +66,8 @@ Patch:
 
 The `op`s allowed are: `replace` and `remove`.
 
+When patches are sent, they are sent as arrays of `Patch` objects, so: `[patch0, patch1, ...]`.
+
 ## API Specification -- Specifics
 
 ### Resource: session
