@@ -86,6 +86,14 @@ git clone git@github.com:eris-ltd/2gather.git
 cd 2gather
 ```
 
+You'll need to install the front end dependencies as well. We use the [Bower](http://bower.io/) package manager to manage our front end dependencies.
+
+```bash
+bower install
+```
+
+If you want to skip the above step (`bower install`) you can rename the `docker-compose-get.yml` to `docker-compose.yml` which will fetch the 2gather container from Docker Hub rather than building it for yourself.
+
 At this point there are two possible compositions of the containers which you can use. The composition we suggest starting with is the testing containers which will deploy your own chain locally along with all of the contracts required for the DApp and allow you to begin operating the DApp on a local chain.
 
 ```bash
@@ -124,6 +132,12 @@ Clone this repository into your `~/.decerver/dapps` folder:
 
 ```bash
 git clone git@github.com:eris-ltd/2gather.git ~/.decerver/dapps/2gather
+```
+
+You'll need to install the front end dependencies as well. We use the [Bower](http://bower.io/) package manager to manage our front end dependencies.
+
+```bash
+bower install
 ```
 
 #### Step 4: Roll the Chain (Optional)
