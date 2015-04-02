@@ -60,8 +60,7 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     var defer = $q.defer();
                     //match the ID with a regex instead of using route params
                     //since the route has not fully changed yetd
-                    var currentlyViewedUser = $rootScope.currentlyViewedUser;
-                    var username = currentlyViewedUser ? currentlyViewedUser.user_name : $rootScope.user.user_name;
+                    var username = $location.search().user || $rootScope.user.user_name;
                     var id = $location.path().match(/watch\/([^ \/]+)(\/|$)/)[1];
                     Transaction('GET', 'users/' + username + '/videos/' + id).then(function (video) {
                         Transaction('GET', 'videos/' + video.hash).then(function (base64) {
