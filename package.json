@@ -26,9 +26,9 @@
       "name": "monk",
       "version": "0.8.1",
       "data": {
-        "peer_server_address": "111.111.111.111:9999",
-        "blockchain_id": "",
-        "root_contract": ""
+        "peer_server_address": "104.236.146.58:15256",
+        "blockchain_id": "58e7692be97aa990e35debebc95c2b3631f437fe",
+        "root_contract": "0x46905240fc174f2269ae8e806f3bc6b94784664a"
       }
     },
     {
