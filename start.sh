@@ -58,7 +58,7 @@ echo ""
 echo ""
 epm --log 3 run &
 sleep 30
-epm plop pid | xargs kill
+kill -SIGTERM $(epm plop pid)
 
 blockchain_id=$(epm plop chainid)
 echo ""
