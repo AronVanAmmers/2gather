@@ -97,7 +97,7 @@ func (tr *testRunner) Start() {
 }
 
 func (tr *testRunner) poll(hash string) {
-	NUM_IT := 120
+	NUM_IT := 150
 	it := 0
 	for it < NUM_IT {
 		v := tr.pollOnce(hash)
