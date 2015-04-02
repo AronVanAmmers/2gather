@@ -66,6 +66,8 @@ Patch:
 
 The `op`s allowed are: `replace` and `remove`.
 
+When patches are sent, they are sent as arrays of `Patch` objects, so: `[patch0, patch1, ...]`.
+
 ## API Specification -- Specifics
 
 ### Resource: session
@@ -134,7 +136,7 @@ The body for the request **must be structured** as above in the PATCH discussion
 
 Fields available to PATCH for the `user` resource:
 
-* `btc_addr` String (bitcoin address)
+* `btc_address` String (bitcoin address)
 * `doug_perm` Boolean
 * `blacklist_perm ` Boolean
 

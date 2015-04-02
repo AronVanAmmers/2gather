@@ -29,7 +29,7 @@ function TwoGatherAPI() {
 		if(txObj === undefined){
 			return 0;
 		}
-		// failed
+		// failedF
 		if (txObj.status === 2){
 			delete txData[txHash];
 		} else if (txObj.status === 4){
@@ -153,11 +153,12 @@ function TwoGatherAPI() {
 		userData.blacklist_perm = hasBlacklistPerm(userName);
 		userData.videos = vids;
 
-		var subs = [];
-		for(var i = 0; i < mysubs.length; i++){
-			subs[i] = channelAddrToUsername(mysubs[i]);
+		var subs = getChanSubs(channelAddr);
+		var usersubs = [];
+		for(var i = 0; i < subs.length; i++){
+			usersubs[i] = channelAddrToUsername(subs[i]);
 		}
-		userData.subscriptions = subs;
+		userData.subscriptions = usersubs;
 		return userData;
 	}
 
@@ -433,6 +434,11 @@ function TwoGatherAPI() {
 		return ret;
 	}
 
+	function getChanSubs(channelAddr) {
+		var ret = esl.ll.GetList(channelAddr, StringToHex("subs"));
+		return ret;
+	};
+
 	// Check if a user has doug permissions.
 	function hasDOUGPerm(username){
 
@@ -582,6 +588,8 @@ function TwoGatherAPI() {
 		// Find Account contract associated with that name
 		myaccAddr = esl.kv.Value(afAddr, StringToHex("accounts"), myMonkAddr);
 		Println("My Account address: " + myaccAddr);
+
+		mysubs = getChanSubs(myaccAddr);
 		Printf("mysubs %v\n",mysubs);
 	}
 };

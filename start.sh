@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 echo ""
 echo ""
@@ -67,7 +68,7 @@ echo "blockchain_id: $blockchain_id"
 echo "root_contract: $root_contract"
 echo "peer_server_address: $remote_host:$remote_port"
 
-mv package.json /tmp/
+cp package.json /tmp/
 
 jq '.module_dependencies[0].data |= . * {peer_server_address: "'$remote_host:$remote_port'", blockchain_id: "'$blockchain_id'", root_contract: "'$root_contract'"}' /tmp/package.json \
   > package.json

@@ -86,6 +86,14 @@ git clone git@github.com:eris-ltd/2gather.git
 cd 2gather
 ```
 
+You'll need to install the front end dependencies as well. We use the [Bower](http://bower.io/) package manager to manage our front end dependencies.
+
+```bash
+bower install
+```
+
+If you want to skip the above step (`bower install`) you can rename the `docker-compose-get.yml` to `docker-compose.yml` which will fetch the 2gather container from Docker Hub rather than building it for yourself.
+
 At this point there are two possible compositions of the containers which you can use. The composition we suggest starting with is the testing containers which will deploy your own chain locally along with all of the contracts required for the DApp and allow you to begin operating the DApp on a local chain.
 
 ```bash
@@ -116,7 +124,7 @@ Follow our [Go VROOM Guide Here](https://decerver.io/tutorials/)
 
 #### Step 2: Ensure IPFS is Set Up
 
-Follow IPFS's [Guide Here](https://github.com/jbenet/go-ipfs)
+Follow IPFS's [Guide Here](https://github.com/ipfs/go-ipfs)
 
 #### Step 3: Install the DApp
 
@@ -124,19 +132,52 @@ Clone this repository into your `~/.decerver/dapps` folder:
 
 ```bash
 git clone git@github.com:eris-ltd/2gather.git ~/.decerver/dapps/2gather
+cd ~/.decerver/dapps/2gather
 ```
 
-#### Step 4: Roll the Chain (Optional)
+You'll need to install the front end dependencies as well. We use the [Bower](http://bower.io/) package manager to manage our front end dependencies.
+
+```bash
+bower install
+```
+
+You will also need the `jq` program installed.
+
+On Ubuntu:
+
+```bash
+sudo apt-get install jq
+```
+
+On OSX:
+
+```bash
+brew install jq
+```
+
+For other systems see the [JQ download page](http://stedolan.github.io/jq/download/).
+
+#### Step 4: Start IPFS
+
+Make sure that an IPFS gateway is running and is write accessible on port 8080.
+
+```bash
+ipfs daemon -writable
+```
+
+Note that IPFS daemon command will block in a terminal, so you will need to run it in a separate terminal window.
+
+#### Step 5: Roll the Chain (Optional)
 
 If you would like a chain for testing, then execute the `spec/teststart.sh` file. That will establish a new chain with proper configuration for local testing.
 
-#### Step 5: Connect to the Public Test Chain (Optional)
+#### Step 6: Connect to the Public Test Chain (Optional)
 
 If you would like to connect to the public test chain then execute the `./start.sh` file.
 
 ### Running the app
 
-When the DApp is running, open http://localhost:3000/2gather/ in a browser.
+When the DApp is running, open [http://localhost:3000/2gather/](http://localhost:3000/2gather/) in a browser.
 
 ## License
 
