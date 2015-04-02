@@ -25,7 +25,11 @@ function TwoGather() {
 		}
 		var resp = hFunc(urlObj, httpReq);
 
-		Println("RESPONSE OBJECT: " + JSON.stringify(resp));
+		if (JSON.stringify(resp).length < 10000) {
+			Println("RESPONSE OBJECT: " + JSON.stringify(resp).length);
+		} else {
+			Println("RESPONSE OBJECT: " + JSON.stringify(resp).substr(0, 10000) + " ...{truncated}");
+		};
 
 		// Weak check, but this is clearly not a valid response.
 		if (typeof (resp) !== "object" || resp.Body === undefined
