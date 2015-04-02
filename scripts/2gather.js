@@ -231,11 +231,11 @@ angular.module('2gather', ['ngRoute', 'tgAnimations', 'naif.base64'])
                     function ($scope, $rootScope, $location, Transaction) {
         $scope.user = $rootScope.user;
         $scope.saveBtcAddress = function () {
-            Transaction('PATCH', 'users/' + $scope.user.user_name, {
+            Transaction('PATCH', 'users/' + $scope.user.user_name, [{
                 op: 'replace',
                 field: 'btc_address',
                 value: $scope.user.btc_addr
-            }).then(function (res) {
+            }]).then(function (res) {
                 $location.path('/');
             }, function () {
                 alert('ERROR: Could not save user');
