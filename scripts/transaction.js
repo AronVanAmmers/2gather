@@ -34,7 +34,6 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
             $http.get(baseUrl + '/' + url).success(success).error(error);
             break;
         case 'PATCH':
-            break;
             $http({
                 method: method,
                 url: baseUrl + '/' + url,
@@ -58,7 +57,7 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
                     });
                 }).error(error);
             }).error(error);
-            y
+            break;
         default:
             $http({
                 method: method,
