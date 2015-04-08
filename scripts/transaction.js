@@ -45,7 +45,7 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
                     data: 'on'
                 }).success(function () { //turn on mining
                     hashArray.forEach(function (hash) {
-                        hash = hash.substr(1, hash.length - 2); //hash surrounded in by API
+                        hash = hash.substr(1, hash.length - 2); //hash surrounded quotes in by API
                         pollTransactionState(hash).then(function (res, status) {
                             $http({
                                 method: 'POST',
@@ -69,7 +69,6 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
                     url: baseUrl + '/mining',
                     data: 'on'
                 }).success(function () { //turn on mining
-                    hash = hash.substr(1, hash.length - 2); //hash surrounded in by API
                     pollTransactionState(hash).then(function (res, status) {
                         $http({
                             method: 'POST',
