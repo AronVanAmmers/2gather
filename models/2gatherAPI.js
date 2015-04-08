@@ -199,10 +199,18 @@ function TwoGatherAPI() {
 	}
 
 	// My Account Functions
-	this.setBTC = function(btcaddress) {
+	this.setBTC = function(btcaddress, isB58) {
 		var txData = [];
 		txData.push("setBTC");
-		txData.push(btcaddress);
+		if(isB58){
+			Printf("BTC Address: %s\n", btcaddress);
+			var ahTemp = ipfs.FromB58(btcaddress);
+			Printf("%v\n",ahTemp);
+			var addressHex = '0x11' + ahTemp.Data.slice(2);
+			txData.push(addressHex);
+		} else {
+			txData.push(btcaddress);
+		}
 		var hash = sendMsg(myaccAddr, txData);
 		this.trackTx(hash);
 		return hash;
@@ -279,7 +287,9 @@ function TwoGatherAPI() {
 
 	// Get a video
 	this.getVideo = function(hash) {
-		return readFileRaw(hash);
+		Printf("VIDEO HASH: %v\n",hash);
+		var hex = ipfs.B58ToHex(hash).Data;
+		return readFileRaw(hex);
 	}
 
 	// Get a video that is flagged
@@ -413,14 +423,15 @@ function TwoGatherAPI() {
 		var vdat = {};
 		vdat.name = sutil.hexToString(esl.kv.Value(channelAddr, StringToHex("vidnames"),
 				vidObj.Key));
-		vdat.date = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
+		var ts = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
 				vidObj.Key);
+		vdat.date = new Date(parseInt(ts,16)*1000).toString();
 		vdat.id = vidObj.Key;
 		vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
 				vidObj.Key);
 		// var vidHash = "1220" + vidObj.Value.slice(2);
 		// vdat.url = ipfs.GetFileURL(vidHash,false).Data;
-		vdat.hash = "1220" + vidObj.Value.slice(2);
+		vdat.hash = ipfs.HexToB58("1220" + vidObj.Value.slice(2)).Data;
 		return vdat;
 	}
 
@@ -430,7 +441,15 @@ function TwoGatherAPI() {
 		ret.owner = esl.single.Value(channelAddr, StringToHex("owner"));
 		ret.username = esl.single.Value(channelAddr, StringToHex("username"));
 		ret.created = esl.single.Value(channelAddr, StringToHex("created"));
-		ret.btc_address = esl.single.Value(channelAddr, StringToHex("BTCAddr"));
+		var btcAddrHex = esl.single.Value(channelAddr, StringToHex("BTCAddr"));
+		Printf("BTC ADDR: %s\n",btcAddrHex);
+		if(btcAddrHex === '0x'){
+			btcAddrHex = '';
+		} else {
+			btcAddrHex = btcAddrHex.slice(4); // Remove 0x11
+			btcAddrHex = ipfs.ToB58(btcAddrHex).Data;
+		}
+		ret.btc_address = btcAddrHex;
 		return ret;
 	}
 

@@ -182,9 +182,12 @@ function TwoGather() {
 						return network.getHttpResponse(400,{},"Bad request - patch data malformed.");
 					}
 					if(patch.op === "replace"){
-						txHashes[i] = tgApi.setBTC(patch.value);
+						if(patch.value.length < 26){
+							return network.getHttpResponse(400,{},"Bad request - invalid btc address.");
+						}
+						txHashes[i] = tgApi.setBTC(patch.value, true);
 					} else {
-						txHashes[i] = tgApi.setBTC("0x0");
+						txHashes[i] = tgApi.setBTC("0x0",false);
 					}
 				} else if (patch.field === "doug_perm"){
 					if(typeof(patch.value) !== "boolean" ){
