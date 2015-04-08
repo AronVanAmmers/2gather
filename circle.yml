@@ -24,7 +24,7 @@ test:
         timeout: 900
     - docker-compose -f spec/docker-compose.yml kill
     # test against main testnet
-    - "docker-compose up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd2_output.log & sleep 75 && export TESTNET=true && go run spec/main.go":
+    - "docker-compose up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd2_output.log & sleep 100 && export TESTNET=true && go run spec/main.go":
         timeout: 900
     - docker-compose kill
 
