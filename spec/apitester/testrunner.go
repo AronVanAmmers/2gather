@@ -106,7 +106,7 @@ func (tr *testRunner) Start() {
 	if os.Getenv("TESTNET") != "true" {
 		tr.testRemoveVideo();
 	} else {
-		fmt.Println("On Main Testnet; Skipping Blacklist Video test.")
+		fmt.Println("On Main Testnet; Skipping Remove Video test.")
 	}
 	tr.testRemoveUser();
 	tr.mining(false)
