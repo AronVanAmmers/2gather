@@ -103,7 +103,11 @@ func (tr *testRunner) Start() {
 	} else {
 		fmt.Println("On Main Testnet; Skipping Blacklist Video test.")
 	}
-	tr.testRemoveVideo();
+	if os.Getenv("TESTNET") != "true" {
+		tr.testRemoveVideo();
+	} else {
+		fmt.Println("On Main Testnet; Skipping Blacklist Video test.")
+	}
 	tr.testRemoveUser();
 	tr.mining(false)
 }
@@ -541,7 +545,7 @@ func (tr *testRunner) testRemoveUser() {
 func (tr *testRunner) testBTCAddr() {
 	fmt.Println("Testing: Set BTC address")
 
-	patch := &PatchString{"replace", "btc_address","0xdeadbeef"}
+	patch := &PatchString{"replace", "btc_address","1EX63PVtDMRFt9om3hRMgw9Lkf7dQdEcXj"}
 	patches := make([]*PatchString,0)
 	patches = append(patches,patch)
 	hashes, err := tr.client.patchJSON("users/" + tr.userName, patches)
@@ -563,7 +567,7 @@ func (tr *testRunner) testBTCAddr() {
 		tr.abortTest()
 	}
 	fmt.Println("USER BTC: " + usr.BTCAddress)
-	if usr.BTCAddress != "0xdeadbeef" {
+	if usr.BTCAddress != "1EX63PVtDMRFt9om3hRMgw9Lkf7dQdEcXj" {
 		fmt.Println("Test failed: BTC Address is: " + usr.BTCAddress )
 		tr.abortTest()
 	}
