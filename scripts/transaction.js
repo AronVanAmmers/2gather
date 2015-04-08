@@ -29,9 +29,37 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
     return function newTransaction(method, url, body) {
         $rootScope.$broadcast('tgLoadingStart');
         var defer = $q.defer();
-        if (method === 'GET')
+        switch (method) {
+        case 'GET':
             $http.get(baseUrl + '/' + url).success(success).error(error);
-        else
+            break;
+        case 'PATCH':
+            break;
+            $http({
+                method: method,
+                url: baseUrl + '/' + url,
+                data: body
+            }).success(function (hashArray) {
+                $http({
+                    method: 'POST',
+                    url: baseUrl + '/mining',
+                    data: 'on'
+                }).success(function () { //turn on mining
+                    hashArray.forEach(function (hash) {
+                        hash = hash.substr(1, hash.length - 2); //hash surrounded in by API
+                        pollTransactionState(hash).then(function (res, status) {
+                            $http({
+                                method: 'POST',
+                                url: baseUrl + '/mining',
+                                data: 'off'
+                            }) //turn mining off after success
+                            success(res, status);
+                        }, error);
+                    });
+                }).error(error);
+            }).error(error);
+            y
+        default:
             $http({
                 method: method,
                 url: baseUrl + '/' + url,
@@ -53,13 +81,15 @@ angular.module('2gather').factory('Transaction', function ($http, $q, API_BASE_U
                     }, error);
                 }).error(error);
             }).error(error);
-        
-        function error(error, status){
+            break;
+        }
+
+        function error(error, status) {
             $rootScope.$broadcast('tgLoadingEnd');
             defer.reject(error, status);
         }
-        
-        function success(res, status){
+
+        function success(res, status) {
             $rootScope.$broadcast('tgLoadingEnd');
             defer.resolve(res, status);
         }
