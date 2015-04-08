@@ -69,15 +69,27 @@ func (tr *testRunner) Start() {
 	tr.testSessionEmpty()
 	tr.mining(true);
 	tr.testCreateUser();
-	tr.testSession()
-	tr.testBTCAddr()
+	tr.testSession();
+	if os.Getenv("TESTNET") != "true" {
+		tr.testBTCAddr()
+	} else {
+		fmt.Println("On Main Testnet; Skipping BTC test.")
+	}
 	if os.Getenv("TESTNET") != "true" {
 		tr.testBlacklistPerm()
 	} else {
 		fmt.Println("On Main Testnet; Skipping Blacklist test.")
 	}
-	tr.testAddSub();
-	tr.testRemoveSub();
+	if os.Getenv("TESTNET") != "true" {
+		tr.testAddSub();
+	} else {
+		fmt.Println("On Main Testnet; Skipping AddSub test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testRemoveSub();
+	} else {
+		fmt.Println("On Main Testnet; Skipping RmSub test.")
+	}
 	tr.testAddVideo();
 	tr.testGetUsersVideos();
 	tr.testGetVideo();
