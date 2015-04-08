@@ -57,7 +57,7 @@ echo "Catching up the Chain... This may take a minute ->"
 echo ""
 echo ""
 epm --log 3 run &
-sleep 45
+sleep 90
 kill -SIGTERM $(epm plop pid)
 
 blockchain_id=$(epm plop chainid)
