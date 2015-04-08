@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 echo ""
@@ -57,8 +57,8 @@ echo "Catching up the Chain... This may take a minute ->"
 echo ""
 echo ""
 epm --log 3 run &
-sleep 30
-epm plop pid | xargs kill
+sleep 90
+kill -SIGTERM $(epm plop pid)
 
 blockchain_id=$(epm plop chainid)
 echo ""
