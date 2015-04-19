@@ -75,6 +75,12 @@ curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ```
 
+Make sure Docker is installed properly:
+
+```bash
+docker version
+```
+
 Alternatively:
 
 ```bash
@@ -82,6 +88,13 @@ sudo pip install -U docker-compose
 ```
 
 **Go Vroom**: Once you have Docker and Docker-Compose installed the rest is ultra simple.
+
+First clone this repository:
+
+```bash
+git clone github.com/eris-ltd/2gather
+cd 2gather
+```
 
 ```bash
 (sudo) docker-compose -f docker-compose-get.yml up
