@@ -63,7 +63,7 @@ Docker Compose (recently renamed from the `fig` tool which was purchased by Dock
 Ubuntu:
 
 ```bash
-curl -sSL https://get.docker.com/ubuntu/ | sudo sh
+$ curl -sSL https://get.docker.com/ubuntu/ | sudo sh
 ```
 
 [Install Docker Compose](https://docs.docker.com/compose/#installation-and-set-up):
@@ -71,20 +71,22 @@ curl -sSL https://get.docker.com/ubuntu/ | sudo sh
 64 bit Linux && OSX:
 
 ```bash
-curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+$ curl -L https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+$ chmod +x /usr/local/bin/docker-compose
 ```
+
+If you run into problems on linux, execute the `curl` command from a sudo shell.
 
 Make sure Docker is installed properly:
 
 ```bash
-docker version
+$ (sudo) docker version
 ```
 
 Alternatively:
 
 ```bash
-sudo pip install -U docker-compose
+$ (sudo) pip install -U docker-compose
 ```
 
 **Go Vroom**: Once you have Docker and Docker-Compose installed the rest is ultra simple.
@@ -92,12 +94,12 @@ sudo pip install -U docker-compose
 First clone this repository:
 
 ```bash
-git clone github.com/eris-ltd/2gather
-cd 2gather
+$ git clone https://github.com/eris-ltd/2gather
+$ cd 2gather
 ```
 
 ```bash
-(sudo) docker-compose -f docker-compose-get.yml up
+$ (sudo) docker-compose -f docker-compose-get.yml up
 ```
 
 That will start the DApp in your terminal window. After that simply go to any web browser to [play with 2gather](http://localhost:3000/2gather).
