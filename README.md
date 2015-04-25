@@ -102,7 +102,13 @@ $ cd 2gather
 $ (sudo) docker-compose -f docker-compose-get.yml up
 ```
 
-That will start the DApp in your terminal window. After that simply go to any web browser to [play with 2gather](http://localhost:3000/2gather).
+N.B. If you do not have `git` installed and do not want to install it, then you can simply copy and paste the contents of [this file](https://github.com/eris-ltd/2gather/blob/master/docker-compose-get.yml) into a `docker-compose.yml` file in any directory and then start the DApp with:
+
+```bash
+$ (sudo) docker-compose up
+```
+
+Whichever command sequence you use, you should now have the DApp running in your terminal window. After that simply go to any web browser to [play with 2gather](http://localhost:3000/2gather).
 
 ### Medium Difficulty Installation
 
