@@ -12,16 +12,21 @@ dependencies:
 
 test:
   pre:
-    - "docker-compose -f spec/fig_testing.yml build && docker pull eris/ipfs"
-    # start with the test fig. wait for contracts to be compiled and deployed.
-    - "docker-compose -f spec/fig_testing.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60"
+    - docker pull eris/ipfs
+    - docker pull eris/decerver
+    - docker-compose -f spec/docker-compose.yml build
+    - docker-compose build
 
   override:
-    - go run spec/main.go
-    # - grunt test
-
-  post:
-    - docker-compose -f spec/fig_testing.yml kill
+    # test in isolation
+    # start with the test fig. wait for contracts to be compiled and deployed.
+    - "docker-compose -f spec/docker-compose.yml up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd1_output.log & sleep 60 && go run spec/main.go":
+        timeout: 900
+    - docker-compose -f spec/docker-compose.yml kill
+    # test against main testnet
+    - "docker-compose up --no-color --no-recreate > $CIRCLE_ARTIFACTS/test_rnd2_output.log & sleep 120 && export TESTNET=true && go run spec/main.go":
+        timeout: 900
+    - docker-compose kill
 
 deployment:
   hub:
@@ -30,4 +35,3 @@ deployment:
       - docker build -t eris/2gather:latest .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push eris/2gather:latest
-      - docker-compose rm --force -v

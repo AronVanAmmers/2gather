@@ -17,7 +17,7 @@ type UserNameData struct {
 // Request bodies
 type VideoData struct {
 	Name string `json:"name"`
-	Url string `json:"url"`
+	Base64 string `json:"base64"`
 }
 
 type PatchString struct {
@@ -48,42 +48,72 @@ type User struct {
 type Video struct {
 	Name string `json:"name"`
 	Date string `json:"date"`
-	VidNum string `json:"vidnum"`
+	Id string `json:"id"`
 	Status string `json:"status"`
-	Url string `json:"url"`
+	Hash string `json:"hash"`
 }
 
 type testRunner struct {
 	client   *testClient
 	userName     string
 	videoName string
-	videoUrl string
-	vidNum string
+	videoData string
+	videoId string
 }
 
-func NewTestRunner(baseUrl, userName, videoName, videoUrl string) *testRunner {
-	return &testRunner{NewTestClient(baseUrl), userName, videoName, videoUrl, ""}
+func NewTestRunner(baseUrl, userName, videoName, videoData string) *testRunner {
+	return &testRunner{NewTestClient(baseUrl), userName, videoName, videoData, ""}
 }
 
 func (tr *testRunner) Start() {
 	tr.testSessionEmpty()
 	tr.mining(true);
 	tr.testCreateUser();
-	tr.testSession()
-	tr.testBTCAddr()
-	tr.testBlacklistPerm()
-	tr.testAddSub();
-	tr.testRemoveSub();
+	tr.testSession();
+	if os.Getenv("TESTNET") != "true" {
+		tr.testBTCAddr()
+	} else {
+		fmt.Println("On Main Testnet; Skipping BTC test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testBlacklistPerm()
+	} else {
+		fmt.Println("On Main Testnet; Skipping Blacklist test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testAddSub();
+	} else {
+		fmt.Println("On Main Testnet; Skipping AddSub test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testRemoveSub();
+	} else {
+		fmt.Println("On Main Testnet; Skipping RmSub test.")
+	}
 	tr.testAddVideo();
-	tr.testFlagVideo();
-	tr.testBlacklistVideo();
-	tr.testRemoveVideo();
+	tr.testGetUsersVideos();
+	tr.testGetVideo();
+	if os.Getenv("TESTNET") != "true" {
+		tr.testFlagVideo();
+	} else {
+		fmt.Println("On Main Testnet; Skipping Flag test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testBlacklistVideo();
+	} else {
+		fmt.Println("On Main Testnet; Skipping Blacklist Video test.")
+	}
+	if os.Getenv("TESTNET") != "true" {
+		tr.testRemoveVideo();
+	} else {
+		fmt.Println("On Main Testnet; Skipping Remove Video test.")
+	}
 	tr.testRemoveUser();
 	tr.mining(false)
 }
 
 func (tr *testRunner) poll(hash string) {
-	NUM_IT := 20
+	NUM_IT := 200
 	it := 0
 	for it < NUM_IT {
 		v := tr.pollOnce(hash)
@@ -176,7 +206,7 @@ func (tr *testRunner) session() (ret *User, err error) {
 
 func (tr *testRunner) getUser(userName string) (ret *User, err error) {
 
-	resp, err := tr.client.get("user/" + userName)
+	resp, err := tr.client.get("users/" + userName)
 	if err != nil {
 		return
 	}
@@ -199,7 +229,7 @@ func (tr *testRunner) getUser(userName string) (ret *User, err error) {
 
 func (tr *testRunner) testSessionEmpty() () {
 
-	fmt.Println("Testing Session")
+	fmt.Println("Testing Session is Empty.")
 	_, err := tr.session()
 	if err == nil {
 		fmt.Println("Test failed: Session not null.")
@@ -209,10 +239,12 @@ func (tr *testRunner) testSessionEmpty() () {
 }
 
 func (tr *testRunner) testSession() () {
-	fmt.Println("Testing Session")
+
+	fmt.Println("Testing Session is Populated.")
 	usr, err := tr.session()
 	if err != nil {
-		return
+		fmt.Printf("Test failed: no active user was retrieved: %s", err)
+		tr.abortTest()
 	}
 	if usr.UserName != tr.userName {
 		fmt.Println("Test failed: User name '" + usr.UserName + "'. Expected: " + tr.userName)
@@ -227,7 +259,7 @@ func (tr *testRunner) testCreateUser() {
 	userData := &UserNameData{}
 	userData.UserName = tr.userName
 
-	hash, err := tr.client.postJSON("user", userData)
+	hash, err := tr.client.postJSON("users", userData)
 
 	if err != nil {
 		fmt.Println("Result: Create User failed.")
@@ -258,7 +290,7 @@ func (tr *testRunner) testAddSub() {
 	userData.UserName = tr.userName
 
 	// Add the subscriber himself
-	hash, err := tr.client.postJSON("user/" + tr.userName + "/subs", userData)
+	hash, err := tr.client.postJSON("users/" + tr.userName + "/subs", userData)
 
 	if err != nil {
 		fmt.Println("Result: Add subscription failed.")
@@ -287,7 +319,7 @@ func (tr *testRunner) testRemoveSub() {
 	fmt.Println("Testing: Add subscription")
 
 	// Add the subscriber himself
-	hash, err := tr.client.delete("user/" + tr.userName + "/subs/" + tr.userName, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName + "/subs/" + tr.userName, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Remove subscription failed.")
@@ -316,9 +348,9 @@ func (tr *testRunner) testAddVideo() {
 
 	videoData := &VideoData{}
 	videoData.Name = tr.videoName
-	videoData.Url = tr.videoUrl
+	videoData.Base64 = tr.videoData
 
-	hash, err := tr.client.postJSON("user/" + tr.userName + "/videos", videoData)
+	hash, err := tr.client.postJSON("users/" + tr.userName + "/videos", videoData)
 
 	if err != nil {
 		fmt.Println("Result: Add video failed.")
@@ -347,7 +379,7 @@ func (tr *testRunner) testAddVideo() {
 
 	for i := 0; i < len(usr.Videos); i++ {
 		if usr.Videos[i].Name == tr.videoName {
-			tr.vidNum = usr.Videos[i].VidNum
+			tr.videoId = usr.Videos[i].Id
 			fmt.Println("Test successful.");
 			return;
 		}
@@ -357,6 +389,81 @@ func (tr *testRunner) testAddVideo() {
 	tr.abortTest();
 }
 
+
+func (tr *testRunner) testGetUsersVideos() {
+	fmt.Println("Testing: Getting users videos.")
+
+	vids, vErr := tr.client.get("users/" + tr.userName + "/videos")
+
+	if vErr != nil {
+		fmt.Println("Test failed: Video data corrupted: " + vErr.Error())
+		tr.abortTest()
+	}
+
+	vidsBytes, err := ioutil.ReadAll(vids.Body)
+
+	if err != nil {
+		fmt.Println("Test failed: Could not read video data: " + err.Error())
+		tr.abortTest()
+	}
+
+	videos := []Video{}
+	err = json.Unmarshal(vidsBytes, &videos)
+
+	if err != nil {
+		fmt.Println("Test failed: Could not read video data: " + err.Error())
+		tr.abortTest()
+	}
+
+	if len(videos) != 0 {
+		if videos[0].Status == "0x01" {
+			fmt.Println("Test successful.");
+			return;
+		}
+	}
+
+	fmt.Println("Test Failed.");
+	tr.abortTest();
+}
+
+func (tr *testRunner) testGetVideo() {
+	fmt.Println("Testing: Getting video.")
+
+	usr, uErr := tr.getUser(tr.userName)
+
+	if uErr != nil {
+		fmt.Println("Test failed: User data corrupted: " + uErr.Error())
+		tr.abortTest()
+	}
+
+	if len(usr.Videos) == 0 {
+		fmt.Println("Test failed: No videos in user account.")
+		tr.abortTest()
+	}
+
+	videoHash := usr.Videos[0].Hash
+	hash, err := tr.client.get("videos/" + videoHash)
+
+	if err != nil {
+		fmt.Println("Result: Getting video failed.")
+		tr.abortTest()
+	}
+
+	vid, err := ioutil.ReadAll(hash.Body)
+
+	if err != nil {
+		fmt.Println("Result: Getting video failed.")
+		tr.abortTest()
+	}
+
+	if (string(vid) == tr.videoData) {
+		fmt.Println("Test successful.")
+		return
+	}
+
+	fmt.Println("Test Failed.");
+	tr.abortTest();
+}
 
 func (tr *testRunner) testRemoveVideo() {
 	fmt.Println("Testing: Remove Video")
@@ -373,20 +480,20 @@ func (tr *testRunner) testRemoveVideo() {
 		tr.abortTest()
 	}
 
-	vidNum := ""
+	videoId := ""
 
 	for i := 0; i < len(usr.Videos); i++ {
 		if usr.Videos[i].Name == tr.videoName {
-			vidNum = usr.Videos[i].VidNum
+			videoId = usr.Videos[i].Id
 		}
 	}
 
-	if vidNum == "" {
+	if videoId == "" {
 		fmt.Println("Video not in user account.")
 		tr.abortTest()
 	}
 
-	hash, err := tr.client.delete("user/" + tr.userName + "/videos/" + vidNum, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName + "/videos/" + videoId, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Delete video failed.")
@@ -414,7 +521,7 @@ func (tr *testRunner) testRemoveVideo() {
 func (tr *testRunner) testRemoveUser() {
 	fmt.Println("Testing: Remove User")
 
-	hash, err := tr.client.delete("user/" + tr.userName, []byte{})
+	hash, err := tr.client.delete("users/" + tr.userName, []byte{})
 
 	if err != nil {
 		fmt.Println("Result: Delete user failed.")
@@ -438,10 +545,10 @@ func (tr *testRunner) testRemoveUser() {
 func (tr *testRunner) testBTCAddr() {
 	fmt.Println("Testing: Set BTC address")
 
-	patch := &PatchString{"replace", "btc_address","0xdeadbeef"}
+	patch := &PatchString{"replace", "btc_address","1EX63PVtDMRFt9om3hRMgw9Lkf7dQdEcXj"}
 	patches := make([]*PatchString,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName, patches)
 
 	if err != nil {
 		fmt.Println("Result: Add btc_address failed: " + err.Error())
@@ -460,7 +567,7 @@ func (tr *testRunner) testBTCAddr() {
 		tr.abortTest()
 	}
 	fmt.Println("USER BTC: " + usr.BTCAddress)
-	if usr.BTCAddress != "0xdeadbeef" {
+	if usr.BTCAddress != "1EX63PVtDMRFt9om3hRMgw9Lkf7dQdEcXj" {
 		fmt.Println("Test failed: BTC Address is: " + usr.BTCAddress )
 		tr.abortTest()
 	}
@@ -473,7 +580,7 @@ func (tr *testRunner) testBlacklistPerm() {
 	patch := &PatchBool{"replace", "blacklist_perm", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName, patches)
 
 	if err != nil {
 		fmt.Println("Result: Add blacklist perms failed: " + err.Error())
@@ -506,7 +613,7 @@ func (tr *testRunner) testFlagVideo() {
 	patch := &PatchBool{"replace", "flag", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName + "/videos/" + tr.vidNum, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.videoId, patches)
 
 	if err != nil {
 		fmt.Println("Result: Flag failed: " + err.Error())
@@ -538,7 +645,7 @@ func (tr *testRunner) testBlacklistVideo() {
 	patch := &PatchBool{"replace", "blacklist", true}
 	patches := make([]*PatchBool,0)
 	patches = append(patches,patch)
-	hashes, err := tr.client.patchJSON("user/" + tr.userName + "/videos/" + tr.vidNum, patches)
+	hashes, err := tr.client.patchJSON("users/" + tr.userName + "/videos/" + tr.videoId, patches)
 
 	if err != nil {
 		fmt.Println("Result: Blacklist failed: " + err.Error())

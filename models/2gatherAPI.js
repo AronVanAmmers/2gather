@@ -1,23 +1,23 @@
 function TwoGatherAPI() {
-	
+
 	var dougAddr = RootContract;
 	var flAddr = "";
 	var afAddr = "";
 	var myaccAddr = "";
 	var mysubs = [];
 	var myMonkAddr = "";
-	
+
 	var currentVid = null;
-	
+
 	var vidNum = 10;
 
 	// Used to keep track of account create and delete transactions.
-	var accTx = ""; 
+	var accTx = "";
 
 	// ****************************** TX tracking *****************************
 
 	var txData = {};
-	
+
 	// Codes for polling
 	// 0 - non existing
 	// 1 - pending
@@ -29,7 +29,7 @@ function TwoGatherAPI() {
 		if(txObj === undefined){
 			return 0;
 		}
-		// failed
+		// failedF
 		if (txObj.status === 2){
 			delete txData[txHash];
 		} else if (txObj.status === 4){
@@ -37,7 +37,7 @@ function TwoGatherAPI() {
 		}
 		return txObj.status;
 	}
-		
+
 	this.newTxObj = function(){
 		return {"status" : 0 };
 	}
@@ -62,7 +62,7 @@ function TwoGatherAPI() {
 			}
 		}
 	}
-		
+
 	this.statUpdatePost = function(event){
 		var hash = "0x" + event.Resource.Hash;
 		Println("Post tx received: " + hash);
@@ -70,16 +70,16 @@ function TwoGatherAPI() {
 		if(txObj !== undefined && txObj.status < 3){
 			txObj.status = 3;
 		}
-		
+
 	}
-	
+
 	this.statUpdateFail = function(event){
 		var txObj = txData[event.Resource.Hash];
 		if(txObj !== undefined){
 			txObj.status = 2;
 		}
 	}
-	
+
 	// functions for adding new type of txs
 	this.trackTx = function(txHash){
 		Println("Added hash for tracking: " + txHash.slice(0,6) + "...");
@@ -88,13 +88,13 @@ function TwoGatherAPI() {
 		txData[txHash] = txObj;
 		Println("Added tx data");
 	}
-	
+
 	// TODO all the others
-	
+
 	// ************************** Main functions *****************************
-	
+
 	// USER
-	
+
 	// Account Creation and removal Functions
 	// Create a new account
 	this.createAccount = function(userName) {
@@ -106,7 +106,7 @@ function TwoGatherAPI() {
 		this.trackTx(hash);
 		return hash;
 	}
-	
+
 	// This Deletes an account both from the usernames database and the actual
 	// contract.
 	this.deleteAccount = function(username) {
@@ -126,7 +126,7 @@ function TwoGatherAPI() {
 			return this.getUser(channelAddrToUsername(myaccAddr));
 		}
 	}
-	
+
 	// Get the user data for a given user.
 	this.getUser = function(userName){
 		Println("Getting user");
@@ -136,15 +136,15 @@ function TwoGatherAPI() {
 			Println("User not found");
 			return null;
 		}
-		
+
 		var userData = {};
-		
+
 		var chanData = getChanInfo(channelAddr);
 		var vids = getChanVids(channelAddr);
-		
+
 		userData.user_name = sutil.hexToString(chanData.username);
 		userData.user_id = chanData.owner;
-		
+
 		var ts = parseInt(chanData.created,16);
 
 		userData.created = new Date(ts*1000).toString();
@@ -152,15 +152,27 @@ function TwoGatherAPI() {
 		userData.doug_perm = hasDOUGPerm(userName);
 		userData.blacklist_perm = hasBlacklistPerm(userName);
 		userData.videos = vids;
-		
-		var subs = [];
-		for(var i = 0; i < mysubs.length; i++){
-			subs[i] = channelAddrToUsername(mysubs[i]);
+
+		var subs = getChanSubs(channelAddr);
+		var usersubs = [];
+		for(var i = 0; i < subs.length; i++){
+			usersubs[i] = channelAddrToUsername(subs[i]);
 		}
-		userData.subscriptions = subs;
+		userData.subscriptions = usersubs;
 		return userData;
 	}
-	
+
+	this.getUserVids = function(userName){
+		var channelAddr = usernameToChannelAddr(userName);
+		if (IsZero(channelAddr)){
+			Println("User not found");
+			return null;
+		}
+
+		var vids = getChanVids(channelAddr);
+		return vids
+	}
+
 	// Subscribe to a channel
 	this.subTo = function(userName) {
 		var channelAddr = usernameToChannelAddr(userName);
@@ -172,7 +184,7 @@ function TwoGatherAPI() {
 		this.trackTx(hash);
 		return hash;
 	}
-	
+
 	// unsubscribe from a channel
 	this.unSubTo = function(userName) {
 		var channelAddr = usernameToChannelAddr(userName);
@@ -185,18 +197,26 @@ function TwoGatherAPI() {
 		this.trackTx(hash);
 		return hash;
 	}
-	
+
 	// My Account Functions
-	this.setBTC = function(btcaddress) {
+	this.setBTC = function(btcaddress, isB58) {
 		var txData = [];
 		txData.push("setBTC");
-		txData.push(btcaddress);
+		if(isB58){
+			Printf("BTC Address: %s\n", btcaddress);
+			var ahTemp = ipfs.FromB58(btcaddress);
+			Printf("%v\n",ahTemp);
+			var addressHex = '0x11' + ahTemp.Data.slice(2);
+			txData.push(addressHex);
+		} else {
+			txData.push(btcaddress);
+		}
 		var hash = sendMsg(myaccAddr, txData);
 		this.trackTx(hash);
 		return hash;
 	}
 
-	// Grant a user doug permissions. Can only be done if you have that 
+	// Grant a user doug permissions. Can only be done if you have that
 	// permissions.
 	this.setDOUGPerm = function(username, on) {
 		var pubAddr = usernameToAddr(username);
@@ -211,7 +231,7 @@ function TwoGatherAPI() {
 		}
 		var hash = sendMsg(dougAddr, txData);
 		this.trackTx(hash);
-		return hash;		
+		return hash;
 	}
 
 	this.setBlacklistPerm = function(username, on) {
@@ -233,11 +253,11 @@ function TwoGatherAPI() {
 	// VIDEO
 
 	// Post a video
-	this.addVideo = function(name,url) {
-		Println("Adding file '" + url + "' to ipfs.");
-		var hash = writeFile(url);
+	this.addVideo = function(name, data) {
+		Println("Adding file to ipfs.");
+		var hash = writeFile(data);
 		if(hash === ""){
-			Println("Error when adding file '" + url + "' to ipfs.");
+			Println("Error when adding file to ipfs.");
 			return "0x0";
 		}
 		return this.postVid(name,hash);
@@ -252,8 +272,8 @@ function TwoGatherAPI() {
 		this.trackTx(hash);
 		return hash;
 	}
-	
-	// Get a video
+
+	// Get a video's metadata
 	this.getVideoData = function(username, vidnum) {
 		channelAddr = usernameToChannelAddr(username);
 		var vids = esl.ll.GetPairsRev(channelAddr, StringToHex("uploads"), 10);
@@ -265,9 +285,16 @@ function TwoGatherAPI() {
 		return null;
 	}
 
+	// Get a video
+	this.getVideo = function(hash) {
+		Printf("VIDEO HASH: %v\n",hash);
+		var hex = ipfs.B58ToHex(hash).Data;
+		return readFileRaw(hex);
+	}
+
 	// Get a video that is flagged
 	this.getFlaggedVid = function(casenum) {
-		
+
 		var vdat = {};
 		vdat.account = esl.ll.Main(flAddr,StringToHex("flaggedaddr"),casenum);
 		vdat.vidnum = esl.kv.Value(flAddr,StringToHex("flaggedvidn"),casenum);
@@ -358,24 +385,24 @@ function TwoGatherAPI() {
 		return hash;
 	}
 
-	
+
 	// ************************ Helpers ***************************
-	
+
 	// Takes a username and gets the address, if any.
 	function usernameToAddr(username){
 		return esl.ll.Main(afAddr,sutil.stringToHex("usernames"), sutil.stringToHex(username));
 	};
-	
+
 	// Takes a user name and returns the channel address, if any.
 	function usernameToChannelAddr(username){
 		var pubAddr = esl.ll.Main(afAddr,sutil.stringToHex("usernames"),sutil.stringToHex(username));
 		return esl.kv.Value(afAddr,sutil.stringToHex("accounts"),pubAddr);
 	};
-	
+
 	function channelAddrToUsername(channelAddr){
 		return sutil.hexToString(esl.single.Value(channelAddr, sutil.stringToHex("username")));
 	};
-	
+
 	// For getting the videos associated with a channel. Passing your account
 	// address will get your own videos
 	function getChanVids(channelAddr) {
@@ -396,15 +423,17 @@ function TwoGatherAPI() {
 		var vdat = {};
 		vdat.name = sutil.hexToString(esl.kv.Value(channelAddr, StringToHex("vidnames"),
 				vidObj.Key));
-		vdat.date = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
+		var ts = esl.kv.Value(channelAddr, StringToHex("uploaddate"),
 				vidObj.Key);
-		vdat.vidnum = vidObj.Key;
+		vdat.date = new Date(parseInt(ts,16)*1000).toString();
+		vdat.id = vidObj.Key;
 		vdat.status = esl.kv.Value(channelAddr, StringToHex("status"),
 				vidObj.Key);
-		var vidHash = "1220" + vidObj.Value.slice(2);
-		vdat.url = ipfs.GetFileURL(vidHash,false).Data;
+		// var vidHash = "1220" + vidObj.Value.slice(2);
+		// vdat.url = ipfs.GetFileURL(vidHash,false).Data;
+		vdat.hash = ipfs.HexToB58("1220" + vidObj.Value.slice(2)).Data;
 		return vdat;
-	}	
+	}
 
 	// Get Information about an account
 	function getChanInfo(channelAddr) {
@@ -412,13 +441,26 @@ function TwoGatherAPI() {
 		ret.owner = esl.single.Value(channelAddr, StringToHex("owner"));
 		ret.username = esl.single.Value(channelAddr, StringToHex("username"));
 		ret.created = esl.single.Value(channelAddr, StringToHex("created"));
-		ret.btc_address = esl.single.Value(channelAddr, StringToHex("BTCAddr"));
+		var btcAddrHex = esl.single.Value(channelAddr, StringToHex("BTCAddr"));
+		Printf("BTC ADDR: %s\n",btcAddrHex);
+		if(btcAddrHex === '0x'){
+			btcAddrHex = '';
+		} else {
+			btcAddrHex = btcAddrHex.slice(4); // Remove 0x11
+			btcAddrHex = ipfs.ToB58(btcAddrHex).Data;
+		}
+		ret.btc_address = btcAddrHex;
 		return ret;
 	}
-	
+
+	function getChanSubs(channelAddr) {
+		var ret = esl.ll.GetList(channelAddr, StringToHex("subs"));
+		return ret;
+	};
+
 	// Check if a user has doug permissions.
 	function hasDOUGPerm(username){
-		
+
 		var pubAddr = usernameToAddr(username);
 		var DOUGIndex = esl.ll.Main(dougAddr,StringToHex("permnames"),StringToHex("doug"));
 		var Permval = esl.array.Element(dougAddr,StringToHex("perms"),pubAddr,DOUGIndex);
@@ -431,7 +473,7 @@ function TwoGatherAPI() {
 
 	// Check if a user has video blacklisting permissions.
 	function hasBlacklistPerm(username){
-		
+
 		var pubAddr = usernameToAddr(username);
 		var BlacklistIndex = esl.ll.Main(dougAddr,StringToHex("permnames"),StringToHex("blacklist"));
 		var Permval = esl.array.Element(dougAddr,StringToHex("perms"),pubAddr,BlacklistIndex);
@@ -440,12 +482,12 @@ function TwoGatherAPI() {
 		} else {
 			return false;
 		}
-		
+
 	};
-	
+
 	// Channel obtaining functions
 	function getAllAccounts() {
-		
+
 		var allacc = esl.ll.GetPairs(afAddr, StringToHex("usernames"), 0);
 		var ret = [];
 		for (var i = 0; i < allacc.length; i++) {
@@ -457,7 +499,7 @@ function TwoGatherAPI() {
 			ret.push(accdat);
 		}
 		return ret;
-		
+
 	};
 
 	// Find an account
@@ -493,7 +535,7 @@ function TwoGatherAPI() {
 		return ret;
 	};
 
-	
+
 	// Run state updates THIS PRELOADS VIDEOS FROM YOUR SUBSCRIBERS SO YOU DON"T
 	// HAVE TO WAIT
 	/*
@@ -536,7 +578,7 @@ function TwoGatherAPI() {
 		events.subscribe("monk","newTx:pre:fail","", this.statUpdateFail, "does_not_matter_since_not_websocket");
 		events.subscribe("monk","newTx:post:fail","", this.statUpdateFail, "does_not_matter_since_not_websocket");
 	}
-	
+
 	// No websockets running here, meaning there's only one possible sub from this runtime.
 	function unsub(){
 		events.unsubscribe("monk","newBlock", "does_not_matter_since_not_websocket");
@@ -565,6 +607,8 @@ function TwoGatherAPI() {
 		// Find Account contract associated with that name
 		myaccAddr = esl.kv.Value(afAddr, StringToHex("accounts"), myMonkAddr);
 		Println("My Account address: " + myaccAddr);
+
+		mysubs = getChanSubs(myaccAddr);
 		Printf("mysubs %v\n",mysubs);
 	}
 };

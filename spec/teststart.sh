@@ -1,10 +1,25 @@
 #!/bin/sh
 
+# flame out if the contracts don't deploy
+abort()
+{
+    echo >&2 '
+***************
+*** ABORTED ***
+***************
+'
+    echo "An error occurred. Exiting..." >&2
+    exit 1
+}
+
+trap 'abort' 0
+set -e
+
 echo ""
 echo ""
 echo "Making a Chain."
 cd ~/.decerver/dapps/2gather
-epm new --checkout --name 2gather --genesis genesis.json
+epm new --checkout --name 2gather --no-edit
 epm config log_level:${LOG_LEVEL:=3}
 echo "The chain has been made."
 

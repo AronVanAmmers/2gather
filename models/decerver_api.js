@@ -23,12 +23,12 @@ function SA(accAddr, sAddr) {
 	return sObj.Data;
 };
 
-function writeFile(url) {
-	var hashObj = ipfs.PushFile(url);
+function writeFile(data) {
+	var hashObj = ipfs.PushFileData(data);
 	if (hashObj.Error !== "") {
 		return "";
 	} else {
-		Println("Wrote file: " + url + ". Hash: " + hashObj.Data);
+		Println("Wrote file. Hash: " + hashObj.Data);
 		// This would be the 32 byte hash (omitting the initial "1220").
 		return "0x" + hashObj.Data.slice(6);
 	}
@@ -37,6 +37,17 @@ function writeFile(url) {
 // Takes the 32 byte hash. Prepends "1220" to create the full hash.
 function readFile(hash) {
 	var fullHash = "1220" + hash.slice(2);
+	var fileObj = ipfs.GetFile(fullHash, false);
+
+	if (fileObj.Error !== "") {
+		return "";
+	} else {
+		// This would be the file data as a string.
+		return fileObj.Data;
+	}
+};
+
+function readFileRaw(fullHash) {
 	var fileObj = ipfs.GetFile(fullHash, false);
 
 	if (fileObj.Error !== "") {

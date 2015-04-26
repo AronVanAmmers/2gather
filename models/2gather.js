@@ -6,11 +6,11 @@ function TwoGather() {
 	tgApi = new TwoGatherAPI();
 
 	// Used to handle all incoming requests. It is set as the callback for
-	// incominghttp requests. It parses the request URL into an object, then 
+	// incominghttp requests. It parses the request URL into an object, then
 	// pass that object into the appropriate sub handler (should one exist).
 	// Sub handlers needs to return a response object.
 	this.handle = function(httpReq) {
-		
+
 		Println("Receiving");
 		var urlObj = network.parseUrl(httpReq);
 		// Error 400 bad request
@@ -25,7 +25,11 @@ function TwoGather() {
 		}
 		var resp = hFunc(urlObj, httpReq);
 
-		Println("RESPONSE OBJECT: " + JSON.stringify(resp));
+		if (JSON.stringify(resp).length < 10000) {
+			Println("RESPONSE OBJECT: " + JSON.stringify(resp).length);
+		} else {
+			Println("RESPONSE OBJECT: " + JSON.stringify(resp).substr(0, 10000) + " ...{truncated}");
+		};
 
 		// Weak check, but this is clearly not a valid response.
 		if (typeof (resp) !== "object" || resp.Body === undefined
@@ -34,9 +38,9 @@ function TwoGather() {
 		}
 		return resp;
 	}
-	
+
 	// Handle user requests. Warning! - Very sophisticated routing algorithm at work.
-	handlers.user = function(urlObj,httpReq){
+	handlers.users = function(urlObj,httpReq){
 		var path = urlObj.path;
 		if(path.length === 0 || path > 4){
 			return network.getHttpResponse(400,{},"Bad request: invalid path.");
@@ -46,25 +50,42 @@ function TwoGather() {
 			return doUser(path[1], httpReq.Method, httpReq.Body);
 		} else if (path.length == 3){
 			if(path[2] === "videos"){
-				return doVideo("","",httpReq.Method,httpReq.Body);
+				return doVideo(path[1],"",httpReq.Method,httpReq.Body);
 			} else if (path[2] === "subs"){
 				Println("Sub request");
 				return doSub("",httpReq.Method,httpReq.Body);
+			} else {
+				return network.getHttpResponse(400,{},"Bad request: malformed URL");
 			}
 		} else if (path.length == 4){
 			if(path[2] === "videos"){
 				return doVideo(path[1],path[3],httpReq.Method,httpReq.Body);
 			} else if (path[2] === "subs"){
 				return doSub(path[3],httpReq.Method,httpReq.Body);
+			} else {
+				return network.getHttpResponse(400,{},"Bad request: malformed URL");
 			}
 		} else {
 			return network.getHttpResponse(400,{},"Bad request: malformed URL");
 		}
 	}
-	
+
+	handlers.videos = function(urlObj, httpReq) {
+		Println("Getting video");
+		if(httpReq.Method === "GET") {
+			if(urlObj.path.length !== 2) {
+				return network.getHttpResponse(400,{},"Bad request: invalid path.");
+			}
+			video = tgApi.getVideo(urlObj.path[1]);
+			return network.getHttpResponse(200,{},video);
+		} else {
+			return network.getHttpResponse(400,{},"Bad request: method not supported (" + httpReq.Method + ")");
+		}
+	}
+
 	handlers.txs = function(urlObj, httpReq) {
 		Println("Getting tx");
-		if(httpReq.Method === "GET") {			
+		if(httpReq.Method === "GET") {
 			if(urlObj.path.length !== 2){
 				return network.getHttpResponse(400,{},"Bad request: invalid path.");
 			}
@@ -82,7 +103,7 @@ function TwoGather() {
 	handlers.mining = function(urlObj, httpReq) {
 		Println("Mining");
 		Println(httpReq.Method);
-		if(httpReq.Method === "POST") {			
+		if(httpReq.Method === "POST") {
 			if(urlObj.path.length !== 1){
 				return network.getHttpResponse(400,{},"Bad request: invalid path.");
 			}
@@ -94,7 +115,7 @@ function TwoGather() {
 			} else {
 				return network.getHttpResponse(400,{}, "Bad request.");
 			}
-			return network.getHttpResponse(200,{}, "");
+			return network.getHttpResponse(200,{}, "Completed.");
 		} else {
 			return network.getHttpResponse(400,{},"Bad request: method not supported (" + httpReq.Method + ")");
 		}
@@ -102,7 +123,7 @@ function TwoGather() {
 
 	handlers.session = function(urlObj, httpReq) {
 		Println("Getting session.");
-		if(httpReq.Method === "GET") {			
+		if(httpReq.Method === "GET") {
 			if(urlObj.path.length !== 1){
 				return network.getHttpResponse(400,{},"Bad request: invalid path.");
 			}
@@ -161,9 +182,12 @@ function TwoGather() {
 						return network.getHttpResponse(400,{},"Bad request - patch data malformed.");
 					}
 					if(patch.op === "replace"){
-						txHashes[i] = tgApi.setBTC(patch.value);
+						if(patch.value.length < 26){
+							return network.getHttpResponse(400,{},"Bad request - invalid btc address.");
+						}
+						txHashes[i] = tgApi.setBTC(patch.value, true);
 					} else {
-						txHashes[i] = tgApi.setBTC("0x0");
+						txHashes[i] = tgApi.setBTC("0x0",false);
 					}
 				} else if (patch.field === "doug_perm"){
 					if(typeof(patch.value) !== "boolean" ){
@@ -210,24 +234,34 @@ function TwoGather() {
 
 	function doVideo(username,videoId, method, body){
 		if (method === "GET"){
-			// This is a request to get user data.
-			Println("Getting video: " + username + "/" + videoId);
-			var video = tgApi.getVideoData(username,videoId);
-			if (video === null){
-				return network.getHttpResponse(404,{},"Resource not found.");
+			if(videoId === ""){
+				// Get list of users videos
+				Println("Getting all videos for " + username)
+				var vids = tgApi.getUserVids(username)
+				if (vids === null){
+					return network.getHttpResponse(404,{},"Resource not found.");
+				}
+				return network.getHttpResponseJSON(vids);
+			} else {
+				// This is a request to get user data.
+				Println("Getting video: " + username + "/" + videoId);
+				var video = tgApi.getVideoData(username,videoId);
+				if (video === null){
+					return network.getHttpResponse(404,{},"Resource not found.");
+				}
+				return network.getHttpResponseJSON(video);
 			}
-			return network.getHttpResponseJSON(video);
 		} else if (method === "POST"){
 			// We get videoId from the body here.
 			var nameObj = JSON.parse(body);
 			if (nameObj.name === undefined || nameObj.name === ""){
 				return network.getHttpResponse(400,{},"Bad request - malformed video owner name.");
 			}
-			if (nameObj.url === undefined || nameObj.url === ""){
+			if (nameObj.base64 === undefined || nameObj.base64 === ""){
 				return network.getHttpResponse(400,{},"Bad request - malformed video owner url.");
 			}
-			Println("Posting video: " + nameObj.name + "/" + nameObj.url);
-			var hash = tgApi.addVideo(nameObj.name,nameObj.url);
+			Println("Posting video: " + nameObj.name);
+			var hash = tgApi.addVideo(nameObj.name,nameObj.base64);
 
 			if (hash === "0x0"){
 				return network.getHttpResponse(500,{},"Internal error - blockchain transaction not processed.");
@@ -260,7 +294,7 @@ function TwoGather() {
 					if(patch.op === "replace"){
 						txHashes[i] = tgApi.blacklistById(username, videoId);
 					} else {
-						return network.getHttpResponse(501,{},"Not yet supported - Blacklisting can't be undone.");	
+						return network.getHttpResponse(501,{},"Not yet supported - Blacklisting can't be undone.");
 					}
 				} else if (patch.field === "flag"){
 					if(patch.op === "replace"){
@@ -330,7 +364,7 @@ function TwoGather() {
 	function isPatch(obj){
 		if(obj.op === undefined || obj.field === undefined || obj.value === undefined){
 			return false;
-		} 
+		}
 		if (typeof(obj.op) !== "string" || (obj.op !== "replace" && obj.op !== "remove") ){
 			return false;
 		}
@@ -348,6 +382,7 @@ function TwoGather() {
 // *************************************** Initialization ***************************************
 
 var tg = new TwoGather();
+Println("Starting 2gather");
 tg.init();
 
 network.registerIncomingHttpCallback(tg.handle);

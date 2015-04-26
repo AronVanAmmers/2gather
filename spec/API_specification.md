@@ -2,11 +2,7 @@
 
 **DISCLAIMER** (the lawyers talk): The real purpose of this dapp, or at least the initial release, is to test decerver module inter-op, and to show the potential of the platform. Eris Industries **has no intention** of commoditizing this DApp, or of ensuring that this DApp stays as a production worthy application. This DApp has been built as a proof of platform as well as to provide a base hierarchical document structure for other DApp makers to see how we think these various new and experimental systems can work together in harmony.
 
-### UI -- UPDATES
-
-**NOTE**: Mine has been added. endpoint is `BASE_URL/mining`
-
-Just send an http POST request with ‘on’ or ‘off’ in the body, plain text for now. No JSON is read or required to turn mining (committing) on or off.
+**NOTE: Mine has been added. endpoint is BASE_URL/mining  Just POST with ‘on’ or ‘off’ in the body, plain text for now.**
 
 ### UI Introduction
 
@@ -42,33 +38,11 @@ Lots of flexibilty here regarding precise design.
 
 `Response` format: JSON body.
 
-### API -- RESTful Resources
-
-There are two resources used in the 2gather API.
-
-`User Resource`: has
-
-* one channel,
-* one username,
-* one bitcoin address (optional),
-* one or more videos,
-* one or more subscriptions.
-
-`Video Resource`: has
-
-* one channel,
-* one video name,
-* one video url
-
 ### API Calls -- Base URL
 
 This is a list of useful API calls.
 
 `{base-URL}` is, by default `http://localhost:3000/apis/2gather`. If you are running a [Decerver](https://decerver.io/tutuorials) not on localhost then you would replace with the proper `IPaddress:PORT` combination for wherever you were running your Decerver.
-
-### API Calls Which Require Blockchain Transactions
-
-When it comes to actions that requires a blockchain transaction (the entire API specification, except for `GET` operations), it will return a transaction hash which can be used for polling.
 
 **Note** that all api calls with the flag (tx) include transactions to the blockchain, which means all you get back from the call is a transaction hash. To check whether or not this transaction succeeds, it needs to be tracked. The way we do it with websockets is normally by storing the hash and subscribing to transaction events from the thelonious (monk) module. The tx will trigger either a tx or a tx:failed event, and when that happens it’s sent back over the socket. For more information on how we do this, see the `autotest/tester/testrunner.go`, especially the `poll` and `pollOnce` functions.
 
@@ -91,6 +65,8 @@ Patch:
 ```
 
 The `op`s allowed are: `replace` and `remove`.
+
+When patches are sent, they are sent as arrays of `Patch` objects, so: `[patch0, patch1, ...]`.
 
 ## API Specification -- Specifics
 
@@ -115,9 +91,9 @@ Response body:
 }
 ```
 
-### Resource: user
+### Resource: users
 
-#### POST `{base-URL}/user` (tx)
+#### POST `{base-URL}/users` (tx)
 
 Creates a new user account. This will create an account and let the current post/remove videos, and add/remove subscriptions.
 
@@ -125,17 +101,17 @@ Request Body:
 
 ```javascript
 {
-	"user_name": String
+  "user_name": String
 }
 ```
 
-#### DELETE `{base-URL}/user/:username` (tx)
+#### DELETE `{base-URL}/users/:username` (tx)
 
 Deletes a user account. The account has to be tied to the user's currently used address. If trying to remove some other users account the contracts will not allow and the call to the API will fail.
 
 **Note**, The API endpoint currently requires a username in case we add the possibility for admins to remove other users later.
 
-#### GET `{base-URL}/user/:username`
+#### GET `{base-URL}/users/:username`
 
 Retrieves user data. Somewhat overlaps with `session` data in how the response body is structured, but this call allows for retrieval of any user's information while the `session` GET only allows the current user to retrieve their own information.
 
@@ -152,7 +128,7 @@ Retrieves user data. Somewhat overlaps with `session` data in how the response b
 }
 ```
 
-#### (PATCH) `{base-URL}/user/:username` (tx)
+#### (PATCH) `{base-URL}/users/:username` (tx)
 
 Modify a user. A user can only modify the account tied to their thelonious address. Any attempt to modify someone else’s address will fail.
 
@@ -160,7 +136,7 @@ The body for the request **must be structured** as above in the PATCH discussion
 
 Fields available to PATCH for the `user` resource:
 
-* `btc_addr` String (bitcoin address)
+* `btc_address` String (bitcoin address)
 * `doug_perm` Boolean
 * `blacklist_perm ` Boolean
 
@@ -168,9 +144,9 @@ To set doug or blacklist permissions for a user, just send a ‘replace’ OP. I
 
 To remove the permission send a ‘remove’ OP.
 
-### Resource: user.subscriber
+### Resource: users.subscriber
 
-#### POST `{base-URL}/user/:username/subs/` (tx)
+#### POST `{base-URL}/users/:username/subs/` (tx)
 
 Subscribes to another user.
 
@@ -178,17 +154,17 @@ Request Body:
 
 ```javascript
 {
-	"user_name": String
+  "user_name": String
 }
 ```
 
-#### DELETE `{base-URL}/user/:username/subs/:subname` (tx)
+#### DELETE `{base-URL}/users/:username/subs/:subname` (tx)
 
 This causes the active user to unsubscribe to the target user. The target must be subscribed to by the active user or it will fail.
 
-### Resource: user.video
+### Resource: users.video
 
-#### POST `{base-URL}user/:username/video` (tx)
+#### POST `{base-URL}/users/:username/videos` (tx)
 
 Uploads a video.
 
@@ -196,12 +172,12 @@ Request Body:
 
 ```javascript
 {
-	"name": String,
-	"url": String
+  "name": String,
+  "url": String
 }
 ```
 
-#### PATCH `{base-URL}/user/:username/video/:id` (tx)
+#### PATCH `{base-URL}/users/:username/videos/:id` (tx)
 
 Modify a video. A user can only modify their own videos via the current user. Any attempt to modify someone else’s videos will fail at the contract level.
 
@@ -212,11 +188,11 @@ Fields available to PATCH for the `user` resource:
 * `flag` Boolean
 * `blacklist` Boolean
 
-#### DELETE `{base-URL}/user/:username/video/:id` (tx)
+#### DELETE `{base-URL}/users/:username/videos/:id` (tx)
 
 Remove a video. The owner name has to be tied to the users thelonious address. If you try to remove some other users videos it’ll just fail. Here in case we add admin rights to remove.
 
-#### GET `{base-URL}/user/:username/videos/`
+#### GET `{base-URL}/users/:username/videos/`
 
 Gets all the users videos.
 
@@ -228,7 +204,7 @@ Reponse body:
 }
 ```
 
-#### GET `{base-URL}/user/:username/videos/:id`
+#### GET `{base-URL}/users/:username/videos/:id`
 
 Gets the video with the given id.
 
@@ -236,13 +212,19 @@ Response body:
 
 ```javascript
 {
+  "date": Number,
   "name": String,
-  "hash": String,
-  "upload_date": Number,
-  "video_number": Number,
   "status": Number
+  "hash": String,
+  "id": Number,
 }
 ```
+
+### Resource: videos
+
+#### GET `{base-URL}/videos/:hash`
+
+Returns the content of a video file.
 
 ### Resource: txs
 
@@ -261,6 +243,32 @@ Statuses are:
 
 4 or 2 are those to look for. 1 and 3 means the transactions are in different stages of validation.
 
+### Resource: mining
+
+Used to set mining on or off
+
+#### POST `{base-URL}/mining`
+
+Request Body:
+
+"on" or “off”.
+
+Response body:
+
+Nothing useful.
+
+
 ## A few miscellaneous notes
 
+##Loading videos
+
+When it comes to how the videos are actually served we have to discuss that. There are some limitations.
+
+##Bitcoin
+
+You can not yet do a btc transaction
+
+##Other info
+
 Hex strings are always prepended by 0x.
+

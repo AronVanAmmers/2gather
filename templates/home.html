@@ -1,43 +1,36 @@
 <section class="tg-panel">
-  <header class="tg-panel-heading tg-primary-heading row">
-    <h5 class="tg-heading col-md-6">
+    <header class="tg-panel-heading tg-primary-heading row">
+        <h5 class="tg-heading col-md-6">
       Videos
-      <span ng-switch="searchMethod">
-        <span ng-switch-when="category">
-          within the <strong>"{{ searchTerm }}"</strong> category
-        </span>
-        <span ng-switch-when="query">
-          matching <strong>"{{ searchTerm }}"</strong>
-        </span>
-      </span>
     </h5>
-
-    <div ng-controller="CategoryListCtrl" class="tg-categories-list tg-panel-actions col-md-6">
-      <span class="fa fa-search"></span>
-      <div class="tg-categories-list-items">
-        <a class="tg-categories-list-item"
-           ng-repeat="category in categories"
-           ng-href="#/?c={{ category }}"
-           ng-class="{selected:current_category==category}">
-          {{ category }}
-        </a>
-      </div>
-      <a href="" class="tg-view-icon" ng-click="setLayout('details')">
-        <span class="fa fa-list"></span>
-      </a>
-      <a href="" class="tg-view-icon" ng-click="setLayout('pictures')">
-        <span class="fa fa-th"></span>
-      </a>
+    </header>
+    <div class="tg-panel-content">
+        <div class="tg-videos-list row tg-grid">
+            <p ng-hide="videos.length">No videos to show, why not <a href ng-click="addVideo()">add one</a>?</p>
+            <div ng-repeat="video in videos | limit:24" class="tg-videos-list-entry col repeater picture-layout col-md-3">
+                <a href ng-click="delete(video, $index)" ng-show="canDelete" class="tg-remove-icon pull-right"><i class="fa fa-times"></i></a>
+                <a href="#/watch/{{ video.id }}?user={{viewingUser()}}" class="tg-video-entry-link">
+                    <h5 class="tg-heading">{{ video.name }}</h5>
+                    <video width="100%" class="clip-thumbnail" ng-src="{{video.url}}"></video>
+                </a>
+            </div>
+        </div>
     </div>
-  </header>
-  <div class="tg-panel-content">
-    <div class="tg-videos-list row tg-grid">
-      <div ng-include="tpl('video-listing')"
-           ng-repeat="video in videos | limit:24"
-           class="tg-videos-list-entry col repeater"
-           ng-class="{
-            'detail-layout col-md-6'  : isLayout('details'),
-            'picture-layout col-md-3' : isLayout('pictures')
-           }"></div>
-  </div>
+    <header class="tg-panel-heading tg-primary-heading row">
+        <h5 class="tg-heading col-md-6">
+      <span ng-hide="viewingUser()">Your subscriptions</span>
+      <span ng-show="viewingUser()">{{viewingUser()}}'s subscriptions</span>
+    </h5>
+    </header>
+    <div class="tg-panel-content">
+        <div class="tg-subscriptions-list row tg-grid">
+            <p ng-hide="getSubscriptions().length || viewingUser()">No subscriptions to show. Search for a user above to subscribe</p>
+            <p ng-show="!getSubscriptions().length && viewingUser()">{{viewingUser()}} has no subscriptions.</p>
+            <div ng-repeat="subscription in getSubscriptions() | limit:24" class="tg-subscriptions-list-entry col repeater">
+                <a href="#/?user={{ subscription }}" class="tg-video-entry-link">
+                    <h5 class="tg-heading">{{ subscription }}</h5>
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
